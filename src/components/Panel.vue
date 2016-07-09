@@ -14,7 +14,7 @@
         <span class="icon-tomato">tomaro1</span>
         <span class="icon-tomato">tomaro1</span>
         <span class="icon-tomato">tomaro1</span>
-        <span class="icon-tomato">tomaro1</span>
+        <span class="icon-tomato animated tada">tomaro1</span>
       </div>
     </div>
   </section>
@@ -46,7 +46,7 @@ h1 {
   display: flex;
   width: 80%;
   max-width: 400px;
-  margin: auto;
+  margin: 50px auto;
 }
 
 .panel .user{

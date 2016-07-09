@@ -4,83 +4,10 @@
     <meta charset="utf-8">
     <title>vue-project</title>
     <link href="https://fonts.googleapis.com/css?family=Architects+Daughter" rel="stylesheet">
-    <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/live/0.4/firebase-ui-auth.css" />
   </head>
   <body>
     <app></app>
-    <div id="firebaseui-auth-container"></div>
-    <div id="sign-in-status"></div>
-    <div id="sign-in"></div>
-    <div id="account-details"></div>
-    <!-- built files will be auto injected -->
-    <script src="https://www.gstatic.com/firebasejs/3.1.0/firebase.js"></script>
-    <script>
-      // Initialize Firebase
-      var config = {
-        apiKey: "AIzaSyBCfKVu0LUNav87mRe7X7YLGJ7-eIQ3ptM",
-        authDomain: "wetomatoes.firebaseapp.com",
-        databaseURL: "https://wetomatoes.firebaseio.com",
-        storageBucket: "wetomatoes.appspot.com",
-      };
-      firebase.initializeApp(config);
-    </script>
     <script src="https://www.gstatic.com/firebasejs/ui/live/0.4/firebase-ui-auth.js"></script>
-    <script type="text/javascript">
-     // FirebaseUI config.
-     var uiConfig = {
-       'signInSuccessUrl': '/',
-       'signInOptions': [
-         // Leave the lines as is for the providers you want to offer your users.
-         firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-         firebase.auth.EmailAuthProvider.PROVIDER_ID
-       ],
-       // Terms of service url.
-       'tosUrl': '/zx',
-     };
-
-     // Initialize the FirebaseUI Widget using Firebase.
-     var ui = new firebaseui.auth.AuthUI(firebase.auth());
-     // The start method will wait until the DOM is loaded.
-     ui.start('#firebaseui-auth-container', uiConfig);
-   </script>
-   <script type="text/javascript">
-      initApp = function() {
-        firebase.auth().onAuthStateChanged(function(user) {
-          if (user) {
-            // User is signed in.
-            var displayName = user.displayName;
-            var email = user.email;
-            var emailVerified = user.emailVerified;
-            var photoURL = user.photoURL;
-            var uid = user.uid;
-            var providerData = user.providerData;
-            user.getToken().then(function(accessToken) {
-              // document.getElementById('sign-in-status').textContent = 'Signed in';
-              // document.getElementById('sign-in').textContent = 'Sign out';
-              // document.getElementById('account-details').textContent = JSON.stringify({
-              //   displayName: displayName,
-              //   email: email,
-              //   emailVerified: emailVerified,
-              //   photoURL: photoURL,
-              //   uid: uid,
-              //   accessToken: accessToken,
-              //   providerData: providerData
-              // }, null, '  ');
-            });
-          } else {
-            // User is signed out.
-            // document.getElementById('sign-in-status').textContent = 'Signed out';
-            // document.getElementById('sign-in').textContent = 'Sign in';
-            // document.getElementById('account-details').textContent = 'null';
-          }
-        }, function(error) {
-          console.log(error);
-        });
-      };
-
-      window.addEventListener('load', function() {
-        initApp()
-      });
-    </script>
+    <!-- built files will be auto injected -->
   </body>
 </html>

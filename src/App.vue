@@ -2,21 +2,42 @@
   <div id="app">
     <div class="title">
       <img class="logo" src="./assets/tomato.svg">
-      <h1>We Tomatoes!</h1>
+      <h1 class="">We Tomatoes!</h1>
     </div>
-
     <panel></panel>
+    <panel></panel>
+    <panel></panel>
+
+    <div id="firebaseui-auth-container"></div>
+    <div id="sign-in-status"></div>
+    <div id="sign-in"></div>
+    <div id="account-details"></div>
   </div>
 </template>
 
 <script>
-import normalize from 'normalize.css'; /* eslint no-unused-vars: 0 */
-import Hello from './components/Hello';
+import normalizeCss from 'normalize.css'; /* eslint no-unused-vars: 0 */
+import animateCss from 'animate.css'; /* eslint no-unused-vars: 0 */
+
+import firebase from 'firebase';
+
 import Panel from './components/Panel';
+import auth from './auth';
+
+const config = {
+  apiKey: 'AIzaSyBCfKVu0LUNav87mRe7X7YLGJ7-eIQ3ptM',
+  authDomain: 'wetomatoes.firebaseapp.com',
+  databaseURL: 'https://wetomatoes.firebaseio.com',
+  storageBucket: 'wetomatoes.appspot.com',
+};
+
+firebase.initializeApp(config);
+
+auth.init();
 
 export default {
   components: {
-    Hello, Panel,
+    Panel,
   },
 };
 </script>
