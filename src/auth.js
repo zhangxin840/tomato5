@@ -2,7 +2,7 @@
 import firebase from 'firebase';
 import firebaseUiAuthCss from '../vendors/firebase-ui-auth.css'; /* eslint no-unused-vars: 0 */
 
-const init = function () {
+const init = function init() {
   // firebaseui is imported by script tag
   const firebaseui = window.firebaseui;
 
@@ -51,7 +51,7 @@ const init = function () {
       // document.getElementById('account-details').textContent = 'null';
     }
   }, (error) => {
-    console.log(error);
+    // console.log(error);
   });
 };
 

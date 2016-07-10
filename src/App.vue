@@ -54,6 +54,16 @@ body {
     text-decoration: none;
   }
 
+  input[type=text], input[type=text]:focus {
+    border: none;
+    margin: 0;
+    padding: 0;
+    box-shadow: none;
+    outline: initial;
+
+    border-bottom: 1px solid #ddd;
+  }
+
   color: #2c3e50;
   font-size: 15px;
 }
@@ -94,8 +104,6 @@ body {
     margin-top: 80px;
   }
 }
-
-
 
 .icon-tomato{
   display: inline-block;

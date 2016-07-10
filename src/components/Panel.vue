@@ -1,19 +1,33 @@
 <template>
-  <section class="panel">
+  <section class="panel"
+            v-bind:class="{
+              'resting': panelStatus.userStatus === userStatus.resting,
+              'idle': panelStatus.userStatus === userStatus.idle,
+              'busy': panelStatus.userStatus === userStatus.busy,
+            }">
     <div class="user">
       <div class="avator">
         <img class="pic" :src="user.photoURL" alt="avator" />
       </div>
-      <span class="timer">{{ status.label }}</span>
+      <span class="timer animated rubberBand"
+            v-show="panelStatus.userStatus > 0">
+        {{ panelStatus.label }}
+      </span>
     </div>
     <div class="task">
       <div class="list">
-        <span v-for="task in list.tasks"
-              v-bind:class="{ 'animated tada idle': task.status === taskStatus.idle }"
-              class="icon-tomato">
-          {{ task.note }}
-        </span>
+        <template v-for="task in list.tasks">
+          <task v-bind:task="task"
+                v-bind:task-status="taskStatus"
+                v-bind:panel-status="panelStatus">
+          </task>
+        </template>
       </div>
+      <active-task v-if="panelStatus.activeTask"
+                   v-bind:task="panelStatus.activeTask"
+                   v-bind:task-status="taskStatus"
+                   v-bind:user-status="userStatus">
+      </active-task>
     </div>
   </section>
 </template>
@@ -21,6 +35,9 @@
 <script>
 
 import moment from 'moment';
+import ActiveTask from './ActiveTask';
+import Task from './Task';
+import timer from '../timer';
 
 window.moment = moment;
 
@@ -29,7 +46,8 @@ const taskStatus = {
   idle: 0,
   ongoning: 1,
   paused: 2,
-  done: 3,
+  active: 3,
+  done: 4,
 };
 
 const userStatus = {
@@ -82,76 +100,49 @@ const user = {
   photoURL: 'https:///www.granneman.com/files/cache/716011d79afdd5969b0656b7ad5812b2.jpg',
 };
 
-const status = {
+const panelStatus = {
   label: '00:00',
   userStatus: userStatus.idle,
+  activeTask: null,
 };
 
-const getRemaning = function getRemaning(startTime) {
-  const total = moment.duration(10, 'seconds');
-  const elapsed = moment().diff(startTime, 'seconds');
-  const remaning = total.subtract(elapsed, 'seconds');
-
-  return remaning;
+const onRestTimeDue = function onRestTimeDue() {
+  panelStatus.userStatus = userStatus.idle;
 };
 
-const getContdown = function getContdown(startTime, level) {
-  const remaning = getRemaning(startTime);
-  let minutes = remaning.minutes() > 0 ? remaning.minutes() : 0;
-  let seconds = remaning.seconds() > 0 ? remaning.seconds() : 0;
-  let result = '';
+const startRest = function startRest() {
+  const startTime = moment();
 
-  if (level === 'minute') {
-    result = `${minutes}m`;
-  } else {
-    minutes = minutes > 9 ? `${minutes}` : `0${minutes}`;
-    seconds = seconds > 9 ? `${seconds}` : `0${seconds}`;
-    result = `${minutes}:${seconds}`;
-  }
+  panelStatus.label = timer.getContdown(startTime, 'resting', 'second');
+  panelStatus.userStatus = userStatus.resting;
 
-  return result;
-};
-
-
-window.getContdown = getContdown;
-
-const Notification = window.Notification;
-
-const sendNotification = function sendNotification(title, message) {
-  if (Notification) {
-    const noti = new Notification(title, { /* eslint no-unused-vars: 0 */
-      icon: 'http://cdn.sstatic.net/stackexchange/img/logos/so/so-icon.png',
-      body: message,
-    });
-  }
-};
-
-const startTimer = function startTimer(startTime) {
-  const timer = window.setInterval(() => {
-    status.label = getContdown(startTime, 'second');
-    if (getRemaning(startTime).seconds() <= 0) {
-      sendNotification('Take Five', 'The first tomato completed, nice job!');
-      window.clearInterval(timer);
+  const theTimer = window.setInterval(() => {
+    panelStatus.label = timer.getContdown(startTime, 'resting', 'second');
+    if (timer.getRemaning(startTime, 'resting').seconds() <= 0) {
+      window.clearInterval(theTimer);
+      onRestTimeDue();
     }
   }, 1000);
-
-  if (Notification) {
-    Notification.requestPermission();
-  }
 };
 
-const onClick = function click() {
-  sendNotification('test1', 'test2');
-  console.log('send');
+
+const onTaskDone = function onTaskDone() {
+  startRest();
 };
 
-startTimer(moment().subtract(0, 's'));
+const onTaskDropped = function onTaskDropped() {
+  this.panelStatus.userStatus = this.userStatus.idle;
+};
 
 export default {
   data() {
-    return { user, list, status, taskStatus };
+    return { user, list, panelStatus, taskStatus, userStatus };
   },
-  methods: { onClick },
+  methods: { },
+  components: {
+    ActiveTask, Task,
+  },
+  events: { taskDone: onTaskDone, taskDropped: onTaskDropped },
 };
 
 </script>
@@ -162,15 +153,30 @@ h1 {
   color: #42b983;
 }
 
-.panel{
+.panel {
   display: flex;
   max-width: 280px;
   margin: 50px auto;
 
-  .user{
-    margin-right: 30px;
+  &.resting {
+    .timer {
+      color: #42b983;
+    }
+  }
+
+  &.busy {
+    .timer {
+
+    }
+  }
+
+  .user {
+    margin-right: 20px;
+    width: 60px;
+    // overflow: hidden;
 
     .avator {
+      text-align: center;
       .pic{
         display: inline-block;
         width: 50px;
@@ -183,6 +189,8 @@ h1 {
       display: block;
       text-align: center;
       width: 100%;
+      font-size: 20px;
+      line-height: 35px;
     }
   }
 
@@ -191,11 +199,28 @@ h1 {
     text-align: left;
     line-height: 40px;
     .icon-tomato{
-      margin: 0 5px;
-    }
-    .icon-tomato.idle{
+      margin: 0 10px 0 0;
       opacity: 0.5;
-      cursor: pointer;
+
+      &:hover{
+        // transform: scale(1.2, 1.2);
+      }
+
+      &.done{
+        opacity: 1;
+      }
+
+      &.ongoing{
+        opacity: 0.6;
+      }
+
+      &.active{
+        opacity: 0.6;
+      }
+
+      &.idle {
+        cursor: pointer;
+      }
     }
   }
 }
