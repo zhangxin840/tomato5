@@ -1,53 +1,42 @@
 <template>
-  <div v-bind:class="{
-        'idle animated tada ': task.status === taskStatus.idle,
-        'ongoing animated pulse infinite': task.status === taskStatus.ongoing,
-        'active animated swing infinite': task.status === taskStatus.active,
-        'done': task.status === taskStatus.done,
-      }"
-      v-on:click="onClick(task)"
-      class="icon-tomato">
-      {{ task.note }}
+  <div class="task"
+       v-bind:class="{' hide ': this.hide}">
+    <span v-bind:class="{
+          'idle animated tada ': task.status === taskStatus.idle,
+          'ongoing animated pulse infinite': task.status === taskStatus.ongoing,
+          'active animated swing infinite': task.status === taskStatus.active,
+          'done': task.status === taskStatus.done,
+        }"
+        v-on:click="onClick(task)"
+        class="icon-tomato">
+        {{ task.note }}
+    </span>
+    <input class="note" type="text" name="name" :value="task.note" placeholder="Title of this task">
   </div>
-
 </template>
 
 <script>
 
 import timer from '../timer';
-import moment from '../moment';
+import moment from 'moment';
 
-const Notification = window.Notification;
-
-const sendNotification = function sendNotification(title, message) {
-  if (Notification) {
-    const noti = new Notification(title, { /* eslint no-unused-vars: 0 */
-      icon: 'http://cdn.sstatic.net/stackexchange/img/logos/so/so-icon.png',
-      body: message,
-    });
-  }
-};
-
-const onTaskTimeDue = function onTaskTimeDue(task) {
-  sendNotification('Take Five', 'The first tomato completed, nice job!');
-  this.panelStatus.userStatus = this.userStatus.active;
-  task.status = this.taskStatus.active; /* eslint no-param-reassign: 0 */
+const onTaskTimeDue = function onTaskTimeDue() {
+  this.task.status = this.taskStatus.active;
+  this.$dispatch('taskTimeDue', this.task);
 };
 
 const startTask = function startTask() {
-  const startTime = moment();
+  this.task.status = this.taskStatus.ongoing;
+  this.task.startTime = moment();
 
-  this.panelStatus.activeTask = this.task;
-  this.panelStatus.label = timer.getContdown(startTime, 'standard', 'second');
-  this.panelStatus.userStatus = this.userStatus.busy;
-
-  this.task.status = this.taskStatus.ongoing; /* eslint no-param-reassign: 0 */
+  this.$dispatch('taskStarted', this.task);
 
   const theTimer = window.setInterval(() => {
-    this.panelStatus.label = timer.getContdown(startTime, 'standard', 'second');
-    if (timer.getRemaning(startTime, 'standard').asMilliseconds() <= 0) {
+    this.$dispatch('taskTimerUpdated', this.task);
+
+    if (timer.getRemaning(this.task.startTime, 'standard').asMilliseconds() <= 0) {
       window.clearInterval(theTimer);
-      onTaskTimeDue(this.task);
+      this.onTaskTimeDue();
     }
   }, 1000);
 
@@ -57,26 +46,70 @@ const startTask = function startTask() {
 };
 
 const onClick = function onClick() {
-  this.$dispatch('taskStarted', this.task);
-
   if (this.task.status === this.taskStatus.idle) {
-    startTask();
+    this.startTask();
   }
 };
 
 export default {
-  props: ['task', 'taskStatus', 'panelStatus'],
+  props: ['task', 'taskStatus', 'hide'],
   data() {
     return { };
   },
-  methods: { onClick },
-  events: {
-    taskDone: onTaskDone,
-    taskDropped: onTaskDropped,
-  },
+  methods: { onClick, onTaskTimeDue, startTask },
+  events: { },
 };
 </script>
 
 <style lang="scss" scoped>
 
+.task {
+  margin: 0 0 30px 0;
+  display: flex;
+  .note {
+    line-height: 20px;
+    position: relative;
+    width: 100%;
+  }
+
+  line-height: 30px;
+  width: 100%;
+
+  &.hide {
+    opacity: 0.2;
+  }
+
+  transition: all 0.5s;
+}
+
+.icon-tomato{
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  text-indent: -9999px;
+  background: url('../assets/tomato.svg');
+
+  margin: 0 10px 0 0;
+  opacity: 0.5;
+
+  &:hover{
+    // transform: scale(1.2, 1.2);
+  }
+
+  &.done{
+    opacity: 1;
+  }
+
+  &.ongoing{
+    opacity: 0.6;
+  }
+
+  &.active{
+    opacity: 0.6;
+  }
+
+  &.idle {
+    cursor: pointer;
+  }
+}
 </style>

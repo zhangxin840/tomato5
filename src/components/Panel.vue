@@ -14,12 +14,13 @@
         {{ panelStatus.label }}
       </span>
     </div>
-    <div class="task">
+    <div class="tasks">
       <div class="list">
         <template v-for="task in list.tasks">
           <task v-bind:task="task"
                 v-bind:task-status="taskStatus"
-                v-bind:panel-status="panelStatus">
+                v-bind:hide="(panelStatus.userStatus === userStatus.busy || panelStatus.userStatus === userStatus.active)
+                    && !(task.status === taskStatus.ongoing || task.status === taskStatus.active)">
           </task>
         </template>
       </div>
@@ -59,14 +60,14 @@ const userStatus = {
 };
 
 const task1 = {
-  note: 'This is task1.',
-  status: taskStatus.done,
+  note: 'Each tomato represents 25min timer for concentration',
+  status: taskStatus.idle,
   startTime: moment(),
 };
 
 const task2 = {
   note: 'This is task2.',
-  status: taskStatus.done,
+  status: taskStatus.idle,
   startTime: moment(),
 };
 
@@ -106,6 +107,17 @@ const panelStatus = {
   activeTask: null,
 };
 
+const Notification = window.Notification;
+
+const sendNotification = function sendNotification(title, message) {
+  if (Notification) {
+    const noti = new Notification(title, { /* eslint no-unused-vars: 0 */
+      icon: 'http://cdn.sstatic.net/stackexchange/img/logos/so/so-icon.png',
+      body: message,
+    });
+  }
+};
+
 const onRestTimeDue = function onRestTimeDue() {
   panelStatus.userStatus = userStatus.idle;
 };
@@ -125,13 +137,29 @@ const startRest = function startRest() {
   }, 1000);
 };
 
+const onTaskStarted = function onTaskStarted(task) {
+  this.panelStatus.activeTask = task;
+  this.panelStatus.label = timer.getContdown(task.startTime, 'standard', 'second');
+  this.panelStatus.userStatus = this.userStatus.busy;
+};
 
 const onTaskDone = function onTaskDone() {
   startRest();
+  this.panelStatus.activeTask = null;
 };
 
 const onTaskDropped = function onTaskDropped() {
   this.panelStatus.userStatus = this.userStatus.idle;
+  this.panelStatus.activeTask = null;
+};
+
+const onTaskTimeDue = function onTaskTimeDue() {
+  // sendNotification('Take Five', 'The first tomato completed, nice job!');
+  this.panelStatus.userStatus = this.userStatus.active;
+};
+
+const onTaskTimerUpdated = function onTaskTimerUpdated(task) {
+  this.panelStatus.label = timer.getContdown(task.startTime, 'standard', 'second');
 };
 
 export default {
@@ -142,7 +170,13 @@ export default {
   components: {
     ActiveTask, Task,
   },
-  events: { taskDone: onTaskDone, taskDropped: onTaskDropped },
+  events: {
+    taskDone: onTaskDone,
+    taskDropped: onTaskDropped,
+    taskStarted: onTaskStarted,
+    taskTimeDue: onTaskTimeDue,
+    taskTimerUpdated: onTaskTimerUpdated,
+  },
 };
 
 </script>
@@ -155,8 +189,9 @@ h1 {
 
 .panel {
   display: flex;
-  max-width: 280px;
+  max-width: 400px;
   margin: 50px auto;
+  padding: 0 10px;
 
   &.resting {
     .timer {
@@ -172,7 +207,7 @@ h1 {
 
   .user {
     margin-right: 20px;
-    width: 60px;
+    width: 70px;
     // overflow: hidden;
 
     .avator {
@@ -193,36 +228,16 @@ h1 {
       line-height: 35px;
     }
   }
+  .tasks {
+    width: 100%;
 
-  .list{
-    margin: 8px 0;
-    text-align: left;
-    line-height: 40px;
-    .icon-tomato{
-      margin: 0 10px 0 0;
-      opacity: 0.5;
-
-      &:hover{
-        // transform: scale(1.2, 1.2);
-      }
-
-      &.done{
-        opacity: 1;
-      }
-
-      &.ongoing{
-        opacity: 0.6;
-      }
-
-      &.active{
-        opacity: 0.6;
-      }
-
-      &.idle {
-        cursor: pointer;
-      }
+    .list {
+      margin: 8px 0;
+      text-align: left;
+      line-height: 40px;
     }
   }
+
 }
 
 </style>

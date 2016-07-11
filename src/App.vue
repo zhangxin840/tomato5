@@ -55,13 +55,14 @@ body {
   }
 
   input[type=text], input[type=text]:focus {
+    color: #2c3e50;
     border: none;
     margin: 0;
     padding: 0;
     box-shadow: none;
     outline: initial;
 
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid #eee;
   }
 
   color: #2c3e50;
@@ -70,7 +71,7 @@ body {
 
 .title{
   text-align: left;
-  margin: 10% auto;
+  margin: 40px auto 40px auto;
   text-align: center;
 
   h1 {
@@ -103,13 +104,5 @@ body {
   &.team {
     margin-top: 80px;
   }
-}
-
-.icon-tomato{
-  display: inline-block;
-  width: 30px;
-  height: 30px;
-  text-indent: -9999px;
-  background: url('./assets/tomato.svg');
 }
 </style>
