@@ -30,10 +30,10 @@ export default {
 
 <style lang="scss" scoped>
 .activeTask {
-  margin-top: 13px;
-
   .operations .span {
     cursor: pointer;
   }
+
+  position: absolute;
 }
 </style>

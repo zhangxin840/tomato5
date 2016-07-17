@@ -6,29 +6,36 @@
               'busy': panelStatus.userStatus === userStatus.busy,
             }">
     <div class="user">
-      <div class="avator">
-        <img class="pic" :src="user.photoURL" alt="avator" />
-      </div>
-      <span class="timer animated rubberBand"
-            v-show="panelStatus.userStatus > 0">
+      <img class="avator" v-bind:src="user.photoURL" alt="avator" />
+      <span class="timer animated "
+            v-show="panelStatus.userStatus >= 0"
+            v-bind:class="{
+              'rubberBand': (panelStatus.userStatus === userStatus.busy) || (panelStatus.userStatus === userStatus.resting)
+            }">
         {{ panelStatus.label }}
       </span>
+      <!-- <active-task v-if="panelStatus.activeTask"
+                   v-bind:task="panelStatus.activeTask"
+                   v-bind:task-status="taskStatus"
+                   v-bind:user-status="userStatus">
+      </active-task> -->
     </div>
     <div class="tasks">
       <div class="list">
         <template v-for="task in list.tasks">
           <task v-bind:task="task"
                 v-bind:task-status="taskStatus"
-                v-bind:hide="(panelStatus.userStatus === userStatus.busy || panelStatus.userStatus === userStatus.active)
-                    && !(task.status === taskStatus.ongoing || task.status === taskStatus.active)">
+                v-bind:panel-status="panelStatus"
+                v-bind:user-status="userStatus"
+                v-bind:hide="!((panelStatus.userStatus === userStatus.idle)
+                    || (task.status === taskStatus.ongoing || task.status === taskStatus.active))
+                    && !(panelStatus.userStatus === userStatus.resting && task.status === taskStatus.done)">
           </task>
         </template>
       </div>
-      <active-task v-if="panelStatus.activeTask"
-                   v-bind:task="panelStatus.activeTask"
-                   v-bind:task-status="taskStatus"
-                   v-bind:user-status="userStatus">
-      </active-task>
+      <span class="icon add"
+            v-show="doneCount >= 5"
+            v-on:click="addTask">Add task</span>
     </div>
   </section>
 </template>
@@ -60,31 +67,31 @@ const userStatus = {
 };
 
 const task1 = {
-  note: 'Each tomato represents 25min timer for concentration',
+  note: 'Plan your work in this list.',
   status: taskStatus.idle,
   startTime: moment(),
 };
 
 const task2 = {
-  note: 'This is task2.',
+  note: 'Click tomato to start working.',
   status: taskStatus.idle,
   startTime: moment(),
 };
 
 const task3 = {
-  note: 'This is task3.',
+  note: 'After finishing, take a rest.',
   status: taskStatus.idle,
   startTime: moment(),
 };
 
 const task4 = {
-  note: 'This is task4.',
+  note: 'Restart if you are disturbed.',
   status: taskStatus.idle,
   startTime: moment(),
 };
 
 const task5 = {
-  note: 'This is task5.',
+  note: 'Take 5 to be more productive.',
   status: taskStatus.idle,
   startTime: moment(),
 };
@@ -137,6 +144,14 @@ const startRest = function startRest() {
   }, 1000);
 };
 
+const addTask = function addTask() {
+  this.list.tasks.push({
+    note: `The ${this.list.tasks.length + 1}th task`,
+    status: taskStatus.idle,
+    startTime: moment(),
+  });
+};
+
 const onTaskStarted = function onTaskStarted(task) {
   this.panelStatus.activeTask = task;
   this.panelStatus.label = timer.getContdown(task.startTime, 'standard', 'second');
@@ -144,13 +159,17 @@ const onTaskStarted = function onTaskStarted(task) {
 };
 
 const onTaskDone = function onTaskDone() {
-  startRest();
+  this.panelStatus.userStatus = this.userStatus.idle;
   this.panelStatus.activeTask = null;
+  window.setTimeout(() => {
+    startRest();
+  }, 1);
 };
 
 const onTaskDropped = function onTaskDropped() {
   this.panelStatus.userStatus = this.userStatus.idle;
   this.panelStatus.activeTask = null;
+  this.panelStatus.label = '00:00';
 };
 
 const onTaskTimeDue = function onTaskTimeDue() {
@@ -166,7 +185,7 @@ export default {
   data() {
     return { user, list, panelStatus, taskStatus, userStatus };
   },
-  methods: { },
+  methods: { addTask },
   components: {
     ActiveTask, Task,
   },
@@ -176,6 +195,13 @@ export default {
     taskStarted: onTaskStarted,
     taskTimeDue: onTaskTimeDue,
     taskTimerUpdated: onTaskTimerUpdated,
+  },
+  computed: {
+    doneCount: function doneCount() {
+      return this.list.tasks.reduce(
+        (last, item) => last + (item.status === this.taskStatus.done ? 1 : 0)
+      , 0);
+    },
   },
 };
 
@@ -188,7 +214,7 @@ h1 {
 }
 
 .panel {
-  display: flex;
+  // display: flex;
   max-width: 400px;
   margin: 50px auto;
   padding: 0 10px;
@@ -206,26 +232,24 @@ h1 {
   }
 
   .user {
-    margin-right: 20px;
-    width: 70px;
-    // overflow: hidden;
+    width: 100%;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    margin: 30px 0;
 
     .avator {
-      text-align: center;
-      .pic{
-        display: inline-block;
-        width: 50px;
-        height: 50px;
-        border-radius: 25px;
-      }
+      width: 50px;
+      height: 50px;
+      border-radius: 25px;
+      margin-right: 15px;
     }
 
     .timer{
-      display: block;
-      text-align: center;
-      width: 100%;
       font-size: 20px;
-      line-height: 35px;
+      line-height: 50px;
+      width: 80px;
+      text-align: left;
     }
   }
   .tasks {
@@ -235,6 +259,18 @@ h1 {
       margin: 8px 0;
       text-align: left;
       line-height: 40px;
+    }
+
+    .add {
+      width: 20px;
+      height: 20px;
+      background: url('../assets/add.svg');
+      margin: 0px 4px;
+      cursor: pointer;
+
+      &:active{
+        transform: scale(1.1, 1.1);
+      }
     }
   }
 

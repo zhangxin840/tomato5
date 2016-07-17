@@ -4,7 +4,7 @@
       <img class="logo" src="./assets/tomato.svg">
       <h1 class="">Take Five</h1>
     </div>
-    <p class="instruction"><span>Concentrate for work</span>, <span>five times a day</span></p>
+    <p class="instruction"><span>Concentrate for work</span> <span>five times a day</span></p>
     <panel></panel>
     <!-- <p class="instruction team"><span>Together with your team</span></p> -->
     <!-- <panel></panel>
@@ -47,7 +47,9 @@ export default {
 body {
   display: block;
   height: 100%;
-  font-family: 'Architects Daughter', cursive;
+  // font-family: 'Architects Daughter', cursive;
+  // font-family: 'Patrick Hand', cursive;
+  font-family: 'Short Stack', cursive;
 
   a {
     color: #42b983;
@@ -69,6 +71,11 @@ body {
   font-size: 15px;
 }
 
+.icon {
+  display: inline-block;
+  text-indent: -9999px;
+}
+
 .title{
   text-align: left;
   margin: 40px auto 40px auto;
@@ -77,7 +84,7 @@ body {
   h1 {
     color: #42b983;
     text-align: center;
-    font-size: 40px;
+    font-size: 38px;
     display: inline-block;
     margin: 0;
     line-height: 100px;
@@ -99,7 +106,8 @@ body {
   span {
     display: inline-block;
   }
-  margin: 30px auto;
+  margin: 20px auto;
+  line-height: 1.5;
 
   &.team {
     margin-top: 80px;

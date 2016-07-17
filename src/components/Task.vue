@@ -1,17 +1,31 @@
 <template>
   <div class="task"
-       v-bind:class="{' hide ': this.hide}">
-    <span v-bind:class="{
-          'idle animated tada ': task.status === taskStatus.idle,
-          'ongoing animated pulse infinite': task.status === taskStatus.ongoing,
-          'active animated swing infinite': task.status === taskStatus.active,
+       v-bind:class="{
+             'idle': task.status === taskStatus.idle,
+             'ongoing': task.status === taskStatus.ongoing,
+             'active': task.status === taskStatus.active,
+             'done': task.status === taskStatus.done,
+             'hide': this.hide,
+           }">
+    <span class="icon tomato animated"
+        v-bind:class="{
+          'tada ': task.status === taskStatus.idle,
+          'pulse infinite': task.status === taskStatus.ongoing,
+          'swing infinite': task.status === taskStatus.active,
           'done': task.status === taskStatus.done,
         }"
-        v-on:click="onClick(task)"
-        class="icon-tomato">
+        v-on:click="onClick(task)">
         {{ task.note }}
     </span>
-    <input class="note" type="text" name="name" :value="task.note" placeholder="Title of this task">
+    <div class="note-wrapper">
+      <input class="note" type="text" name="name" :value="task.note" placeholder="Title of this task">
+      <div class="activeTask">
+        <p class="operations" v-show="task.status === taskStatus.active">
+          <span class="done" v-on:click="done">Done</span>
+          <span class="drop" v-on:click="drop">Drop</span>
+        </p>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -20,22 +34,35 @@
 import timer from '../timer';
 import moment from 'moment';
 
+const done = function done() {
+  this.task.status = this.taskStatus.done;
+  this.$dispatch('taskDone', this.task);
+};
+
+const drop = function drop() {
+  this.task.status = this.taskStatus.idle;
+  window.clearInterval(this.timeInterval);
+  this.$dispatch('taskDropped', this.task);
+};
+
 const onTaskTimeDue = function onTaskTimeDue() {
   this.task.status = this.taskStatus.active;
   this.$dispatch('taskTimeDue', this.task);
 };
 
-const startTask = function startTask() {
+let timeInterval;
+
+const start = function start() {
   this.task.status = this.taskStatus.ongoing;
   this.task.startTime = moment();
 
   this.$dispatch('taskStarted', this.task);
 
-  const theTimer = window.setInterval(() => {
+  this.timeInterval = window.setInterval(() => {
     this.$dispatch('taskTimerUpdated', this.task);
 
     if (timer.getRemaning(this.task.startTime, 'standard').asMilliseconds() <= 0) {
-      window.clearInterval(theTimer);
+      window.clearInterval(this.timeInterval);
       this.onTaskTimeDue();
     }
   }, 1000);
@@ -46,17 +73,20 @@ const startTask = function startTask() {
 };
 
 const onClick = function onClick() {
-  if (this.task.status === this.taskStatus.idle) {
-    this.startTask();
+  if (this.task.status === this.taskStatus.idle
+      && this.panelStatus.userStatus === this.userStatus.idle) {
+    this.start();
+  } else if (this.task.status === this.taskStatus.ongoing) {
+    this.drop();
   }
 };
 
 export default {
-  props: ['task', 'taskStatus', 'hide'],
+  props: ['task', 'taskStatus', 'hide', 'panelStatus', 'userStatus'],
   data() {
-    return { };
+    return { timeInterval };
   },
-  methods: { onClick, onTaskTimeDue, startTask },
+  methods: { onClick, onTaskTimeDue, start, done, drop },
   events: { },
 };
 </script>
@@ -66,6 +96,11 @@ export default {
 .task {
   margin: 0 0 30px 0;
   display: flex;
+
+  .note-wrapper {
+    width: 100%;
+  }
+
   .note {
     line-height: 20px;
     position: relative;
@@ -76,24 +111,34 @@ export default {
   width: 100%;
 
   &.hide {
-    opacity: 0.2;
+    // height: 0;
+    // margin: 0;
+    // line-height: 0;
+    // visibility: hidden;
+    opacity: 0.1;
+  }
+
+  &.active {
+    .note {
+      display: none;
+      // opacity: 0.1;
+    }
   }
 
   transition: all 0.5s;
+  position: relative;
 }
 
-.icon-tomato{
-  display: inline-block;
+.tomato{
   width: 30px;
   height: 30px;
-  text-indent: -9999px;
   background: url('../assets/tomato.svg');
 
   margin: 0 10px 0 0;
-  opacity: 0.5;
+  opacity: 0.4;
 
-  &:hover{
-    // transform: scale(1.2, 1.2);
+  &:active{
+    transform: scale(1.1, 1.1);
   }
 
   &.done{
@@ -101,15 +146,53 @@ export default {
   }
 
   &.ongoing{
-    opacity: 0.6;
+    opacity: 0.4;
   }
 
   &.active{
-    opacity: 0.6;
+    opacity: 0.4;
+  }
+}
+
+.panel.idle .idle .tomato,
+.panel.busy .ongoing .tomato {
+  cursor: pointer;
+}
+
+.activeTask {
+  position: absolute;
+  // left: 0;
+  top: 0;
+  background: rgba(255,255,255,1);
+
+  // display: none;
+
+  .operations {
+    margin: 0;
+
+    span {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      text-indent: -9999px;
+      vertical-align: middle;
+
+      cursor: pointer;
+      margin: 0 10px;
+    }
+
+    .done {
+      color: #42b983;
+      background: url('../assets/done.svg');
+    }
+
+    .drop {
+      color: #ff5959;
+      width: 15px;
+      height: 15px;
+      background: url('../assets/delete.svg');
+    }
   }
 
-  &.idle {
-    cursor: pointer;
-  }
 }
 </style>
