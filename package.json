@@ -1,7 +1,7 @@
 {
-  "name": "take-five",
-  "version": "0.0.1",
-  "description": "Take five timeboxs for work to get more productive.",
+  "name": "tomato5",
+  "version": "0.1.0",
+  "description": "Take 5 tomato timers to be more productive.",
   "author": "XinZhang <zhangxin840@gmail.com>",
   "private": true,
   "scripts": {

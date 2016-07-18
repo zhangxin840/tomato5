@@ -2,7 +2,7 @@
   <div id="app">
     <div class="title">
       <img class="logo" src="./assets/tomato.svg">
-      <h1 class="">Take Five</h1>
+      <h1 class="">Tomato 5</h1>
     </div>
     <p class="instruction"><span>Concentrate for work</span> <span>five times a day</span></p>
     <panel></panel>
@@ -26,10 +26,10 @@ import Panel from './components/Panel';
 import auth from './auth';
 
 const config = {
-  apiKey: 'AIzaSyBCfKVu0LUNav87mRe7X7YLGJ7-eIQ3ptM',
-  authDomain: 'wetomatoes.firebaseapp.com',
-  databaseURL: 'https://wetomatoes.firebaseio.com',
-  storageBucket: 'wetomatoes.appspot.com',
+  apiKey: 'AIzaSyAXBU7bIq9I5Hrn_PsX9HTArQ7D0AnxAtA',
+  authDomain: 'tomato5-685bf.firebaseapp.com',
+  databaseURL: 'https://tomato5-685bf.firebaseio.com',
+  storageBucket: 'tomato5-685bf.appspot.com',
 };
 
 firebase.initializeApp(config);
@@ -108,6 +108,7 @@ body {
   }
   margin: 20px auto;
   line-height: 1.5;
+  padding: 0 10px;
 
   &.team {
     margin-top: 80px;

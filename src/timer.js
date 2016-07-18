@@ -1,8 +1,10 @@
 import moment from 'moment';
 
 const taskDurations = {
-  standard: 5,
-  resting: 3,
+  standard: 1500,
+  resting: 300,
+  // standard: 5,
+  // resting: 3,
 };
 
 const getRemaning = function getRemaning(startTime, type) {

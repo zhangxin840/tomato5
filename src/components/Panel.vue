@@ -6,14 +6,58 @@
               'busy': panelStatus.userStatus === userStatus.busy,
             }">
     <div class="user">
-      <img class="avator" v-bind:src="user.photoURL" alt="avator" />
-      <span class="timer animated "
-            v-show="panelStatus.userStatus >= 0"
+      <div class="status">
+        <!-- <img class="avator" src="../assets/p-2.svg" alt="avator" /> -->
+        <!-- <img class="avator" v-bind:src="user.photoURL" alt="avator" /> -->
+        <div class="emotion avator" v-on:click="toggleEmotions">
+          <span class="inner {{emotionClass}}"></span>
+        </div>
+        <span class="timer animated "
+              v-show="panelStatus.userStatus >= 0"
+              v-bind:class="{
+                'rubberBand': (panelStatus.userStatus === userStatus.busy) || (panelStatus.userStatus === userStatus.resting)
+              }">
+          {{ panelStatus.label }}
+        </span>
+      </div>
+      <div class="emotions"
             v-bind:class="{
-              'rubberBand': (panelStatus.userStatus === userStatus.busy) || (panelStatus.userStatus === userStatus.resting)
+              'expanded': panelStatus.isShowEmotions
             }">
-        {{ panelStatus.label }}
-      </span>
+        <p>
+          Select your energy level:
+        </p>
+        <div class="selections">
+          <p>
+            <div class="emotion" v-on:click="changeEmotion('p', 1)">
+              <span class="inner p-1"></span>
+            </div>
+            <div class="emotion" v-on:click="changeEmotion('p', 2)">
+              <span class="inner p-2"></span>
+            </div>
+            <div class="emotion" v-on:click="changeEmotion('p', 3)">
+              <span class="inner p-3"></span>
+            </div>
+            <div class="emotion" v-on:click="changeEmotion('p', 4)">
+              <span class="inner p-4"></span>
+            </div>
+          </p>
+          <p>
+            <div class="emotion" v-on:click="changeEmotion('n', 1)">
+              <span class="inner n-1"></span>
+            </div>
+            <div class="emotion" v-on:click="changeEmotion('n', 2)">
+              <span class="inner n-2"></span>
+            </div>
+            <div class="emotion" v-on:click="changeEmotion('n', 3)">
+              <span class="inner n-3"></span>
+            </div>
+            <div class="emotion" v-on:click="changeEmotion('n', 4)">
+              <span class="inner n-4"></span>
+            </div>
+          </p>
+        </div>
+      </div>
       <!-- <active-task v-if="panelStatus.activeTask"
                    v-bind:task="panelStatus.activeTask"
                    v-bind:task-status="taskStatus"
@@ -112,6 +156,9 @@ const panelStatus = {
   label: '00:00',
   userStatus: userStatus.idle,
   activeTask: null,
+  emotionType: 'p',
+  emotionLevel: '2',
+  isShowEmotions: false,
 };
 
 const Notification = window.Notification;
@@ -173,7 +220,7 @@ const onTaskDropped = function onTaskDropped() {
 };
 
 const onTaskTimeDue = function onTaskTimeDue() {
-  // sendNotification('Take Five', 'The first tomato completed, nice job!');
+  sendNotification('Tomato 5', 'Tomato completed, nice job!');
   this.panelStatus.userStatus = this.userStatus.active;
 };
 
@@ -181,11 +228,21 @@ const onTaskTimerUpdated = function onTaskTimerUpdated(task) {
   this.panelStatus.label = timer.getContdown(task.startTime, 'standard', 'second');
 };
 
+const toggleEmotions = function toggleEmotions() {
+  this.panelStatus.isShowEmotions = !this.panelStatus.isShowEmotions;
+};
+
+const changeEmotion = function changeEmotion(type, level) {
+  this.panelStatus.isShowEmotions = false;
+  this.panelStatus.emotionType = type;
+  this.panelStatus.emotionLevel = level;
+};
+
 export default {
   data() {
     return { user, list, panelStatus, taskStatus, userStatus };
   },
-  methods: { addTask },
+  methods: { addTask, toggleEmotions, changeEmotion },
   components: {
     ActiveTask, Task,
   },
@@ -201,6 +258,9 @@ export default {
       return this.list.tasks.reduce(
         (last, item) => last + (item.status === this.taskStatus.done ? 1 : 0)
       , 0);
+    },
+    emotionClass: function emotionUrl() {
+      return `${this.panelStatus.emotionType}-${this.panelStatus.emotionLevel}`;
     },
   },
 };
@@ -232,24 +292,109 @@ h1 {
   }
 
   .user {
-    width: 100%;
-    text-align: center;
-    display: flex;
-    justify-content: center;
-    margin: 30px 0;
+    user-select: none;
 
-    .avator {
-      width: 50px;
-      height: 50px;
-      border-radius: 25px;
-      margin-right: 15px;
+    .status {
+      width: 100%;
+      text-align: center;
+      display: flex;
+      justify-content: center;
+      margin: 30px 0;
+
+      .avator {
+        width: 50px;
+        height: 50px;
+        // border-radius: 25px;
+        margin-right: 20px;
+      }
+
+      .timer{
+        font-size: 24px;
+        line-height: 50px;
+        width: 80px;
+        text-align: left;
+      }
     }
 
-    .timer{
-      font-size: 20px;
+    .emotion {
+      width: 50px;
+      height: 50px;
+      display: inline-block;
+      background: rgb(280,240,130);
       line-height: 50px;
-      width: 80px;
-      text-align: left;
+      text-align: center;
+      border-radius: 5px;
+      cursor: pointer;
+
+      .inner {
+        display: inline-block;
+        vertical-align: middle;
+        width: 30px;
+        height: 30px;
+        position: relative;
+        top: 0px;
+        transition: background 0.6s, top 0.2s;
+
+
+        &.p-1 {
+          background: url('../assets/p-1.svg');
+        }
+        &.p-2 {
+          background: url('../assets/p-2.svg');
+        }
+        &.p-3 {
+          background: url('../assets/p-3.svg');
+        }
+        &.p-4 {
+          background: url('../assets/p-4.svg');
+        }
+
+        &.n-1 {
+          background: url('../assets/n-1.svg');
+        }
+        &.n-2 {
+          background: url('../assets/n-2.svg');
+        }
+        &.n-3 {
+          background: url('../assets/n-3.svg');
+        }
+        &.n-4 {
+          background: url('../assets/n-4.svg');
+        }
+      }
+
+      &:hover {
+        .inner {
+          top: -2px;
+        }
+      }
+
+      &:active {
+        transform: scale(1.1, 1.1);
+      }
+    }
+
+    .emotions{
+      height: 0;
+      overflow: hidden;
+      transition: all 0.5s;
+      // margin-top: -20px;
+
+      &.expanded {
+        height: 220px;
+      };
+
+      .selections {
+        text-align: center;
+
+        .emotion {
+          margin: 10px 8px;
+        }
+
+        p {
+          margin: 0;
+        }
+      }
     }
   }
   .tasks {
