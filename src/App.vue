@@ -49,7 +49,7 @@ body {
   height: 100%;
   // font-family: 'Architects Daughter', cursive;
   // font-family: 'Patrick Hand', cursive;
-  font-family: 'Short Stack', cursive;
+  font-family: 'Short Stack', sans-serif;;
 
   a {
     color: #42b983;
@@ -74,6 +74,7 @@ body {
 .icon {
   display: inline-block;
   text-indent: -9999px;
+  background-repeat: no-repeat;
 }
 
 .title{

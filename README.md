@@ -1,6 +1,8 @@
-# vue-project
+# Tomato5
 
-> A Vue.js project
+## Usage
+
+Visit online: https://tomato5-685bf.firebaseapp.com/
 
 ## Build Setup
 

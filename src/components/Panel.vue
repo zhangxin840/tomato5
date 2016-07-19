@@ -113,31 +113,31 @@ const userStatus = {
 const task1 = {
   note: 'Plan your work in this list.',
   status: taskStatus.idle,
-  startTime: moment(),
+  startTime: null,
 };
 
 const task2 = {
   note: 'Click tomato to start working.',
   status: taskStatus.idle,
-  startTime: moment(),
+  startTime: null,
 };
 
 const task3 = {
   note: 'After finishing, take a rest.',
   status: taskStatus.idle,
-  startTime: moment(),
+  startTime: null,
 };
 
 const task4 = {
   note: 'Restart if you are disturbed.',
   status: taskStatus.idle,
-  startTime: moment(),
+  startTime: null,
 };
 
 const task5 = {
   note: 'Take 5 to be more productive.',
   status: taskStatus.idle,
-  startTime: moment(),
+  startTime: null,
 };
 
 const list = {
@@ -195,7 +195,7 @@ const addTask = function addTask() {
   this.list.tasks.push({
     note: `The ${this.list.tasks.length + 1}th task`,
     status: taskStatus.idle,
-    startTime: moment(),
+    startTime: null,
   });
 };
 
@@ -377,7 +377,7 @@ h1 {
     .emotions{
       height: 0;
       overflow: hidden;
-      transition: all 0.5s;
+      transition: height 0.4s;
       // margin-top: -20px;
 
       &.expanded {
