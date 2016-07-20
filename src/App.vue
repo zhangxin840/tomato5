@@ -21,6 +21,7 @@ import normalizeCss from 'normalize.css'; /* eslint no-unused-vars: 0 */
 import animateCss from 'animate.css'; /* eslint no-unused-vars: 0 */
 
 import firebase from 'firebase';
+import FastClick from 'fastclick';
 
 import Panel from './components/Panel';
 import auth from './auth';
@@ -36,6 +37,12 @@ firebase.initializeApp(config);
 
 // auth.init();
 
+if ('addEventListener' in document) {
+  document.addEventListener('DOMContentLoaded', () => {
+    FastClick.attach(document.body);
+  }, false);
+}
+
 export default {
   components: {
     Panel,
@@ -45,8 +52,6 @@ export default {
 
 <style lang="scss">
 body {
-  display: block;
-  height: 100%;
   // font-family: 'Architects Daughter', cursive;
   // font-family: 'Patrick Hand', cursive;
   font-family: 'Short Stack', sans-serif;;
@@ -54,6 +59,12 @@ body {
   a {
     color: #42b983;
     text-decoration: none;
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
+    -webkit-tap-highlight-color: transparent; /* For some Androids */
+
+    &:active{
+        transform: scale3d(1.1, 1.1, 1);
+    }
   }
 
   input[type=text], input[type=text]:focus {
@@ -75,6 +86,9 @@ body {
   display: inline-block;
   text-indent: -9999px;
   background-repeat: no-repeat;
+
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+  -webkit-tap-highlight-color: transparent; /* For some Androids */
 }
 
 .title{

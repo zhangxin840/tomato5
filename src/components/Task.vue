@@ -54,7 +54,7 @@ let timeInterval;
 
 const start = function start() {
   this.task.status = this.taskStatus.ongoing;
-  this.task.startTime = this.task.startTime || moment();
+  this.task.startTime = moment();
 
   this.$dispatch('taskStarted', this.task);
 
