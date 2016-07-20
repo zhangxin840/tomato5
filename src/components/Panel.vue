@@ -276,7 +276,7 @@ h1 {
 .panel {
   // display: flex;
   max-width: 400px;
-  margin: 50px auto;
+  margin: 0px auto;
   padding: 0 10px;
 
   &.resting {
@@ -293,13 +293,14 @@ h1 {
 
   .user {
     user-select: none;
+    position: relative;
 
     .status {
       width: 100%;
       text-align: center;
       display: flex;
       justify-content: center;
-      margin: 30px 0;
+      padding: 30px 0;
 
       .avator {
         width: 50px;
@@ -375,20 +376,30 @@ h1 {
     }
 
     .emotions{
-      height: 0;
       overflow: hidden;
-      transition: height 0.4s;
-      // margin-top: -20px;
+      transition: all 0.2s;
+      width: 100%;
+      background: white;
+      z-index: 1;
+      border: 1px solid #eee;
+      padding: 0 10px 10px 10px;
+      border-radius: 10px;
+      box-sizing: border-box;
+
+      position: absolute;
+      top: -50px;
+      left: 50%;
+      transform: scale(1, 0) translate(-50%, 0);
 
       &.expanded {
-        height: 220px;
+        transform: scale(1, 1) translate(-50%, 0);
       };
 
       .selections {
         text-align: center;
 
         .emotion {
-          margin: 10px 8px;
+          margin: 10px 5px;
         }
 
         p {
