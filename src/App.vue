@@ -16,7 +16,7 @@
       </div>
       <section class="footer">
         <p>
-          <a href="https://github.com/zhangxin840/we-tomatoes" target="_blank">Star me on github.</a>
+          <a href="https://github.com/zhangxin840/we-tomatoes" target="_blank">Star me on github</a>
         </p>
       </section>
     </article>

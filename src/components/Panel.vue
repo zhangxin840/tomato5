@@ -306,7 +306,8 @@ h1 {
       }
 
       &.expanded {
-        transform: scaleY(1) translate(-50%, 0);
+        // scaleY(1) will be compiled to scale(1), that will break the animation.
+        transform: scaleY(0.999) translate(-50%, 0);
         opacity: 1;
       };
 
