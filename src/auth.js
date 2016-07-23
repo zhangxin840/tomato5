@@ -41,10 +41,10 @@ const init = function init() {
       user.uid = theUser.uid;
 
       // Object.assign(user, theUser);
-      console.log(theUser);
+      // console.log(theUser);
     } else {
       // User is signed out.
-      console.log('signed out');
+      // console.log('signed out');
       user.displayName = '';
       user.email = '';
       user.emailVerified = false;
@@ -53,7 +53,7 @@ const init = function init() {
       initAuthUI();
     }
   }, (error) => {
-    console.log(error);
+    // console.log(error);
   });
 };
 

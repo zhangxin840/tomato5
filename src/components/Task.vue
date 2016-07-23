@@ -7,16 +7,22 @@
              'done': task.status === taskStatus.done,
              'hide': this.hide,
            }">
-    <span class="icon tomato animated"
-        v-bind:class="{
-          'tada ': task.status === taskStatus.idle,
-          'pulse infinite': task.status === taskStatus.ongoing,
-          'swing infinite': task.status === taskStatus.active,
-          'done': task.status === taskStatus.done,
-        }"
-        v-on:click="onClick(task)">
-        {{ task.note }}
-    </span>
+    <div class="icon-wrapper">
+      <span class="icon tomato animated"
+          v-bind:class="{
+            'tada ': task.status === taskStatus.idle,
+            'pulse infinite': task.status === taskStatus.ongoing,
+            'swing infinite': task.status === taskStatus.active,
+            'done': task.status === taskStatus.done,
+          }"
+          v-on:click="onClick(task)"
+          v-show="task.status !== taskStatus.done">
+          {{ task.note }}
+      </span>
+      <emotion v-bind:level="task.emotion"
+               v-show="task.status === taskStatus.done">
+      </emotion>
+    </div>
     <div class="note-wrapper">
       <input class="note" type="text" name="name" v-model="task.note" placeholder="Title of this task">
       <div class="activeTask">
@@ -31,8 +37,9 @@
 
 <script>
 
-import timer from '../timer';
 import moment from 'moment';
+import timer from '../timer';
+import Emotion from './Emotion';
 
 const done = function done() {
   this.task.status = this.taskStatus.done;
@@ -88,14 +95,22 @@ export default {
   },
   methods: { onClick, onTaskTimeDue, start, done, drop },
   events: { },
+  components: { Emotion },
 };
 </script>
 
 <style lang="scss" scoped>
-
 .task {
   margin: 0 0 30px 0;
   display: flex;
+  line-height: 30px;
+  width: 100%;
+
+  .icon-wrapper {
+    width: 30px;
+    margin-right: 10px;
+    text-align: center;
+  }
 
   .note-wrapper {
     width: 100%;
@@ -106,9 +121,6 @@ export default {
     position: relative;
     width: 100%;
   }
-
-  line-height: 30px;
-  width: 100%;
 
   &.hide {
     // height: 0;
@@ -135,23 +147,10 @@ export default {
   background: url('../assets/tomato.svg');
   background-repeat: no-repeat;
 
-  margin: 0 10px 0 0;
-  opacity: 0.4;
+  opacity: 1;
 
   &:active{
     transform: scale(1.1, 1.1);
-  }
-
-  &.done{
-    opacity: 1;
-  }
-
-  &.ongoing{
-    opacity: 0.4;
-  }
-
-  &.active{
-    opacity: 0.4;
   }
 }
 

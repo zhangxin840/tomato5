@@ -9,8 +9,8 @@
       <div class="status">
         <!-- <img class="avator" src="../assets/p-2.svg" alt="avator" /> -->
         <!-- <img class="avator" v-bind:src="user.photoURL" alt="avator" /> -->
-        <div class="emotion avator" v-on:click="toggleEmotions">
-          <span class="inner {{emotionClass}}"></span>
+        <div class="avator" v-on:click="toggleEmotions">
+          <emotion v-bind:level="panelStatus.emotion"></emotion>
         </div>
         <span class="timer animated "
               v-show="panelStatus.userStatus >= 0"
@@ -29,32 +29,16 @@
         </p>
         <div class="selections">
           <p>
-            <div class="emotion" v-on:click="changeEmotion('p', 1)">
-              <span class="inner p-1"></span>
-            </div>
-            <div class="emotion" v-on:click="changeEmotion('p', 2)">
-              <span class="inner p-2"></span>
-            </div>
-            <div class="emotion" v-on:click="changeEmotion('p', 3)">
-              <span class="inner p-3"></span>
-            </div>
-            <div class="emotion" v-on:click="changeEmotion('p', 4)">
-              <span class="inner p-4"></span>
-            </div>
+            <emotion v-bind:level="1" v-on:click="changeEmotion(1)"></emotion>
+            <emotion v-bind:level="2" v-on:click="changeEmotion(2)"></emotion>
+            <emotion v-bind:level="3" v-on:click="changeEmotion(3)"></emotion>
+            <emotion v-bind:level="4" v-on:click="changeEmotion(4)"></emotion>
           </p>
           <p>
-            <div class="emotion" v-on:click="changeEmotion('n', 1)">
-              <span class="inner n-1"></span>
-            </div>
-            <div class="emotion" v-on:click="changeEmotion('n', 2)">
-              <span class="inner n-2"></span>
-            </div>
-            <div class="emotion" v-on:click="changeEmotion('n', 3)">
-              <span class="inner n-3"></span>
-            </div>
-            <div class="emotion" v-on:click="changeEmotion('n', 4)">
-              <span class="inner n-4"></span>
-            </div>
+            <emotion v-bind:level="-1" v-on:click="changeEmotion(-1)"></emotion>
+            <emotion v-bind:level="-2" v-on:click="changeEmotion(-2)"></emotion>
+            <emotion v-bind:level="-3" v-on:click="changeEmotion(-3)"></emotion>
+            <emotion v-bind:level="-4" v-on:click="changeEmotion(-4)"></emotion>
           </p>
         </div>
       </div>
@@ -64,7 +48,7 @@
                    v-bind:user-status="userStatus">
       </active-task> -->
     </div>
-    <div class="tasks">
+    <div class="tasks" v-if="tasks">
       <div class="list">
         <template v-for="task in tasks">
           <task v-bind:task="task"
@@ -78,7 +62,7 @@
         </template>
       </div>
       <span class="icon add"
-            v-show="doneCount >= 5"
+            v-show="(doneCount >= 5 || tasks.length < 5) && (panelStatus.userStatus === userStatus.idle)"
             v-on:click="addTask">Add task</span>
     </div>
   </section>
@@ -86,22 +70,23 @@
 
 <script>
 import moment from 'moment';
+import vue from 'vue';
 import ActiveTask from './ActiveTask';
 import Task from './Task';
+import Emotion from './Emotion';
 import timer from '../timer';
 import { taskStatus, userStatus, tasks as defaultTasks } from '../model';
 import database from '../database';
 import auth from '../auth';
 
 const user = auth.getUser();
-const tasks = defaultTasks;
+const tasks = null;
 
 const panelStatus = {
   label: '00:00',
   userStatus: userStatus.idle,
   activeTask: null,
-  emotionType: 'p',
-  emotionLevel: '2',
+  emotion: '2',
   isShowEmotions: false,
 };
 
@@ -135,12 +120,24 @@ const startRest = function startRest() {
   }, 1000);
 };
 
+const getTasksPath = function getTasksPath() {
+  return `tasks/${auth.getUser().uid}/${moment().format('YYYYMMDD')}`;
+};
+
+const saveTasks = function saveTasks() {
+  database.save(getTasksPath(), this.tasks);
+};
+
 const addTask = function addTask() {
   this.tasks.push({
     note: `The ${this.tasks.length + 1}th task`,
     status: taskStatus.idle,
     startTime: null,
+    createTime: moment(),
+    emotion: 2,
   });
+
+  this.saveTasks();
 };
 
 const onTaskStarted = function onTaskStarted(task) {
@@ -149,20 +146,17 @@ const onTaskStarted = function onTaskStarted(task) {
   this.panelStatus.userStatus = this.userStatus.busy;
 };
 
-const initTasks = function initTasks() {
-  database.get(`users/${auth.getUser().uid}`, defaultTasks).then((data) => {
-    this.tasks = data;
-  });
-};
-
-const onTaskDone = function onTaskDone() {
+const onTaskDone = function onTaskDone(task) {
   this.panelStatus.userStatus = this.userStatus.idle;
   this.panelStatus.activeTask = null;
+
+  task.emotion = this.panelStatus.emotion;
+
   window.setTimeout(() => {
     startRest();
   }, 1);
 
-  database.save(`users/${auth.getUser().uid}`, this.tasks);
+  this.saveTasks();
 };
 
 const onTaskDropped = function onTaskDropped() {
@@ -184,10 +178,31 @@ const toggleEmotions = function toggleEmotions() {
   this.panelStatus.isShowEmotions = !this.panelStatus.isShowEmotions;
 };
 
-const changeEmotion = function changeEmotion(type, level) {
+const changeEmotion = function changeEmotion(level) {
   this.panelStatus.isShowEmotions = false;
-  this.panelStatus.emotionType = type;
-  this.panelStatus.emotionLevel = level;
+  this.panelStatus.emotion = level;
+};
+
+const initTasks = function initTasks() {
+  const prepareTasks = function prepareTasks(theTasks) {
+    theTasks.forEach((task) => { /* eslint no-param-reassign: 0 */
+      task.startTime = moment(task.startTime);
+      task.createTime = moment(task.createTime);
+      task.emotion = task.emotion || 2;
+
+      // Rest task if not done
+      if (task.status !== taskStatus.done) {
+        task.startTime = null;
+        task.status = taskStatus.idle;
+      }
+    });
+
+    return theTasks;
+  };
+
+  database.get(getTasksPath(), defaultTasks).then((data) => {
+    this.tasks = prepareTasks(data);
+  });
 };
 
 const init = function init() {
@@ -198,9 +213,9 @@ export default {
   data() {
     return { user, tasks, panelStatus, taskStatus, userStatus };
   },
-  methods: { addTask, toggleEmotions, changeEmotion, initTasks },
+  methods: { addTask, toggleEmotions, changeEmotion, initTasks, saveTasks },
   components: {
-    ActiveTask, Task,
+    ActiveTask, Task, Emotion,
   },
   events: {
     taskDone: onTaskDone,
@@ -217,7 +232,8 @@ export default {
       , 0);
     },
     emotionClass: function emotionUrl() {
-      return `${this.panelStatus.emotionType}-${this.panelStatus.emotionLevel}`;
+      const level = this.panelStatus.emotion;
+      return `${level > 0 ? 'p' : 'n'}-${Math.abs(level)}`;
     },
   },
 };
@@ -257,9 +273,6 @@ h1 {
       padding: 30px 0;
 
       .avator {
-        width: 50px;
-        height: 50px;
-        // border-radius: 25px;
         margin-right: 20px;
       }
 
@@ -268,63 +281,6 @@ h1 {
         line-height: 50px;
         width: 80px;
         text-align: left;
-      }
-    }
-
-    .emotion {
-      width: 50px;
-      height: 50px;
-      display: inline-block;
-      background: rgb(280, 240, 130);
-      line-height: 50px;
-      text-align: center;
-      border-radius: 5px;
-      cursor: pointer;
-
-      .inner {
-        display: inline-block;
-        vertical-align: middle;
-        width: 30px;
-        height: 30px;
-        position: relative;
-        top: 0px;
-        transition: background 0.6s, top 0.2s;
-
-        &.p-1 {
-          background: url('../assets/p-1.svg');
-        }
-        &.p-2 {
-          background: url('../assets/p-2.svg');
-        }
-        &.p-3 {
-          background: url('../assets/p-3.svg');
-        }
-        &.p-4 {
-          background: url('../assets/p-4.svg');
-        }
-
-        &.n-1 {
-          background: url('../assets/n-1.svg');
-        }
-        &.n-2 {
-          background: url('../assets/n-2.svg');
-        }
-        &.n-3 {
-          background: url('../assets/n-3.svg');
-        }
-        &.n-4 {
-          background: url('../assets/n-4.svg');
-        }
-      }
-
-      &:hover {
-        .inner {
-          top: -2px;
-        }
-      }
-
-      &:active {
-        transform: scale(1.1, 1.1);
       }
     }
 

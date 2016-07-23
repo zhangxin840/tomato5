@@ -14,7 +14,13 @@
       <div class="login" v-show="!user.uid">
         <div id="firebaseui-auth-container"></div>
       </div>
+      <section class="footer">
+        <p>
+          <a href="https://github.com/zhangxin840/we-tomatoes" target="_blank">Star me on github.</a>
+        </p>
+      </section>
     </article>
+
   </div>
 </template>
 
@@ -131,10 +137,10 @@ body {
   margin: 40px -10px 40px -10px;
   text-align: center;
 
-  &.start {
-    max-width: 280px;
-    margin: 40px auto;
-  }
+  // &.start {
+  //   max-width: 280px;
+  //   margin: 40px auto;
+  // }
 
   h1 {
     color: #42b983;
@@ -168,5 +174,8 @@ body {
   &.team {
     margin-top: 80px;
   }
+}
+
+.footer {
 }
 </style>

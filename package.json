@@ -1,7 +1,7 @@
 {
   "name": "tomato5",
-  "version": "0.1.1",
-  "description": "Take 5 tomato timers to be more productive.",
+  "version": "0.2.0",
+  "description": "Online tool for Promodoro(tomato) Technique.",
   "author": "XinZhang <zhangxin840@gmail.com>",
   "private": true,
   "scripts": {

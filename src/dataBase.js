@@ -6,7 +6,7 @@ const init = function init() {
   database = firebase.database();
 };
 
-const get = function (path, defaultData, validator) {
+const get = function get(path, defaultData, validator) {
   const promise = new Promise((resolve, reject) => {
     // console.log("Checking remote");
     database.ref(path).once('value', (snapshot) => {

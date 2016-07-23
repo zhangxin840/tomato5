@@ -1,5 +1,6 @@
 <template>
   <div class="account">
+    Hi,
     <a class="name" v-on:click="logout">{{ user.displayName }}</a>
   </div>
 </template>
@@ -22,7 +23,7 @@ export default {
 
 <style lang="scss" scoped>
 .account {
-  margin: 60px 0;
+  margin: 60px 0 0 0;
   // text-align: right;
 }
 </style>
