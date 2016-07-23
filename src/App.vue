@@ -1,51 +1,62 @@
 <template>
   <div id="app">
-    <div class="title">
-      <img class="logo" src="./assets/tomato.svg">
-      <h1 class="">Tomato 5</h1>
-    </div>
-    <p class="instruction"><span>Concentrate for work</span> <span>five times a day</span></p>
-    <panel></panel>
-    <!-- <p class="instruction team"><span>Together with your team</span></p> -->
-    <!-- <panel></panel>
-    <panel></panel> -->
-    <div id="firebaseui-auth-container"></div>
-    <div id="sign-in-status"></div>
-    <div id="sign-in"></div>
-    <div id="account-details"></div>
+    <article class="main">
+      <div class="title" v-bind:class="{'start': !user.uid}">
+        <img class="logo" src="./assets/tomato.svg">
+        <h1 class="">Tomato 5</h1>
+      </div>
+      <p class="instruction"><span>Concentrate for work</span> <span>five times a day</span></p>
+      <panel v-if="user.uid"></panel>
+      <!-- <p class="instruction team"><span>Together with your team</span></p> -->
+      <!-- <panel></panel>
+      <panel></panel> -->
+      <account v-if="user.uid"></account>
+      <div class="login" v-show="!user.uid">
+        <div id="firebaseui-auth-container"></div>
+      </div>
+    </article>
   </div>
 </template>
 
 <script>
 import normalizeCss from 'normalize.css'; /* eslint no-unused-vars: 0 */
 import animateCss from 'animate.css'; /* eslint no-unused-vars: 0 */
-
 import firebase from 'firebase';
 import FastClick from 'fastclick';
 
 import Panel from './components/Panel';
+import Account from './components/Account';
+import database from './database';
 import auth from './auth';
 
-const config = {
-  apiKey: 'AIzaSyAXBU7bIq9I5Hrn_PsX9HTArQ7D0AnxAtA',
-  authDomain: 'tomato5-685bf.firebaseapp.com',
-  databaseURL: 'https://tomato5-685bf.firebaseio.com',
-  storageBucket: 'tomato5-685bf.appspot.com',
+const user = auth.getUser();
+
+const initApp = function initApp() {
+  const config = {
+    apiKey: 'AIzaSyAXBU7bIq9I5Hrn_PsX9HTArQ7D0AnxAtA',
+    authDomain: 'tomato5-685bf.firebaseapp.com',
+    databaseURL: 'https://tomato5-685bf.firebaseio.com',
+    storageBucket: 'tomato5-685bf.appspot.com',
+  };
+
+  firebase.initializeApp(config);
+  database.init();
+  auth.init();
+
+  if ('addEventListener' in document) {
+    document.addEventListener('DOMContentLoaded', () => {
+      FastClick.attach(document.body);
+    }, false);
+  }
 };
 
-firebase.initializeApp(config);
-
-// auth.init();
-
-if ('addEventListener' in document) {
-  document.addEventListener('DOMContentLoaded', () => {
-    FastClick.attach(document.body);
-  }, false);
-}
-
 export default {
+  data() {
+    return { user };
+  },
+  created: initApp,
   components: {
-    Panel,
+    Panel, Account,
   },
 };
 </script>
@@ -57,10 +68,11 @@ body {
   font-family: 'Short Stack', sans-serif;;
 
   a {
-    color: #42b983;
+    color: rgb(95, 210, 219);
     text-decoration: none;
     -webkit-tap-highlight-color: rgba(0,0,0,0);
     -webkit-tap-highlight-color: transparent; /* For some Androids */
+    cursor: pointer;
 
     &:active{
         transform: scale3d(1.1, 1.1, 1);
@@ -80,6 +92,29 @@ body {
 
   color: #2c3e50;
   font-size: 15px;
+  padding-bottom: 30px;
+}
+
+.main {
+  padding: 0 10px;
+  max-width: 400px;
+  margin: auto;
+
+  .login {
+    margin: 50px 0;
+
+    .firebaseui-busy-indicator {
+      top: 0;
+    }
+    .mdl-button {
+      font-family: 'Short Stack', sans-serif;;
+    }
+
+    .firebaseui-idp-password,
+    .firebaseui-idp-password:hover {
+      background-color: rgb(255, 89, 89);
+    }
+  }
 }
 
 .icon {
@@ -93,8 +128,13 @@ body {
 
 .title{
   text-align: left;
-  margin: 40px auto 40px auto;
+  margin: 40px -10px 40px -10px;
   text-align: center;
+
+  &.start {
+    max-width: 280px;
+    margin: 40px auto;
+  }
 
   h1 {
     color: #42b983;
@@ -118,12 +158,12 @@ body {
 .instruction {
   // display: inline-block;
   text-align: center;
+  margin: 20px 0;
+  line-height: 1.5;
+
   span {
     display: inline-block;
   }
-  margin: 20px auto;
-  line-height: 1.5;
-  padding: 0 10px;
 
   &.team {
     margin-top: 80px;

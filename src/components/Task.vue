@@ -18,7 +18,7 @@
         {{ task.note }}
     </span>
     <div class="note-wrapper">
-      <input class="note" type="text" name="name" :value="task.note" placeholder="Title of this task">
+      <input class="note" type="text" name="name" v-model="task.note" placeholder="Title of this task">
       <div class="activeTask">
         <p class="operations" v-show="task.status === taskStatus.active">
           <span class="done" v-on:click="done">Done</span>
@@ -133,6 +133,7 @@ export default {
   width: 30px;
   height: 30px;
   background: url('../assets/tomato.svg');
+  background-repeat: no-repeat;
 
   margin: 0 10px 0 0;
   opacity: 0.4;

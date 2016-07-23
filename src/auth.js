@@ -2,10 +2,17 @@
 import firebase from 'firebase';
 import firebaseUiAuthCss from '../vendors/firebase-ui-auth.css'; /* eslint no-unused-vars: 0 */
 
-const init = function init() {
+const user = {
+  displayName: '',
+  email: '',
+  emailVerified: false,
+  photoURL: '',
+  uid: '',
+};
+
+const initAuthUI = function initAuthUI() {
   // firebaseui is imported by script tag
   const firebaseui = window.firebaseui;
-
   // FirebaseUI config.
   const uiConfig = {
     signInSuccessUrl: '/',
@@ -17,42 +24,51 @@ const init = function init() {
     // Terms of service url.
     tosUrl: '/zx',
   };
+
   // Initialize the FirebaseUI Widget using Firebase.
   const ui = new firebaseui.auth.AuthUI(firebase.auth());
   // The start method will wait until the DOM is loaded.
   ui.start('#firebaseui-auth-container', uiConfig);
+};
 
-  firebase.auth().onAuthStateChanged((user) => {
-    if (user) {
-      // User is signed in.
-      const displayName = user.displayName;
-      const email = user.email;
-      const emailVerified = user.emailVerified;
-      const photoURL = user.photoURL;
-      const uid = user.uid;
-      const providerData = user.providerData;
-      user.getToken().then((accessToken) => {
-        // document.getElementById('sign-in-status').textContent = 'Signed in';
-        // document.getElementById('sign-in').textContent = 'Sign out';
-        // document.getElementById('account-details').textContent = JSON.stringify({
-        //   displayName: displayName,
-        //   email: email,
-        //   emailVerified: emailVerified,
-        //   photoURL: photoURL,
-        //   uid: uid,
-        //   accessToken: accessToken,
-        //   providerData: providerData
-        // }, null, '  ');
-      });
+const init = function init() {
+  firebase.auth().onAuthStateChanged((theUser) => {
+    if (theUser) {
+      user.displayName = theUser.displayName;
+      user.email = theUser.email;
+      user.emailVerified = theUser.emailVerified;
+      user.photoURL = theUser.photoURL;
+      user.uid = theUser.uid;
+
+      // Object.assign(user, theUser);
+      console.log(theUser);
     } else {
       // User is signed out.
-      // document.getElementById('sign-in-status').textContent = 'Signed out';
-      // document.getElementById('sign-in').textContent = 'Sign in';
-      // document.getElementById('account-details').textContent = 'null';
+      console.log('signed out');
+      user.displayName = '';
+      user.email = '';
+      user.emailVerified = false;
+      user.photoURL = '';
+      user.uid = '';
+      initAuthUI();
     }
   }, (error) => {
-    // console.log(error);
+    console.log(error);
   });
 };
 
-export default { init };
+const getUser = function getUser() {
+  return user;
+};
+
+const logout = function logout() {
+  firebase.auth().signOut().then(() => {
+    // Sign-out successful.
+    window.location.reload();
+  }, (error) => {
+    // An error happened.
+    window.location.reload();
+  });
+};
+
+export default { init, getUser, logout };

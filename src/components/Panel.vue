@@ -66,7 +66,7 @@
     </div>
     <div class="tasks">
       <div class="list">
-        <template v-for="task in list.tasks">
+        <template v-for="task in tasks">
           <task v-bind:task="task"
                 v-bind:task-status="taskStatus"
                 v-bind:panel-status="panelStatus"
@@ -85,72 +85,16 @@
 </template>
 
 <script>
-
 import moment from 'moment';
 import ActiveTask from './ActiveTask';
 import Task from './Task';
 import timer from '../timer';
+import { taskStatus, userStatus, tasks as defaultTasks } from '../model';
+import database from '../database';
+import auth from '../auth';
 
-window.moment = moment;
-
-const taskStatus = {
-  dropped: -1,
-  idle: 0,
-  ongoning: 1,
-  paused: 2,
-  active: 3,
-  done: 4,
-};
-
-const userStatus = {
-  unknown: -1,
-  idle: 0,
-  active: 1,
-  resting: 2,
-  busy: 3,
-};
-
-const task1 = {
-  note: 'Plan your work in this list.',
-  status: taskStatus.idle,
-  startTime: null,
-};
-
-const task2 = {
-  note: 'Click tomato to start working.',
-  status: taskStatus.idle,
-  startTime: null,
-};
-
-const task3 = {
-  note: 'After finishing, take a rest.',
-  status: taskStatus.idle,
-  startTime: null,
-};
-
-const task4 = {
-  note: 'Restart if you are disturbed.',
-  status: taskStatus.idle,
-  startTime: null,
-};
-
-const task5 = {
-  note: 'Take 5 to be more productive.',
-  status: taskStatus.idle,
-  startTime: null,
-};
-
-const list = {
-  user: 'zhangxin840',
-  tasks: [
-    task1, task2, task3, task4, task5,
-  ],
-};
-
-const user = {
-  name: 'zhangxin840',
-  photoURL: 'https:///www.granneman.com/files/cache/716011d79afdd5969b0656b7ad5812b2.jpg',
-};
+const user = auth.getUser();
+const tasks = defaultTasks;
 
 const panelStatus = {
   label: '00:00',
@@ -184,7 +128,7 @@ const startRest = function startRest() {
 
   const theTimer = window.setInterval(() => {
     panelStatus.label = timer.getContdown(startTime, 'resting', 'second');
-    if (timer.getRemaning(startTime, 'resting').seconds() <= 0) {
+    if (timer.getRemaning(startTime, 'resting').asMilliseconds() <= 0) {
       window.clearInterval(theTimer);
       onRestTimeDue();
     }
@@ -192,8 +136,8 @@ const startRest = function startRest() {
 };
 
 const addTask = function addTask() {
-  this.list.tasks.push({
-    note: `The ${this.list.tasks.length + 1}th task`,
+  this.tasks.push({
+    note: `The ${this.tasks.length + 1}th task`,
     status: taskStatus.idle,
     startTime: null,
   });
@@ -205,12 +149,20 @@ const onTaskStarted = function onTaskStarted(task) {
   this.panelStatus.userStatus = this.userStatus.busy;
 };
 
+const initTasks = function initTasks() {
+  database.get(`users/${auth.getUser().uid}`, defaultTasks).then((data) => {
+    this.tasks = data;
+  });
+};
+
 const onTaskDone = function onTaskDone() {
   this.panelStatus.userStatus = this.userStatus.idle;
   this.panelStatus.activeTask = null;
   window.setTimeout(() => {
     startRest();
   }, 1);
+
+  database.save(`users/${auth.getUser().uid}`, this.tasks);
 };
 
 const onTaskDropped = function onTaskDropped() {
@@ -238,11 +190,15 @@ const changeEmotion = function changeEmotion(type, level) {
   this.panelStatus.emotionLevel = level;
 };
 
+const init = function init() {
+  this.initTasks();
+};
+
 export default {
   data() {
-    return { user, list, panelStatus, taskStatus, userStatus };
+    return { user, tasks, panelStatus, taskStatus, userStatus };
   },
-  methods: { addTask, toggleEmotions, changeEmotion },
+  methods: { addTask, toggleEmotions, changeEmotion, initTasks },
   components: {
     ActiveTask, Task,
   },
@@ -253,9 +209,10 @@ export default {
     taskTimeDue: onTaskTimeDue,
     taskTimerUpdated: onTaskTimerUpdated,
   },
+  created: init,
   computed: {
     doneCount: function doneCount() {
-      return this.list.tasks.reduce(
+      return this.tasks.reduce(
         (last, item) => last + (item.status === this.taskStatus.done ? 1 : 0)
       , 0);
     },
@@ -264,7 +221,6 @@ export default {
     },
   },
 };
-
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
@@ -275,9 +231,7 @@ h1 {
 
 .panel {
   // display: flex;
-  max-width: 400px;
   margin: 0px auto;
-  padding: 0 10px;
 
   &.resting {
     .timer {
@@ -321,7 +275,7 @@ h1 {
       width: 50px;
       height: 50px;
       display: inline-block;
-      background: rgb(280,240,130);
+      background: rgb(280, 240, 130);
       line-height: 50px;
       text-align: center;
       border-radius: 5px;
@@ -335,7 +289,6 @@ h1 {
         position: relative;
         top: 0px;
         transition: background 0.6s, top 0.2s;
-
 
         &.p-1 {
           background: url('../assets/p-1.svg');
@@ -382,24 +335,30 @@ h1 {
       background: white;
       z-index: 1;
       border: 1px solid #eee;
-      padding: 0 10px 10px 10px;
+      padding: 10px 10px 10px 10px;
       border-radius: 10px;
       box-sizing: border-box;
 
       position: absolute;
-      top: -50px;
+      top: -60px;
       left: 50%;
+      opacity: 0;
       transform: scale(1, 0) translate(-50%, 0);
+
+      p {
+        margin: 10px 0;
+      }
 
       &.expanded {
         transform: scale(1, 1) translate(-50%, 0);
+        opacity: 1;
       };
 
       .selections {
         text-align: center;
 
         .emotion {
-          margin: 10px 5px;
+          margin: 15px 2.5%;
         }
 
         p {
@@ -429,7 +388,5 @@ h1 {
       }
     }
   }
-
 }
-
 </style>
