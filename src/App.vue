@@ -1,7 +1,7 @@
 <template>
   <div id="app">
-    <article class="main">
-      <div class="title" v-bind:class="{'start': !user.uid}">
+    <article class="main" v-bind:class="{'start': !user.uid}">
+      <div class="title">
         <img class="logo" src="./assets/tomato.svg">
         <h1 class="">Tomato 5</h1>
       </div>
@@ -107,7 +107,7 @@ body {
   margin: auto;
 
   .login {
-    margin: 50px 0;
+    margin: 50px 0 50px 0;
 
     .firebaseui-busy-indicator {
       top: 0;
@@ -132,15 +132,20 @@ body {
   -webkit-tap-highlight-color: transparent; /* For some Androids */
 }
 
+.main.start {
+  .title {
+    max-width: 280px;
+    margin: 40px auto;
+  }
+  .footer {
+    text-align: center;
+  }
+}
+
 .title{
   text-align: left;
   margin: 40px -10px 40px -10px;
   text-align: center;
-
-  // &.start {
-  //   max-width: 280px;
-  //   margin: 40px auto;
-  // }
 
   h1 {
     color: #42b983;
