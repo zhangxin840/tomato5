@@ -299,14 +299,14 @@ h1 {
       top: -60px;
       left: 50%;
       opacity: 0;
-      transform: scale(1, 0) translate(-50%, 0);
+      transform: scaleY(0) translate(-50%, 0);
 
       p {
         margin: 10px 0;
       }
 
       &.expanded {
-        transform: scale(1, 1) translate(-50%, 0);
+        transform: scaleY(1) translate(-50%, 0);
         opacity: 1;
       };
 
