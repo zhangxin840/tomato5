@@ -95,7 +95,7 @@ const Notification = window.Notification;
 const sendNotification = function sendNotification(title, message) {
   if (Notification) {
     const noti = new Notification(title, { /* eslint no-unused-vars: 0 */
-      icon: 'http://cdn.sstatic.net/stackexchange/img/logos/so/so-icon.png',
+      icon: 'http://tomato5.github.io/static/icons/tomato.png',
       body: message,
     });
   }
@@ -144,6 +144,8 @@ const onTaskStarted = function onTaskStarted(task) {
   this.panelStatus.activeTask = task;
   this.panelStatus.label = timer.getContdown(task.startTime, 'standard', 'second');
   this.panelStatus.userStatus = this.userStatus.busy;
+
+  this.saveTasks();
 };
 
 const onTaskDone = function onTaskDone(task) {
@@ -186,9 +188,11 @@ const changeEmotion = function changeEmotion(level) {
 const initTasks = function initTasks() {
   const prepareTasks = function prepareTasks(theTasks) {
     theTasks.forEach((task) => { /* eslint no-param-reassign: 0 */
-      task.startTime = moment(task.startTime);
-      task.createTime = moment(task.createTime);
+      task.createTime = task.createTime && moment(task.createTime);
+      task.startTime = task.startTime && moment(task.startTime);
       task.emotion = task.emotion || 2;
+      task.status = task.status || taskStatus.idle;
+      task.note = task.note || '';
 
       // Rest task if not done
       if (task.status !== taskStatus.done) {
@@ -330,7 +334,6 @@ h1 {
     .list {
       margin: 8px 0;
       text-align: left;
-      line-height: 40px;
     }
 
     .add {

@@ -110,16 +110,19 @@ export default {
     width: 30px;
     margin-right: 10px;
     text-align: center;
+    height: 30px;
   }
 
   .note-wrapper {
     width: 100%;
+    height: 30px;
   }
 
   .note {
     line-height: 20px;
     position: relative;
     width: 100%;
+    text-align: middle;
   }
 
   &.hide {

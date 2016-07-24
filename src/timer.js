@@ -1,11 +1,16 @@
 import moment from 'moment';
 
-const taskDurations = {
+let taskDurations = {
   standard: 1500,
   resting: 300,
-  // standard: 5,
-  // resting: 3,
 };
+
+if (window.location.hostname === 'localhost') {
+  taskDurations = {
+    standard: 5,
+    resting: 3,
+  };
+}
 
 const getRemaning = function getRemaning(startTime, type) {
   const duration = moment.duration(taskDurations[type], 'seconds');

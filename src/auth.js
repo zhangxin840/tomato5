@@ -41,7 +41,7 @@ const init = function init() {
       user.uid = theUser.uid;
 
       // Object.assign(user, theUser);
-      // console.log(theUser);
+      // console.log(user.uid);
     } else {
       // User is signed out.
       // console.log('signed out');
