@@ -22,11 +22,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import "../base";
+
 .emotion {
   width: 50px;
   height: 50px;
   display: inline-block;
-  background: rgb(280, 240, 130);
+  background: $yellow;
   line-height: 50px;
   text-align: center;
   border-radius: 5px;

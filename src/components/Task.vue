@@ -100,6 +100,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '../base';
+
 .task {
   margin: 0 0 30px 0;
   display: flex;
@@ -185,12 +187,12 @@ export default {
     }
 
     .done {
-      color: #42b983;
+      color: $green;
       background: url('../assets/done.svg');
     }
 
     .drop {
-      color: #ff5959;
+      color: $red;
       width: 15px;
       height: 15px;
       background: url('../assets/delete.svg');

@@ -145,6 +145,8 @@ const onTaskStarted = function onTaskStarted(task) {
   this.panelStatus.label = timer.getContdown(task.startTime, 'standard', 'second');
   this.panelStatus.userStatus = this.userStatus.busy;
 
+  task.emotion = this.panelStatus.emotion;
+
   this.saveTasks();
 };
 
@@ -183,6 +185,10 @@ const toggleEmotions = function toggleEmotions() {
 const changeEmotion = function changeEmotion(level) {
   this.panelStatus.isShowEmotions = false;
   this.panelStatus.emotion = level;
+
+  if (this.panelStatus.activeTask && this.panelStatus.activeTask.status === taskStatus.ongoing) {
+    this.panelStatus.activeTask = this.panelStatus.emotion;
+  }
 };
 
 const initTasks = function initTasks() {

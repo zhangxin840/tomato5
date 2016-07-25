@@ -71,13 +71,19 @@ export default {
 </script>
 
 <style lang="scss">
+@import 'base';
+
 body {
   // font-family: 'Architects Daughter', cursive;
   // font-family: 'Patrick Hand', cursive;
-  font-family: 'Short Stack', sans-serif;;
+  font-family: 'Short Stack', sans-serif;
+
+  color: $ink;
+  font-size: 15px;
+  padding-bottom: 30px;
 
   a {
-    color: rgb(95, 210, 219);
+    color: $blue;
     text-decoration: none;
     -webkit-tap-highlight-color: rgba(0,0,0,0);
     -webkit-tap-highlight-color: transparent; /* For some Androids */
@@ -89,7 +95,7 @@ body {
   }
 
   input[type=text], input[type=text]:focus {
-    color: #2c3e50;
+    color: $ink;
     border: none;
     margin: 0;
     padding: 0;
@@ -98,10 +104,6 @@ body {
 
     border-bottom: 1px solid #eee;
   }
-
-  color: #2c3e50;
-  font-size: 15px;
-  padding-bottom: 30px;
 }
 
 .main {
@@ -121,7 +123,7 @@ body {
 
     .firebaseui-idp-password,
     .firebaseui-idp-password:hover {
-      background-color: rgb(255, 89, 89);
+      background-color: $red;
     }
   }
 }
@@ -151,7 +153,7 @@ body {
   text-align: center;
 
   h1 {
-    color: #42b983;
+    color: $green;
     text-align: center;
     font-size: 38px;
     display: inline-block;
