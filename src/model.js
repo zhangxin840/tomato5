@@ -9,7 +9,7 @@ const taskStatus = {
   done: 4,
 };
 
-const userStatus = {
+const availabilities = {
   unknown: -1,
   idle: 0,
   active: 1,
@@ -61,4 +61,16 @@ const tasks = [
   task1, task2, task3, task4, task5,
 ];
 
-export { taskStatus, userStatus, tasks };
+const team = {
+  screctId: 'HFE-Train',
+  name: 'HFE-Train',
+  members: {
+    UID: {
+      rule: 'admin',
+      userStatus: {},
+      tasks: [],
+    },
+  },
+};
+
+export { taskStatus, availabilities, tasks, team };

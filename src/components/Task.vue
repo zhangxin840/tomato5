@@ -6,6 +6,7 @@
              'active': task.status === taskStatus.active,
              'done': task.status === taskStatus.done,
              'hide': this.hide,
+             'disabled': this.disabled,
            }">
     <div class="icon-wrapper">
       <span class="icon tomato animated"
@@ -24,7 +25,9 @@
       </emotion>
     </div>
     <div class="note-wrapper">
-      <input class="note" type="text" name="name" v-model="task.note" placeholder="Title of this task">
+      <input class="note" type="text" name="name" placeholder="Title of this task"
+            v-model="task.note"
+            v-on:blur="onTaskEdited">
       <div class="activeTask">
         <p class="operations" v-show="task.status === taskStatus.active">
           <span class="done" v-on:click="done">Done</span>
@@ -50,6 +53,10 @@ const drop = function drop() {
   this.task.status = this.taskStatus.idle;
   window.clearInterval(this.timeInterval);
   this.$dispatch('taskDropped', this.task);
+};
+
+const onTaskEdited = function onTaskEdited() {
+  this.$dispatch('taskEdited', this.task);
 };
 
 const onTaskTimeDue = function onTaskTimeDue() {
@@ -81,7 +88,7 @@ const start = function start() {
 
 const onClick = function onClick() {
   if (this.task.status === this.taskStatus.idle
-      && this.panelStatus.userStatus === this.userStatus.idle) {
+      && this.userStatus.availability === this.availabilities.idle) {
     this.start();
   } else if (this.task.status === this.taskStatus.ongoing) {
     this.drop();
@@ -89,11 +96,11 @@ const onClick = function onClick() {
 };
 
 export default {
-  props: ['task', 'taskStatus', 'hide', 'panelStatus', 'userStatus'],
+  props: ['task', 'taskStatus', 'hide', 'disabled', 'userStatus', 'availabilities'],
   data() {
     return { timeInterval };
   },
-  methods: { onClick, onTaskTimeDue, start, done, drop },
+  methods: { onClick, onTaskTimeDue, onTaskEdited, start, done, drop },
   events: { },
   components: { Emotion },
 };
@@ -128,11 +135,13 @@ export default {
   }
 
   &.hide {
-    // height: 0;
-    // margin: 0;
-    // line-height: 0;
-    // visibility: hidden;
     opacity: 0.1;
+  }
+
+  &.disabled {
+    .tomato {
+      opacity: 0.1;
+    }
   }
 
   &.active {

@@ -1,21 +1,22 @@
 <template>
   <section class="panel"
             v-bind:class="{
-              'resting': panelStatus.userStatus === userStatus.resting,
-              'idle': panelStatus.userStatus === userStatus.idle,
-              'busy': panelStatus.userStatus === userStatus.busy,
+              'resting': userStatus.availability === availabilities.resting,
+              'idle': userStatus.availability === availabilities.idle,
+              'busy': userStatus.availability === availabilities.busy,
             }">
     <div class="user">
       <div class="status">
         <!-- <img class="avator" src="../assets/p-2.svg" alt="avator" /> -->
         <!-- <img class="avator" v-bind:src="user.photoURL" alt="avator" /> -->
         <div class="avator" v-on:click="toggleEmotions">
-          <emotion v-bind:level="panelStatus.emotion"></emotion>
+          <emotion v-bind:level="userStatus.emotion"></emotion>
         </div>
         <span class="timer animated "
-              v-show="panelStatus.userStatus >= 0"
+              v-show="userStatus.availability >= 0"
+              v-on:click="stopResting"
               v-bind:class="{
-                'rubberBand': (panelStatus.userStatus === userStatus.busy) || (panelStatus.userStatus === userStatus.resting)
+                'rubberBand': (userStatus.availability === availabilities.busy) || (userStatus.availability === availabilities.resting)
               }">
           {{ panelStatus.label }}
         </span>
@@ -45,7 +46,7 @@
       <!-- <active-task v-if="panelStatus.activeTask"
                    v-bind:task="panelStatus.activeTask"
                    v-bind:task-status="taskStatus"
-                   v-bind:user-status="userStatus">
+                   v-bind:availabilities="availabilities">
       </active-task> -->
     </div>
     <div class="tasks" v-if="tasks">
@@ -53,16 +54,17 @@
         <template v-for="task in tasks">
           <task v-bind:task="task"
                 v-bind:task-status="taskStatus"
-                v-bind:panel-status="panelStatus"
                 v-bind:user-status="userStatus"
-                v-bind:hide="!((panelStatus.userStatus === userStatus.idle)
-                    || (task.status === taskStatus.ongoing || task.status === taskStatus.active))
-                    && !(panelStatus.userStatus === userStatus.resting && task.status === taskStatus.done)">
+                v-bind:availabilities="availabilities"
+                v-bind:disabled="(userStatus.availability === availabilities.resting)
+                    && (task.status === taskStatus.idle)"
+                v-bind:hide="(userStatus.availability === availabilities.busy || userStatus.availability === availabilities.active)
+                    && !(task.status === taskStatus.ongoing || task.status === taskStatus.active)">
           </task>
         </template>
       </div>
       <span class="icon add"
-            v-show="(doneCount >= 5 || tasks.length < 5) && (panelStatus.userStatus === userStatus.idle)"
+            v-show="(doneCount >= 5 || tasks.length < 5) && (userStatus.availability === availabilities.idle || userStatus.availability === availabilities.resting)"
             v-on:click="addTask">Add task</span>
     </div>
   </section>
@@ -75,7 +77,7 @@ import ActiveTask from './ActiveTask';
 import Task from './Task';
 import Emotion from './Emotion';
 import timer from '../timer';
-import { taskStatus, userStatus, tasks as defaultTasks } from '../model';
+import { taskStatus, availabilities, tasks as defaultTasks } from '../model';
 import database from '../database';
 import auth from '../auth';
 
@@ -84,10 +86,13 @@ const tasks = null;
 
 const panelStatus = {
   label: '00:00',
-  userStatus: userStatus.idle,
   activeTask: null,
-  emotion: '2',
   isShowEmotions: false,
+};
+
+const userStatus = {
+  availability: availabilities.idle,
+  emotion: '2',
 };
 
 const Notification = window.Notification;
@@ -102,19 +107,32 @@ const sendNotification = function sendNotification(title, message) {
 };
 
 const onRestTimeDue = function onRestTimeDue() {
-  panelStatus.userStatus = userStatus.idle;
+  userStatus.availability = availabilities.idle;
+};
+
+let restTimer = null;
+
+const stopResting = function stopResting() {
+  if (userStatus.availability === availabilities.resting) {
+    panelStatus.label = '00:00';
+    userStatus.availability = availabilities.idle;
+
+    if (restTimer) {
+      window.clearInterval(restTimer);
+    }
+  }
 };
 
 const startRest = function startRest() {
-  const startTime = moment();
+  const restStartTime = moment();
 
-  panelStatus.label = timer.getContdown(startTime, 'resting', 'second');
-  panelStatus.userStatus = userStatus.resting;
+  panelStatus.label = timer.getContdown(restStartTime, 'resting', 'second');
+  userStatus.availability = availabilities.resting;
 
-  const theTimer = window.setInterval(() => {
-    panelStatus.label = timer.getContdown(startTime, 'resting', 'second');
-    if (timer.getRemaning(startTime, 'resting').asMilliseconds() <= 0) {
-      window.clearInterval(theTimer);
+  restTimer = window.setInterval(() => {
+    panelStatus.label = timer.getContdown(restStartTime, 'resting', 'second');
+    if (timer.getRemaning(restStartTime, 'resting').asMilliseconds() <= 0) {
+      window.clearInterval(restTimer);
       onRestTimeDue();
     }
   }, 1000);
@@ -143,18 +161,18 @@ const addTask = function addTask() {
 const onTaskStarted = function onTaskStarted(task) {
   this.panelStatus.activeTask = task;
   this.panelStatus.label = timer.getContdown(task.startTime, 'standard', 'second');
-  this.panelStatus.userStatus = this.userStatus.busy;
+  this.userStatus.availability = this.availabilities.busy;
 
-  task.emotion = this.panelStatus.emotion;
+  task.emotion = this.userStatus.emotion;
 
   this.saveTasks();
 };
 
 const onTaskDone = function onTaskDone(task) {
-  this.panelStatus.userStatus = this.userStatus.idle;
+  this.userStatus.availability = this.availabilities.idle;
   this.panelStatus.activeTask = null;
 
-  task.emotion = this.panelStatus.emotion;
+  task.emotion = this.userStatus.emotion;
 
   window.setTimeout(() => {
     startRest();
@@ -164,18 +182,22 @@ const onTaskDone = function onTaskDone(task) {
 };
 
 const onTaskDropped = function onTaskDropped() {
-  this.panelStatus.userStatus = this.userStatus.idle;
+  this.userStatus.availability = this.availabilities.idle;
   this.panelStatus.activeTask = null;
   this.panelStatus.label = '00:00';
 };
 
 const onTaskTimeDue = function onTaskTimeDue() {
   sendNotification('Tomato 5', 'Tomato completed, nice job!');
-  this.panelStatus.userStatus = this.userStatus.active;
+  this.userStatus.availability = this.availabilities.active;
 };
 
 const onTaskTimerUpdated = function onTaskTimerUpdated(task) {
   this.panelStatus.label = timer.getContdown(task.startTime, 'standard', 'second');
+};
+
+const onTaskEdited = function onTaskEdited() {
+  this.saveTasks();
 };
 
 const toggleEmotions = function toggleEmotions() {
@@ -184,10 +206,10 @@ const toggleEmotions = function toggleEmotions() {
 
 const changeEmotion = function changeEmotion(level) {
   this.panelStatus.isShowEmotions = false;
-  this.panelStatus.emotion = level;
+  this.userStatus.emotion = level;
 
   if (this.panelStatus.activeTask && this.panelStatus.activeTask.status === taskStatus.ongoing) {
-    this.panelStatus.activeTask = this.panelStatus.emotion;
+    this.panelStatus.activeTask = this.userStatus.emotion;
   }
 };
 
@@ -221,9 +243,9 @@ const init = function init() {
 
 export default {
   data() {
-    return { user, tasks, panelStatus, taskStatus, userStatus };
+    return { user, tasks, panelStatus, userStatus, taskStatus, availabilities };
   },
-  methods: { addTask, toggleEmotions, changeEmotion, initTasks, saveTasks },
+  methods: { addTask, toggleEmotions, changeEmotion, initTasks, saveTasks, stopResting },
   components: {
     ActiveTask, Task, Emotion,
   },
@@ -233,6 +255,7 @@ export default {
     taskStarted: onTaskStarted,
     taskTimeDue: onTaskTimeDue,
     taskTimerUpdated: onTaskTimerUpdated,
+    taskEdited: onTaskEdited,
   },
   created: init,
   computed: {
@@ -242,7 +265,7 @@ export default {
       , 0);
     },
     emotionClass: function emotionUrl() {
-      const level = this.panelStatus.emotion;
+      const level = this.userStatus.emotion;
       return `${level > 0 ? 'p' : 'n'}-${Math.abs(level)}`;
     },
   },
@@ -262,6 +285,7 @@ h1 {
   &.resting {
     .timer {
       color: #42b983;
+      cursor: pointer;
     }
   }
 
