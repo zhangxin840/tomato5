@@ -148,6 +148,7 @@ body {
   }
   .footer {
     text-align: center;
+    display: none;
   }
 }
 

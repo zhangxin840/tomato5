@@ -1,7 +1,7 @@
 <template>
   <div class="account">
-    Hi,
-    <a class="name" v-on:click="logout">{{ user.displayName }}</a>
+    User: {{ user.displayName }}
+    <a class="name" v-on:click="logout">(Change)</a>
   </div>
 </template>
 
@@ -23,7 +23,7 @@ export default {
 
 <style lang="scss" scoped>
 .account {
-  margin: 60px 0 0 0;
+  margin: 100px 0 0 0;
   // text-align: right;
 }
 </style>
