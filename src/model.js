@@ -70,6 +70,7 @@ const team = {
       userInfo: {},
       userStatus: {},
       tasks: [],
+      updateTime: '', // moment
     },
   },
 };

@@ -41,18 +41,12 @@ import Panel from './components/Panel';
 import Account from './components/Account';
 import database from './database';
 import auth from './auth';
+import { firebaseConfig } from './configs';
 
 const user = auth.getUser();
 
 const initApp = function initApp() {
-  const config = {
-    apiKey: 'AIzaSyAXBU7bIq9I5Hrn_PsX9HTArQ7D0AnxAtA',
-    authDomain: 'tomato5-685bf.firebaseapp.com',
-    databaseURL: 'https://tomato5-685bf.firebaseio.com',
-    storageBucket: 'tomato5-685bf.appspot.com',
-  };
-
-  firebase.initializeApp(config);
+  firebase.initializeApp(firebaseConfig);
   database.init();
   auth.init();
 

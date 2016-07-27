@@ -107,21 +107,27 @@ const sendNotification = function sendNotification(title, message) {
   }
 };
 
-const onRestTimeDue = function onRestTimeDue() {
-  userStatus.availability = availabilities.idle;
+const getTasksPath = function getTasksPath() {
+  return `tasks/${auth.getUser().uid}/${moment().format('YYYYMMDD')}`;
+};
+
+const saveTasks = function saveTasks() {
+  const tasksToSave = [];
+  this.tasks.forEach((task) => {
+    if (task.createTime
+      && moment(task.createTime).format('YYYYMMDD') === moment().format('YYYYMMDD')) {
+      tasksToSave.push(task);
+    }
+  });
+  database.save(getTasksPath(), tasksToSave);
+  this.$broadcast('publish', this.task);
 };
 
 let restTimer = null;
 
-const stopResting = function stopResting() {
-  if (userStatus.availability === availabilities.resting) {
-    panelStatus.label = '00:00';
-    userStatus.availability = availabilities.idle;
-
-    if (restTimer) {
-      window.clearInterval(restTimer);
-    }
-  }
+const onRestTimeDue = function onRestTimeDue() {
+  userStatus.availability = availabilities.idle;
+  this.saveTasks();
 };
 
 const startRest = function startRest() {
@@ -134,18 +140,24 @@ const startRest = function startRest() {
     panelStatus.label = timer.getContdown(restStartTime, 'resting', 'second');
     if (timer.getRemaning(restStartTime, 'resting').asMilliseconds() <= 0) {
       window.clearInterval(restTimer);
-      onRestTimeDue();
+      this.onRestTimeDue();
     }
   }, 1000);
+
+  this.saveTasks();
 };
 
-const getTasksPath = function getTasksPath() {
-  return `tasks/${auth.getUser().uid}/${moment().format('YYYYMMDD')}`;
-};
+const stopResting = function stopResting() {
+  if (userStatus.availability === availabilities.resting) {
+    panelStatus.label = '00:00';
+    userStatus.availability = availabilities.idle;
 
-const saveTasks = function saveTasks() {
-  database.save(getTasksPath(), this.tasks);
-  this.$broadcast('publish', this.task);
+    if (restTimer) {
+      window.clearInterval(restTimer);
+    }
+  }
+
+  this.saveTasks();
 };
 
 const addTask = function addTask() {
@@ -177,7 +189,7 @@ const onTaskDone = function onTaskDone(task) {
   task.emotion = this.userStatus.emotion;
 
   window.setTimeout(() => {
-    startRest();
+    this.startRest();
   }, 1);
 
   this.saveTasks();
@@ -243,8 +255,8 @@ const initTasks = function initTasks() {
   };
 
   return database.get(getTasksPath(), defaultTasks).then((data) => {
-    const result = this.tasks = prepareTasks(data);
-    return result;
+    this.tasks = prepareTasks(data);
+    return this.tasks;
   });
 };
 
@@ -253,7 +265,7 @@ export default {
     return { user, tasks, panelStatus, userStatus, taskStatus, availabilities };
   },
   methods: { addTask, toggleEmotions, changeEmotion, initTasks,
-    saveTasks, stopResting },
+    saveTasks, stopResting, startRest, onRestTimeDue },
   components: {
     ActiveTask, Task, Emotion, TeamPanel,
   },

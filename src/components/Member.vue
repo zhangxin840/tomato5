@@ -2,6 +2,15 @@
   <div class="member">
     <p>
       <emotion class="small" v-bind:level="userStatus.emotion"></emotion>
+      <span class="beacon"
+            v-bind:class="{
+              'busy': userStatus.availability === availabilities.busy,
+              'idle': userStatus.availability === availabilities.idle,
+              'resting': userStatus.availability === availabilities.resting,
+              'active': userStatus.availability === availabilities.active,
+              'offline': isOffline,
+            }">
+      </span>
       <span class="name">{{ userInfo.displayName }}</span>
       <span class="time" transition="fade" v-if="taskTimeLable">{{ taskTimeLable }}</span>
     </p>
@@ -24,31 +33,47 @@
 
 <script>
 import timer from '../timer';
+import moment from 'moment';
 import Emotion from './Emotion';
-import { taskStatus } from '../model';
+import { taskStatus, availabilities } from '../model';
+import { offLineThreshold, checkMemberInterval } from '../configs';
 
 const taskTimeLable = '';
-let taskTimeInterval = null;
+let statusChecker = null;
+
+const isOffline = true;
 
 const init = function init() {
-  taskTimeInterval = window.setInterval(() => {
+  statusChecker = window.setInterval(() => {
     if (this.activeTask && this.activeTask.status === taskStatus.ongoing) {
       this.taskTimeLable = timer.getContdown(this.activeTask.startTime,
         'standard', 'minute');
     } else {
       this.taskTimeLable = '';
     }
-  }, 1000);
+
+    if (!this.updateTime) {
+      this.isOffline = true;
+    } else {
+      // Restore from server
+      this.updateTime = moment(this.updateTime);
+      if (moment().diff(this.updateTime, 'minutes') > offLineThreshold) {
+        this.isOffline = true;
+      } else {
+        this.isOffline = false;
+      }
+    }
+  }, checkMemberInterval);
 };
 
 const destroy = function destroy() {
-  window.clearInterval(this.taskTimeInterval);
+  window.clearInterval(this.statusChecker);
 };
 
 export default {
-  props: ['tasks', 'userStatus', 'userInfo'],
+  props: ['tasks', 'userStatus', 'userInfo', 'updateTime'],
   data() {
-    return { taskStatus, taskTimeLable, taskTimeInterval };
+    return { taskStatus, availabilities, taskTimeLable, statusChecker, isOffline };
   },
   methods: { },
   components: { Emotion },
@@ -91,6 +116,38 @@ export default {
     margin-left: 3px;
   }
 
+  .beacon {
+    color: $green;
+    background-color: #eee;
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    vertical-align: middle;
+    border-radius: 5px;
+    text-indent: -9999px;
+    margin-right: 5px;
+
+    &.offline {
+      background-color: #eee !important;
+    }
+
+    &.idle {
+      background-color: $green;
+    }
+
+    &.active {
+      background-color: $yellow;
+    }
+
+    &.busy {
+      background-color: $red;
+    }
+
+    &.resting {
+      background-color: $blue;
+    }
+  }
+
   .note {
     position: absolute;
     bottom: 0;
@@ -104,7 +161,7 @@ export default {
   }
 
   .name {
-    margin-right: 10px;
+    margin-right: 15px;
   }
 
   .tomato {
