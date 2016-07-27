@@ -6,7 +6,7 @@
         <h1 class="">Tomato 5</h1>
       </div>
       <p class="instruction"><span>Concentrate for work</span> <span>five times a day</span></p>
-      <panel v-if="user.uid"></panel>
+      <panel transition="fade" v-if="user.uid"></panel>
       <!-- <p class="instruction team"><span>Together with your team</span></p> -->
       <!-- <panel></panel>
       <panel></panel> -->
@@ -141,6 +141,19 @@ body {
   -webkit-tap-highlight-color: transparent; /* For some Androids */
 }
 
+.tomato{
+  width: 30px;
+  height: 30px;
+  background: url('assets/tomato.svg');
+  background-repeat: no-repeat;
+
+  opacity: 1;
+
+  &:active{
+    transform: scale(1.1, 1.1);
+  }
+}
+
 .main.start {
   .title {
     max-width: 280px;
@@ -195,5 +208,16 @@ body {
   p {
     margin: 5px 0;
   }
+}
+
+/* always present */
+.fade-transition {
+  transition: opacity 0.3s;
+}
+
+/* .fade-enter defines the starting state for entering */
+/* .fade-leave defines the ending state for leaving */
+.fade-enter, .fade-leave {
+  opacity: 0;
 }
 </style>

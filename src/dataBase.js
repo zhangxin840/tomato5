@@ -6,6 +6,10 @@ const init = function init() {
   database = firebase.database();
 };
 
+const watch = function watch(path, callback) {
+  database.ref(path).on('value', callback);
+};
+
 const get = function get(path, defaultData, validator) {
   const promise = new Promise((resolve, reject) => {
     // console.log("Checking remote");
@@ -39,4 +43,4 @@ const save = function save(path, data) {
   });
 };
 
-export default { init, get, save };
+export default { init, get, save, watch };

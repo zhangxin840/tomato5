@@ -7,7 +7,7 @@ let taskDurations = {
 
 if (window.location.hostname === 'localhost') {
   taskDurations = {
-    standard: 5,
+    standard: 500,
     resting: 3,
   };
 }
@@ -28,7 +28,7 @@ const getContdown = function getContdown(startTime, type, level) {
   let result = '';
 
   if (level === 'minute') {
-    result = `${minutes}m`;
+    result = `${minutes + 1}m`;
   } else {
     minutes = minutes > 9 ? `${minutes}` : `0${minutes}`;
     seconds = seconds > 9 ? `${seconds}` : `0${seconds}`;

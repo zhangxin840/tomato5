@@ -67,6 +67,7 @@ const team = {
   members: {
     UID: {
       rule: 'admin',
+      userInfo: {},
       userStatus: {},
       tasks: [],
     },

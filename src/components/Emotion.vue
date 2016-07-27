@@ -82,19 +82,22 @@ export default {
   }
 }
 
+.emotion.small {
+  width: 25px;
+  height: 25px;
+  line-height: 25px;
+  cursor: default;
+
+  .inner {
+    width: 15px;
+    height: 15px;
+    top: 0;
+  }
+}
+
 .icon-wrapper {
   .emotion {
-    width: 25px;
-    height: 25px;
-    line-height: 25px;
     margin: 0 2px 0 3px;
-    cursor: default;
-
-    .inner {
-      width: 15px;
-      height: 15px;
-      top: 0;
-    }
   }
 }
 </style>

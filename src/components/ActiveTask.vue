@@ -1,11 +1,10 @@
 <template>
   <div class="activeTask">
-    <p class="operations" v-show="task.status === taskStatus.active">
+    <p class="operations" transition="fade" v-show="task.status === taskStatus.active">
       <span class="done" v-on:click="done">Done</span>
       <span class="drop" v-on:click="drop">Drop</span>
     </p>
   </div>
-
 </template>
 
 <script>

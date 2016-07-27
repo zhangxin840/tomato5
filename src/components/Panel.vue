@@ -7,8 +7,6 @@
             }">
     <div class="user">
       <div class="status">
-        <!-- <img class="avator" src="../assets/p-2.svg" alt="avator" /> -->
-        <!-- <img class="avator" v-bind:src="user.photoURL" alt="avator" /> -->
         <div class="avator" v-on:click="toggleEmotions">
           <emotion v-bind:level="userStatus.emotion"></emotion>
         </div>
@@ -43,13 +41,8 @@
           </p>
         </div>
       </div>
-      <!-- <active-task v-if="panelStatus.activeTask"
-                   v-bind:task="panelStatus.activeTask"
-                   v-bind:task-status="taskStatus"
-                   v-bind:availabilities="availabilities">
-      </active-task> -->
     </div>
-    <div class="tasks" v-if="tasks">
+    <div class="tasks" transition="fade" v-if="tasks">
       <div class="list">
         <template v-for="task in tasks">
           <task v-bind:task="task"
@@ -64,9 +57,16 @@
         </template>
       </div>
       <span class="icon add"
+            transition="fade"
             v-show="(doneCount >= 5 || tasks.length < 5) && (userStatus.availability === availabilities.idle || userStatus.availability === availabilities.resting)"
             v-on:click="addTask">Add task</span>
     </div>
+    <team-panel transition="fade"
+              v-if="tasks"
+              v-bind:user-info="user"
+              v-bind:user-status="userStatus"
+              v-bind:tasks="tasks">
+    <team-panel>
   </section>
 </template>
 
@@ -76,6 +76,7 @@ import vue from 'vue';
 import ActiveTask from './ActiveTask';
 import Task from './Task';
 import Emotion from './Emotion';
+import TeamPanel from './TeamPanel';
 import timer from '../timer';
 import { taskStatus, availabilities, tasks as defaultTasks } from '../model';
 import database from '../database';
@@ -144,6 +145,7 @@ const getTasksPath = function getTasksPath() {
 
 const saveTasks = function saveTasks() {
   database.save(getTasksPath(), this.tasks);
+  this.$broadcast('publish', this.task);
 };
 
 const addTask = function addTask() {
@@ -185,11 +187,15 @@ const onTaskDropped = function onTaskDropped() {
   this.userStatus.availability = this.availabilities.idle;
   this.panelStatus.activeTask = null;
   this.panelStatus.label = '00:00';
+
+  this.saveTasks();
 };
 
 const onTaskTimeDue = function onTaskTimeDue() {
   sendNotification('Tomato 5', 'Tomato completed, nice job!');
   this.userStatus.availability = this.availabilities.active;
+
+  this.saveTasks();
 };
 
 const onTaskTimerUpdated = function onTaskTimerUpdated(task) {
@@ -213,6 +219,10 @@ const changeEmotion = function changeEmotion(level) {
   }
 };
 
+const init = function init() {
+  this.initTasks();
+};
+
 const initTasks = function initTasks() {
   const prepareTasks = function prepareTasks(theTasks) {
     theTasks.forEach((task) => { /* eslint no-param-reassign: 0 */
@@ -232,22 +242,20 @@ const initTasks = function initTasks() {
     return theTasks;
   };
 
-  database.get(getTasksPath(), defaultTasks).then((data) => {
-    this.tasks = prepareTasks(data);
+  return database.get(getTasksPath(), defaultTasks).then((data) => {
+    const result = this.tasks = prepareTasks(data);
+    return result;
   });
-};
-
-const init = function init() {
-  this.initTasks();
 };
 
 export default {
   data() {
     return { user, tasks, panelStatus, userStatus, taskStatus, availabilities };
   },
-  methods: { addTask, toggleEmotions, changeEmotion, initTasks, saveTasks, stopResting },
+  methods: { addTask, toggleEmotions, changeEmotion, initTasks,
+    saveTasks, stopResting },
   components: {
-    ActiveTask, Task, Emotion,
+    ActiveTask, Task, Emotion, TeamPanel,
   },
   events: {
     taskDone: onTaskDone,
@@ -292,6 +300,31 @@ h1 {
   &.busy {
     .timer {
 
+    }
+  }
+
+  .tasks {
+    width: 100%;
+    position: relative;
+
+    .list {
+      padding-bottom: 15px;
+      position: relative;
+    }
+
+    .add {
+      width: 20px;
+      height: 20px;
+      background: url('../assets/add.svg');
+      margin: 0px 4px;
+      cursor: pointer;
+      position: absolute;
+      left: 0;
+      bottom: 0;
+
+      &:active{
+        transform: scale(1.1, 1.1);
+      }
     }
   }
 
@@ -358,25 +391,6 @@ h1 {
       }
     }
   }
-  .tasks {
-    width: 100%;
 
-    .list {
-      margin: 8px 0;
-      text-align: left;
-    }
-
-    .add {
-      width: 20px;
-      height: 20px;
-      background: url('../assets/add.svg');
-      margin: 0px 4px;
-      cursor: pointer;
-
-      &:active{
-        transform: scale(1.1, 1.1);
-      }
-    }
-  }
 }
 </style>
