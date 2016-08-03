@@ -104,7 +104,7 @@ export default {
 .member {
   position: relative;
   padding-bottom: 35px;
-  margin: 20px 0;
+  margin: 30px 0;
 
 
   p {

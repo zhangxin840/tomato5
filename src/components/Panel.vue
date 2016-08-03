@@ -42,32 +42,35 @@
         </div>
       </div>
     </div>
-    <div class="tasks" transition="fade" v-if="tasks">
-      <div class="list">
-        <template v-for="task in tasks">
-          <task v-bind:task="task"
-                v-bind:task-status="taskStatus"
-                v-bind:user-status="userStatus"
-                v-bind:availabilities="availabilities"
-                v-bind:disabled="(userStatus.availability === availabilities.resting)
-                    && (task.status === taskStatus.idle)"
-                v-bind:hide="(userStatus.availability === availabilities.busy || userStatus.availability === availabilities.active)
-                    && !(task.status === taskStatus.ongoing || task.status === taskStatus.active)">
-          </task>
-        </template>
+    <div class="tasks-wrapper">
+      <div class="tasks" transition="fade" v-if="tasks">
+        <div class="list">
+          <template v-for="task in tasks">
+            <task v-bind:task="task"
+                  v-bind:task-status="taskStatus"
+                  v-bind:user-status="userStatus"
+                  v-bind:availabilities="availabilities"
+                  v-bind:disabled="(userStatus.availability === availabilities.resting)
+                      && (task.status === taskStatus.idle)"
+                  v-bind:hide="(userStatus.availability === availabilities.busy || userStatus.availability === availabilities.active)
+                      && !(task.status === taskStatus.ongoing || task.status === taskStatus.active)">
+            </task>
+          </template>
+        </div>
+        <span class="icon add"
+              transition="fade"
+              v-show="(doneCount >= 5 || tasks.length < 5) && (userStatus.availability === availabilities.idle || userStatus.availability === availabilities.resting)"
+              v-on:click="addTask">Add task</span>
       </div>
-      <span class="icon add"
-            transition="fade"
-            v-show="(doneCount >= 5 || tasks.length < 5) && (userStatus.availability === availabilities.idle || userStatus.availability === availabilities.resting)"
-            v-on:click="addTask">Add task</span>
     </div>
-    <team-panel transition="fade"
+    <team-panel 
               v-if="tasks"
               v-bind:user-info="user"
               v-bind:user-status="userStatus"
               v-bind:tasks="tasks">
     <team-panel>
   </section>
+
 </template>
 
 <script>
@@ -94,6 +97,7 @@ const panelStatus = {
 const userStatus = {
   availability: availabilities.idle,
   emotion: '2',
+  currentTeam: 'HFE-Train',
 };
 
 const Notification = window.Notification;
@@ -120,14 +124,14 @@ const saveTasks = function saveTasks() {
     }
   });
   database.save(getTasksPath(), tasksToSave);
-  this.$broadcast('publish', this.task);
+  this.$broadcast('publish');
 };
 
 let restTimer = null;
 
 const onRestTimeDue = function onRestTimeDue() {
   userStatus.availability = availabilities.idle;
-  this.saveTasks();
+  this.$broadcast('publish');
 };
 
 const startRest = function startRest() {
@@ -144,7 +148,7 @@ const startRest = function startRest() {
     }
   }, 1000);
 
-  this.saveTasks();
+  this.$broadcast('publish');
 };
 
 const stopResting = function stopResting() {
@@ -157,7 +161,7 @@ const stopResting = function stopResting() {
     }
   }
 
-  this.saveTasks();
+  this.$broadcast('publish');
 };
 
 const addTask = function addTask() {
@@ -229,6 +233,8 @@ const changeEmotion = function changeEmotion(level) {
   if (this.panelStatus.activeTask && this.panelStatus.activeTask.status === taskStatus.ongoing) {
     this.panelStatus.activeTask = this.userStatus.emotion;
   }
+
+  this.$broadcast('publish');
 };
 
 const init = function init() {
@@ -313,6 +319,10 @@ h1 {
     .timer {
 
     }
+  }
+
+  .tasks-wrapper {
+    min-height: 315px;
   }
 
   .tasks {
