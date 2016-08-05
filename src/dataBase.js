@@ -7,7 +7,9 @@ const init = function init() {
 };
 
 const watch = function watch(path, callback) {
-  database.ref(path).on('value', callback);
+  const ref = database.ref(path);
+  ref.on('value', callback);
+  return ref;
 };
 
 const get = function get(path, defaultData, validator) {

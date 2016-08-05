@@ -2,22 +2,24 @@
   <section class="teamPanel">
     <div class="teamPanel-wrapper" transition="fade" v-if="teamData">
       <p class="title">
-        Your team in actions: {{ teamData.name }}   <span class="expander" v-on:click="showForm()">+</span>
+        Your team working on tomatoes:
+        <!-- <span>{{ teamData.info.name }}</span>     -->
+        <span class="expander" v-on:click="showForm()">+</span>
       </p>
       <div class="teamManager" transition="expand" v-show="teamForm.isShow">
-        <p class="switch">
+        <p class="switch" v-show="false">
           <span class="selector" v-on:click="teamForm.isJoin = true" v-bind:class="{ 'selected': teamForm.isJoin }">Join Team</span>
           <span class="spacer">or</span>
-          <span class="selector" v-on:click="teamForm.isJoin = false" v-bind:class="{ 'selected': !teamForm.isJoin }">Create Team</span>
+          <span class="selector" v-on:click="teamForm.isJoin = false" v-bind:class="{ 'selected': !teamForm.isJoin }">My Team</span>
         </p>
         <div class="theForm">
           <div class="join" transition="slide_left" v-show="teamForm.isJoin">
             <p class="field">
-              <span>Secret ID: </span>
-              <input type="text" name="name" value="" v-model="teamForm.secredId">
+              <span>Invite Code: </span>
+              <input type="text" name="name" value="" v-model="teamForm.inviteCode">
             </p>
             <p>
-              <a v-on:click="joinTeam(teamForm.secredId)">Join</a>
+              <a v-on:click="joinTeam(teamForm.inviteCode)">Join Team</a>
             </p>
           </div>
           <div class="create" transition="slide_right" v-show="!teamForm.isJoin">
@@ -26,14 +28,14 @@
               <input type="text" value="" v-model="teamForm.name">
             </p>
             <p class="field">
-              <span class="">Secret ID: </span>
-              <input type="text" value="" placeholder="6-12 charactors" v-model="teamForm.secredId">
+              <span class="">Invite Code: </span>
+              <input type="text" value="" placeholder="6-12 charactors" v-model="teamForm.inviteCode">
             </p>
             <p class="tips">
-              Others will use this ID to join your team.
+              Others will use this code to join your team.
             </p>
             <p>
-              <a v-on:click="createTeam(teamForm.secredId, teamForm.name)">Create</a>
+              <a v-on:click="createTeam(teamForm.inviteCode, teamForm.name)">Save</a>
             </p>
           </div>
           <p class="info"></p>
@@ -61,7 +63,7 @@ import { tasks as defaultTasks } from '../model';
 const teamData = null;
 
 const teamForm = {
-  secredId: '',
+  inviteCode: '',
   name: '',
   isShow: false,
   isJoin: true,
@@ -71,7 +73,13 @@ const showForm = function showForm() {
   this.teamForm.isShow = !this.teamForm.isShow;
 };
 
+let watchRef = null;
+
 const publishToTeam = function publishToTeam() {
+  // database.save('test/a', { b: 2 }).then(() => {
+  //   console.log('published');
+  // });
+
   return database.save(`teams/${this.userStatus.currentTeam}/members/${auth.getUser().uid}`, {
     rule: 'member',
     userInfo: this.userInfo,
@@ -83,29 +91,33 @@ const publishToTeam = function publishToTeam() {
   });
 };
 
-const joinTeam = function joinTeam(secredId) {
-  if (secredId) {
-    this.userStatus.currentTeam = secredId;
-  }
+const joinTeam = function joinTeam(inviteCode) {
+  if (inviteCode) {
+    this.userStatus.currentTeam = inviteCode;
+    if (watchRef) {
+      watchRef.off();
+    }
 
-  return publishToTeam();
-};
-
-const createTeam = function createTeam(secredId, name) {
-  if (secredId && name) {
-    database.save(`teams/${secredId}`, {
-      secredId,
-      name,
-      members: [],
-    }).then(() => {
-      console.log('Team created');
-      return this.joinTeam();
+    this.publishToTeam().then(() => {
+      this.watchTeam();
     });
   }
 };
 
-const changeTeamName = function changeTeamName(secredId, name) {
-  database.save(`teams/${secredId}/name`, name).then(() => {
+const createTeam = function createTeam(inviteCode, name) {
+  if (inviteCode && name) {
+    database.save(`teams/${inviteCode}`, {
+      info: { inviteCode, name },
+      members: [],
+    }).then(() => {
+      console.log('Team created');
+      return this.joinTeam(inviteCode);
+    });
+  }
+};
+
+const changeTeamName = function changeTeamName(inviteCode, name) {
+  database.save(`teams/${inviteCode}/info`, { inviteCode, name }).then(() => {
     console.log('Name changed');
   });
 };
@@ -127,18 +139,13 @@ const processTeamData = function processTeamData(data) {
 };
 
 const watchTeam = function watchTeam() {
-  database.watch(`teams/${this.userStatus.currentTeam}`, (snapshot) => {
+  watchRef = database.watch(`teams/${this.userStatus.currentTeam}`, (snapshot) => {
     this.teamData = processTeamData(snapshot.val());
   });
 };
 
 const init = function init() {
-  // this.initTasks()
-  //   .then(() => this.publishToTeam())
-  //   .then(() => this.watchTeam());
-  this.publishToTeam().then(() => {
-    this.watchTeam();
-  });
+  this.joinTeam(this.userStatus.currentTeam);
 };
 
 export default {
@@ -242,7 +249,7 @@ export default {
 /* always present */
 .expand-transition {
   transition: all .3s ease;
-  height: 230px;
+  height: 100px;
   overflow: hidden;
 }
 
@@ -252,5 +259,4 @@ export default {
   height: 0;
   opacity: 0;
 }
-
 </style>

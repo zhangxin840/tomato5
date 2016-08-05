@@ -15,7 +15,7 @@ const initAuthUI = function initAuthUI() {
   const firebaseui = window.firebaseui;
   // FirebaseUI config.
   const uiConfig = {
-    signInSuccessUrl: '/',
+    // signInSuccessUrl: '/',
     signInOptions: [
       // Leave the lines as is for the providers you want to offer your users.
       firebase.auth.GoogleAuthProvider.PROVIDER_ID,

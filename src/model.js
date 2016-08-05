@@ -50,7 +50,7 @@ const task4 = {
 };
 
 const task5 = {
-  note: 'Take 5 to be more productive.',
+  note: 'Take 5 tomatoes to be more productive.',
   status: taskStatus.idle,
   startTime: null,
   createTime: moment(),
@@ -62,8 +62,10 @@ const tasks = [
 ];
 
 const team = {
-  screctId: 'HFE-Train',
-  name: 'HFE-Train',
+  info: {
+    inviteCode: 'HFE-Train',
+    name: 'HFE-Train',
+  },
   members: {
     UID: {
       rule: 'admin',
