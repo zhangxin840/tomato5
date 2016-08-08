@@ -23,7 +23,6 @@
                 'active': task.status === taskStatus.active,
                 'ongoing pulse infinite': task.status === taskStatus.ongoing,
               }">
-              {{ task.note }}
           </span>
         </div>
       </div>

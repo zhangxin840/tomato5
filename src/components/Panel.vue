@@ -12,7 +12,7 @@
         </div>
         <span class="timer animated "
               v-show="userStatus.availability >= 0"
-              v-on:click="stopResting"
+              v-on:click="onTimerClicked"
               v-bind:class="{
                 'rubberBand': (userStatus.availability === availabilities.busy) || (userStatus.availability === availabilities.resting)
               }">
@@ -42,7 +42,7 @@
         </div>
       </div>
     </div>
-    <div class="tasks-wrapper">
+    <div class="tasks-wrapper" v-bind:class="{'loading': !tasks}">
       <div class="tasks" transition="fade" v-if="tasks">
         <div class="list">
           <template v-for="task in tasks">
@@ -63,7 +63,7 @@
               v-on:click="addTask">Add task</span>
       </div>
     </div>
-    <team-panel 
+    <team-panel
               v-if="tasks"
               v-bind:user-info="user"
               v-bind:user-status="userStatus"
@@ -152,16 +152,22 @@ const startRest = function startRest() {
 };
 
 const stopResting = function stopResting() {
-  if (userStatus.availability === availabilities.resting) {
-    panelStatus.label = '00:00';
-    userStatus.availability = availabilities.idle;
+  this.panelStatus.label = '00:00';
+  this.userStatus.availability = availabilities.idle;
 
-    if (restTimer) {
-      window.clearInterval(restTimer);
-    }
+  if (restTimer) {
+    window.clearInterval(restTimer);
   }
 
   this.$broadcast('publish');
+};
+
+const onTimerClicked = function onTimerClicked() {
+  if (this.userStatus.availability === this.availabilities.resting) {
+    this.stopResting();
+  } else if (this.userStatus.availability === this.availabilities.busy) {
+    this.$broadcast('clearTask');
+  }
 };
 
 const addTask = function addTask() {
@@ -271,7 +277,7 @@ export default {
     return { user, tasks, panelStatus, userStatus, taskStatus, availabilities };
   },
   methods: { addTask, toggleEmotions, changeEmotion, initTasks,
-    saveTasks, stopResting, startRest, onRestTimeDue },
+    saveTasks, onTimerClicked, startRest, onRestTimeDue, stopResting },
   components: {
     ActiveTask, Task, Emotion, TeamPanel,
   },
@@ -300,8 +306,10 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
+@import "../base";
+
 h1 {
-  color: #42b983;
+  color: $green;
 }
 
 .panel {
@@ -310,7 +318,13 @@ h1 {
 
   &.resting {
     .timer {
-      color: #42b983;
+      color: $green;
+      cursor: pointer;
+    }
+  }
+
+  &.busy {
+    .timer {
       cursor: pointer;
     }
   }
@@ -323,6 +337,11 @@ h1 {
 
   .tasks-wrapper {
     min-height: 315px;
+
+    &.loading {
+      background: url('../assets/loading.svg') no-repeat center 30%;
+      background-size: 80px 80px;
+    }
   }
 
   .tasks {

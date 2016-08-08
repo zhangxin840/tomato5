@@ -56,6 +56,12 @@ const drop = function drop() {
   this.$dispatch('taskDropped', this.task);
 };
 
+const onClearTask = function onClearTask() {
+  if (this.task.status === this.taskStatus.ongoing) {
+    this.drop();
+  }
+};
+
 const onTaskEdited = function onTaskEdited() {
   this.$dispatch('taskEdited', this.task);
 };
@@ -102,7 +108,9 @@ export default {
     return { timeInterval };
   },
   methods: { onClick, onTaskTimeDue, onTaskEdited, start, done, drop },
-  events: { },
+  events: {
+    clearTask: onClearTask,
+  },
   components: { Emotion },
 };
 </script>
