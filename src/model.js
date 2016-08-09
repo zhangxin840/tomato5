@@ -68,7 +68,7 @@ const team = {
   },
   members: {
     UID: {
-      rule: 'admin',
+      rule: 'member',
       userInfo: {},
       userStatus: {},
       tasks: [],
@@ -77,4 +77,13 @@ const team = {
   },
 };
 
-export { taskStatus, availabilities, tasks, team };
+const userData = {
+  teamData: {
+    currentTeam: '',
+  },
+  systemData: {
+    rule: 'normal',
+  },
+};
+
+export { taskStatus, availabilities, tasks, team, userData };

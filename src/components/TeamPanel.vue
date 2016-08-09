@@ -1,6 +1,6 @@
 <template>
   <section class="teamPanel">
-    <div class="teamPanel-wrapper" transition="fade" v-if="teamData">
+    <div class="teamPanel-wrapper">
       <p class="title">
         Your team working on tomatoes:
         <!-- <span>{{ teamData.info.name }}</span>     -->
@@ -41,7 +41,7 @@
           <p class="info"></p>
         </div>
       </div>
-      <div class="members">
+      <div class="members" transition="fade" v-if="teamData">
         <member v-for="(uid, member) in teamData.members"
                 v-bind:tasks="member.tasks"
                 v-bind:user-status="member.userStatus"
@@ -61,6 +61,7 @@ import auth from '../auth';
 import { tasks as defaultTasks } from '../model';
 
 const teamData = null;
+const userTeamData = null;
 
 const teamForm = {
   inviteCode: '',
@@ -80,7 +81,7 @@ const publishToTeam = function publishToTeam() {
   //   console.log('published');
   // });
 
-  return database.save(`teams/${this.userStatus.currentTeam}/members/${auth.getUser().uid}`, {
+  return database.save(`teams/${this.userTeamData.currentTeam}/members/${auth.getUser().uid}`, {
     rule: 'member',
     userInfo: this.userInfo,
     userStatus: this.userStatus,
@@ -93,13 +94,17 @@ const publishToTeam = function publishToTeam() {
 
 const joinTeam = function joinTeam(inviteCode) {
   if (inviteCode) {
-    this.userStatus.currentTeam = inviteCode;
+    this.userTeamData.currentTeam = inviteCode;
     if (watchRef) {
       watchRef.off();
     }
 
     this.publishToTeam().then(() => {
       this.watchTeam();
+    });
+
+    this.saveUserTeamData().then(() => {
+      this.teamForm.isShow = false;
     });
   }
 };
@@ -139,25 +144,44 @@ const processTeamData = function processTeamData(data) {
 };
 
 const watchTeam = function watchTeam() {
-  watchRef = database.watch(`teams/${this.userStatus.currentTeam}`, (snapshot) => {
+  watchRef = database.watch(`teams/${this.userTeamData.currentTeam}`, (snapshot) => {
     this.teamData = processTeamData(snapshot.val());
   });
 };
 
 const init = function init() {
-  this.joinTeam(this.userStatus.currentTeam);
+  this.getUserTeamData().then(() => {
+    this.teamForm.inviteCode = this.userTeamData.currentTeam;
+    this.joinTeam(this.userTeamData.currentTeam);
+  });
+};
+
+const getUserTeamData = function getUserTeamData() {
+  return database.get(`userData/${auth.getUser().uid}/teamData`, { currentTeam: '' })
+          .then((data) => {
+            this.userTeamData = data;
+          });
+};
+
+const saveUserTeamData = function saveUserTeamData() {
+  return database.save(`userData/${auth.getUser().uid}/teamData`, this.userTeamData);
 };
 
 export default {
   props: ['userInfo', 'userStatus', 'tasks'],
   data() {
-    return { teamData, teamForm };
+    return { teamData, teamForm, userTeamData };
   },
   events: {
     publish: publishToTeam,
   },
   created: init,
-  methods: { publishToTeam, watchTeam, joinTeam, createTeam, changeTeamName, showForm },
+  methods: {
+    publishToTeam, watchTeam,
+    getUserTeamData, saveUserTeamData,
+    joinTeam, createTeam, changeTeamName,
+    showForm,
+  },
   components: { Member },
 };
 </script>
