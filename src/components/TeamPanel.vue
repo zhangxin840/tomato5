@@ -77,23 +77,28 @@ const showForm = function showForm() {
 let watchRef = null;
 
 const publishToTeam = function publishToTeam() {
-  // database.save('test/a', { b: 2 }).then(() => {
-  //   console.log('published');
-  // });
+  let promise;
 
-  return database.save(`teams/${this.userTeamData.currentTeam}/members/${auth.getUser().uid}`, {
-    rule: 'member',
-    userInfo: this.userInfo,
-    userStatus: this.userStatus,
-    tasks: this.tasks,
-    updateTime: moment(),
-  }).then(() => {
-    console.log('published');
-  });
+  if (this.userTeamData && this.userTeamData.currentTeam) {
+    const memberPath = `teams/${this.userTeamData.currentTeam}/members/${auth.getUser().uid}`;
+    promise = database.save(memberPath, {
+      rule: 'member',
+      userInfo: this.userInfo,
+      userStatus: this.userStatus,
+      tasks: this.tasks,
+      updateTime: moment(),
+    }).then(() => {
+      console.log('published');
+    });
+  } else {
+    promise = Promise.resolve();
+  }
+
+  return promise;
 };
 
 const joinTeam = function joinTeam(inviteCode) {
-  if (inviteCode) {
+  if (inviteCode && this.userTeamData) {
     this.userTeamData.currentTeam = inviteCode;
     if (watchRef) {
       watchRef.off();

@@ -9,13 +9,14 @@ let offLineThreshold = 60; // minutes
 let checkMemberInterval = 1000; // ms
 
 let firebaseConfig = {
-  apiKey: 'AIzaSyD9yT1k7UcroBG4V2a5l8ISvOwFQPWyxHw',
-  authDomain: 'tomoto5-pro.firebaseapp.com',
-  databaseURL: 'https://tomoto5-pro.firebaseio.com',
-  storageBucket: 'tomoto5-pro.appspot.com',
+  apiKey: 'AIzaSyCbB0yB-qabmzQ_STyAngEd5-D0MypBbBE',
+  authDomain: 'tomato5-pro.firebaseapp.com',
+  databaseURL: 'https://tomato5-pro.firebaseio.com',
+  storageBucket: 'tomato5-pro.appspot.com',
 };
 
-if (window.location.hostname === 'localhost') {
+if (window.location.hostname === 'localhost'
+    || window.location.hostname === 'tomato5-dev.firebaseapp.com') {
   taskDurations = {
     standard: 10,
     resting: 5,
