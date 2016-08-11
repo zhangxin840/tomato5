@@ -15,9 +15,9 @@
         <div id="firebaseui-auth-container"></div>
       </div>
       <section class="footer">
-        <!-- <p>
+        <p>
           <a href="https://github.com/zhangxin840/tomato5" target="_blank">Star me on github</a>
-        </p> -->
+        </p>
         <p>
           <a href="https://www.focusboosterapp.com/the-pomodoro-technique
 " target="_blank">The theory behind: Promodoro Technique</a>
@@ -200,7 +200,7 @@ body {
 
 .footer {
   p {
-    margin: 5px 0;
+    margin: 10px 0;
   }
 }
 

@@ -18,6 +18,7 @@
         <div class="tasks">
           <span class="icon tomato animated"
               v-for="task in tasks"
+              v-bind:title="task.note"
               v-bind:class="{
                 'done': task.status === taskStatus.done,
                 'active': task.status === taskStatus.active,

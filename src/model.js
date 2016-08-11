@@ -17,8 +17,16 @@ const availabilities = {
   busy: 3,
 };
 
+const taskTips = [
+  'Plan your work in this list.',
+  'Click tomato to start working.',
+  'After finishing, take a rest.',
+  'Restart if you are disturbed.',
+  'Take 5 tomatoes to be more productive.',
+];
+
 const task1 = {
-  note: 'Plan your work in this list.',
+  note: '',
   status: taskStatus.idle,
   startTime: null,
   createTime: moment(),
@@ -26,7 +34,7 @@ const task1 = {
 };
 
 const task2 = {
-  note: 'Click tomato to start working.',
+  note: '',
   status: taskStatus.idle,
   startTime: null,
   createTime: moment(),
@@ -34,7 +42,7 @@ const task2 = {
 };
 
 const task3 = {
-  note: 'After finishing, take a rest.',
+  note: '',
   status: taskStatus.idle,
   startTime: null,
   createTime: moment(),
@@ -42,7 +50,7 @@ const task3 = {
 };
 
 const task4 = {
-  note: 'Restart if you are disturbed.',
+  note: '',
   status: taskStatus.idle,
   startTime: null,
   createTime: moment(),
@@ -50,7 +58,7 @@ const task4 = {
 };
 
 const task5 = {
-  note: 'Take 5 tomatoes to be more productive.',
+  note: '',
   status: taskStatus.idle,
   startTime: null,
   createTime: moment(),
@@ -86,4 +94,4 @@ const userData = {
   },
 };
 
-export { taskStatus, availabilities, tasks, team, userData };
+export { taskStatus, taskTips, availabilities, tasks, team, userData };

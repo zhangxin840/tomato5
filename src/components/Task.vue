@@ -26,7 +26,7 @@
       </emotion>
     </div>
     <div class="note-wrapper">
-      <input class="note" type="text" name="name" placeholder="Title of this task"
+      <input class="note" type="text" name="name" v-bind:placeholder="taskTips[index] || `the ${index + 1}th task.`"
             v-model="task.note"
             v-on:blur="onTaskEdited">
       <div class="activeTask">
@@ -43,6 +43,7 @@
 
 import moment from 'moment';
 import timer from '../timer';
+import { taskTips } from '../model';
 import Emotion from './Emotion';
 
 const done = function done() {
@@ -103,9 +104,9 @@ const onClick = function onClick() {
 };
 
 export default {
-  props: ['task', 'taskStatus', 'hide', 'disabled', 'userStatus', 'availabilities'],
+  props: ['task', 'index', 'taskStatus', 'hide', 'disabled', 'userStatus', 'availabilities'],
   data() {
-    return { timeInterval };
+    return { timeInterval, taskTips };
   },
   methods: { onClick, onTaskTimeDue, onTaskEdited, start, done, drop },
   events: {

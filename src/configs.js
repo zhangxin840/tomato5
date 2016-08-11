@@ -18,8 +18,8 @@ let firebaseConfig = {
 if (window.location.hostname === 'localhost'
     || window.location.hostname === 'tomato5-dev.firebaseapp.com') {
   taskDurations = {
-    standard: 10,
-    resting: 5,
+    standard: 5,
+    resting: 3,
   };
 
   offLineThreshold = 1;

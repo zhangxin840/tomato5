@@ -14,7 +14,9 @@
               v-show="userStatus.availability >= 0"
               v-on:click="onTimerClicked"
               v-bind:class="{
-                'rubberBand': (userStatus.availability === availabilities.busy) || (userStatus.availability === availabilities.resting)
+                'rubberBand': (userStatus.availability === availabilities.busy)
+                || (userStatus.availability === availabilities.resting)
+                || ((userStatus.availability === availabilities.idle) && replay)
               }">
           {{ panelStatus.label }}
         </span>
@@ -45,8 +47,9 @@
     <div class="tasks-wrapper" v-bind:class="{'loading': !tasks}">
       <div class="tasks" transition="fade" v-if="tasks">
         <div class="list">
-          <template v-for="task in tasks">
+          <template v-for="(index, task) in tasks">
             <task v-bind:task="task"
+                  v-bind:index="index"
                   v-bind:task-status="taskStatus"
                   v-bind:user-status="userStatus"
                   v-bind:availabilities="availabilities"
@@ -102,6 +105,8 @@ const userStatus = {
 
 const Notification = window.Notification;
 
+const replay = false;
+
 const sendNotification = function sendNotification(title, message) {
   if (Notification) {
     const noti = new Notification(title, { /* eslint no-unused-vars: 0 */
@@ -134,14 +139,27 @@ const onRestTimeDue = function onRestTimeDue() {
   this.$broadcast('publish');
 };
 
+const updateTimer = function updateTimer(startTime, type) {
+  const seconds = timer.getContdown(startTime, type, 'second');
+  const minutes = timer.getContdown(startTime, type, 'minute');
+  const tabLabel = (seconds > '00:01') ? ` - ${minutes}` : '';
+  panelStatus.label = seconds;
+  document.title = `Tomato5${tabLabel}`;
+};
+
+const clearTimer = function clearTimer() {
+  panelStatus.label = '00:00';
+  document.title = 'Tomato5';
+};
+
 const startRest = function startRest() {
   const restStartTime = moment();
 
-  panelStatus.label = timer.getContdown(restStartTime, 'resting', 'second');
+  updateTimer(restStartTime, 'resting');
   userStatus.availability = availabilities.resting;
 
   restTimer = window.setInterval(() => {
-    panelStatus.label = timer.getContdown(restStartTime, 'resting', 'second');
+    updateTimer(restStartTime, 'resting');
     if (timer.getRemaning(restStartTime, 'resting').asMilliseconds() <= 0) {
       window.clearInterval(restTimer);
       this.onRestTimeDue();
@@ -152,7 +170,7 @@ const startRest = function startRest() {
 };
 
 const stopResting = function stopResting() {
-  this.panelStatus.label = '00:00';
+  clearTimer();
   this.userStatus.availability = availabilities.idle;
 
   if (restTimer) {
@@ -162,17 +180,30 @@ const stopResting = function stopResting() {
   this.$broadcast('publish');
 };
 
+const replayAnimation = function replayAnimation() {
+  this.replay = false;
+  window.setTimeout(() => {
+    this.replay = true;
+  }, 1); // To clear class in DOM
+  window.setTimeout(() => {
+    this.replay = false;
+  }, 1000); // Clear after length of animation
+};
+
 const onTimerClicked = function onTimerClicked() {
   if (this.userStatus.availability === this.availabilities.resting) {
     this.stopResting();
+    this.replayAnimation();
   } else if (this.userStatus.availability === this.availabilities.busy) {
     this.$broadcast('clearTask');
+    this.replayAnimation();
   }
 };
 
 const addTask = function addTask() {
   this.tasks.push({
-    note: `The ${this.tasks.length + 1}th task`,
+    // note: `The ${this.tasks.length + 1}th task`,
+    note: '',
     status: taskStatus.idle,
     startTime: null,
     createTime: moment(),
@@ -184,7 +215,7 @@ const addTask = function addTask() {
 
 const onTaskStarted = function onTaskStarted(task) {
   this.panelStatus.activeTask = task;
-  this.panelStatus.label = timer.getContdown(task.startTime, 'standard', 'second');
+  updateTimer(task.startTime, 'standard');
   this.userStatus.availability = this.availabilities.busy;
 
   task.emotion = this.userStatus.emotion;
@@ -208,20 +239,20 @@ const onTaskDone = function onTaskDone(task) {
 const onTaskDropped = function onTaskDropped() {
   this.userStatus.availability = this.availabilities.idle;
   this.panelStatus.activeTask = null;
-  this.panelStatus.label = '00:00';
+  clearTimer();
 
   this.saveTasks();
 };
 
 const onTaskTimeDue = function onTaskTimeDue() {
-  sendNotification('Tomato 5', 'Tomato completed, nice job!');
+  sendNotification('Tomato5', 'Tomato completed, nice job!');
   this.userStatus.availability = this.availabilities.active;
 
   this.saveTasks();
 };
 
 const onTaskTimerUpdated = function onTaskTimerUpdated(task) {
-  this.panelStatus.label = timer.getContdown(task.startTime, 'standard', 'second');
+  updateTimer(task.startTime, 'standard');
 };
 
 const onTaskEdited = function onTaskEdited() {
@@ -243,29 +274,38 @@ const changeEmotion = function changeEmotion(level) {
   this.$broadcast('publish');
 };
 
+const initTime = moment();
+
 const init = function init() {
-  this.initTasks();
+  this.getTasks();
+
+  window.setInterval(() => {
+    if ((initTime.dayOfYear() !== moment().dayOfYear())
+          && (this.userStatus.availability === this.availabilities.idle)) {
+      window.location.reload(); // Reload if cross day
+    }
+  }, 100000);
 };
 
-const initTasks = function initTasks() {
-  const prepareTasks = function prepareTasks(theTasks) {
-    theTasks.forEach((task) => { /* eslint no-param-reassign: 0 */
-      task.createTime = task.createTime && moment(task.createTime);
-      task.startTime = task.startTime && moment(task.startTime);
-      task.emotion = task.emotion || 2;
-      task.status = task.status || taskStatus.idle;
-      task.note = task.note || '';
+const prepareTasks = function prepareTasks(theTasks) {
+  theTasks.forEach((task) => { /* eslint no-param-reassign: 0 */
+    task.createTime = task.createTime && moment(task.createTime);
+    task.startTime = task.startTime && moment(task.startTime);
+    task.emotion = task.emotion || 2;
+    task.status = task.status || taskStatus.idle;
+    task.note = task.note || '';
 
-      // Rest task if not done
-      if (task.status !== taskStatus.done) {
-        task.startTime = null;
-        task.status = taskStatus.idle;
-      }
-    });
+    // Rest task if not done
+    if (task.status !== taskStatus.done) {
+      task.startTime = null;
+      task.status = taskStatus.idle;
+    }
+  });
 
-    return theTasks;
-  };
+  return theTasks;
+};
 
+const getTasks = function getTasks() {
   return database.get(getTasksPath(), defaultTasks).then((data) => {
     this.tasks = prepareTasks(data);
     return this.tasks;
@@ -274,10 +314,10 @@ const initTasks = function initTasks() {
 
 export default {
   data() {
-    return { user, tasks, panelStatus, userStatus, taskStatus, availabilities };
+    return { user, tasks, panelStatus, userStatus, taskStatus, availabilities, replay };
   },
-  methods: { addTask, toggleEmotions, changeEmotion, initTasks,
-    saveTasks, onTimerClicked, startRest, onRestTimeDue, stopResting },
+  methods: { addTask, toggleEmotions, changeEmotion, getTasks,
+    saveTasks, onTimerClicked, startRest, onRestTimeDue, stopResting, replayAnimation },
   components: {
     ActiveTask, Task, Emotion, TeamPanel,
   },
@@ -389,6 +429,10 @@ h1 {
         line-height: 50px;
         width: 80px;
         text-align: left;
+
+        &:active{
+          transform: scale(1.1, 1.1);
+        }
       }
     }
 

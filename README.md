@@ -1,18 +1,18 @@
 # Tomato5
 
 Online tool for Promodoro(tomato) Technique.
+Live: [https://tomato5.github.io/](https://tomato5.github.io/)
+
 
 ## Features
 
 - 5 tomatoes daily planning.
 - Track energy level for every task.
-- Light weight UI design with many details for better user experience.
-
-## Usage
-
-Live: [https://tomato5.github.io/](https://tomato5.github.io/)
+- Take tomato timer together with your team.
 
 ## Tech Stack
+
+This app is totally structured as the 'serverless' architecture.
 
 - ES6
 - CSS3 animation
