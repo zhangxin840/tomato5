@@ -196,7 +196,7 @@ export default {
 
 .teamPanel {
   .title {
-    margin: 40px 0 0px 0;;
+    margin: 50px 0 30px 0;;
     text-align: left;
     line-height: 30px;
   }

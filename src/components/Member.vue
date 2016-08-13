@@ -28,7 +28,9 @@
           </span>
         </div>
       </div>
-      <p class="note" transition="fade" v-if="activeTask">{{ activeTask.note }}</p>
+      <div class="note-container">
+        <p class="note" transition="fade" v-if="activeTask">{{ activeTask.note }}</p>
+      </div>
   </div>
 </template>
 
@@ -104,9 +106,8 @@ export default {
 
 .member {
   position: relative;
-  padding-bottom: 35px;
-  margin: 30px 0;
-
+  padding-bottom: 45px;
+  margin: 0 0 0 0;
 
   p {
     margin: 10px 0;
@@ -149,10 +150,16 @@ export default {
     }
   }
 
-  .note {
+  .note-container {
+    height: 45px;
     position: absolute;
     bottom: 0;
     left: 0;
+    width: 100%;
+
+    .note {
+      margin: 0
+    }
   }
 
   .time {
