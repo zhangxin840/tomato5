@@ -45,6 +45,36 @@ import { firebaseConfig } from './configs';
 
 const user = auth.getUser();
 
+const tabId = Math.round(1000 * Math.random());
+
+const makeMonoTab = function makeMonoTab() {
+  const checkTab = function checkTab() {
+    const storedTabId = window.localStorage.getItem('tabId');
+    if (storedTabId && storedTabId !== `${tabId}`) {
+      if (window.confirm('You already have Tomato5 running in another tab,'
+        + ' we suggest to close this tab and use the previous one.')) {
+        window.close();
+      } else {
+        window.localStorage.setItem('tabId', tabId);
+      }
+    } else {
+      window.localStorage.setItem('tabId', tabId);
+    }
+  };
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') {
+      checkTab();
+    }
+  });
+
+  window.addEventListener('beforeunload', (e) => {
+    window.localStorage.removeItem('tabId');
+  });
+
+  checkTab();
+};
+
 const initApp = function initApp() {
   firebase.initializeApp(firebaseConfig);
   database.init();
@@ -55,6 +85,8 @@ const initApp = function initApp() {
       FastClick.attach(document.body);
     }, false);
   }
+
+  makeMonoTab();
 };
 
 export default {

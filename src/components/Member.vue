@@ -106,7 +106,7 @@ export default {
 
 .member {
   position: relative;
-  padding-bottom: 45px;
+  padding-bottom: 50px;
   margin: 0 0 0 0;
 
   p {
@@ -151,7 +151,7 @@ export default {
   }
 
   .note-container {
-    height: 45px;
+    height: 50px;
     position: absolute;
     bottom: 0;
     left: 0;
