@@ -26,7 +26,7 @@
       </emotion>
     </div>
     <div class="note-wrapper">
-      <input class="note" type="text" name="name" v-bind:placeholder="taskTips[index] || `the ${index + 1}th task.`"
+      <input class="note" type="text" autocomplete="off" v-bind:placeholder="taskTips[index] || `the ${index + 1}th task.`"
             v-model="task.note"
             v-on:blur="onTaskEdited">
       <div class="activeTask">

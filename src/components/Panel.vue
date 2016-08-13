@@ -142,9 +142,9 @@ const onRestTimeDue = function onRestTimeDue() {
 const updateTimer = function updateTimer(startTime, type) {
   const seconds = timer.getContdown(startTime, type, 'second');
   const minutes = timer.getContdown(startTime, type, 'minute');
-  const tabLabel = (seconds > '00:01') ? ` - ${minutes}` : '';
+  const tabLabel = (seconds > '00:01') ? `${minutes}` : 'Tomato5';
   panelStatus.label = seconds;
-  document.title = `Tomato5${tabLabel}`;
+  document.title = `${tabLabel}`;
 };
 
 const clearTimer = function clearTimer() {
@@ -387,6 +387,7 @@ h1 {
   .tasks {
     width: 100%;
     position: relative;
+    margin: 0px 0;
 
     .list {
       padding-bottom: 15px;

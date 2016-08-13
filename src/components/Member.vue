@@ -23,6 +23,7 @@
                 'done': task.status === taskStatus.done,
                 'active': task.status === taskStatus.active,
                 'ongoing pulse infinite': task.status === taskStatus.ongoing,
+                'planned': task.status === taskStatus.idle && task.note,
               }">
           </span>
         </div>
@@ -172,8 +173,8 @@ export default {
       opacity: 1;
     }
 
-    &.ongoing, &.active {
-      opacity: 0.6;
+    &.ongoing, &.active, &.planned {
+      opacity: 0.5;
     }
   }
 }

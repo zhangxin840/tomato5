@@ -16,7 +16,7 @@
           <div class="join" transition="slide_left" v-show="teamForm.isJoin">
             <p class="field">
               <span>Invite Code: </span>
-              <input type="text" name="name" value="" v-model="teamForm.inviteCode">
+              <input type="text" autocomplete="off" value="" v-model="teamForm.inviteCode">
             </p>
             <p>
               <a v-on:click="joinTeam(teamForm.inviteCode)">Join Team</a>
@@ -29,7 +29,7 @@
             </p>
             <p class="field">
               <span class="">Invite Code: </span>
-              <input type="text" value="" placeholder="6-12 charactors" v-model="teamForm.inviteCode">
+              <input type="text" autocomplete="off" value="" placeholder="4-12 charactors" v-model="teamForm.inviteCode">
             </p>
             <p class="tips">
               Others will use this code to join your team.
