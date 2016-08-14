@@ -7,13 +7,8 @@
       </div>
       <p class="instruction"><span>Concentrate for work</span> <span>five times a day</span></p>
       <panel transition="fade" v-if="user.uid"></panel>
-      <!-- <p class="instruction team"><span>Together with your team</span></p> -->
-      <!-- <panel></panel>
-      <panel></panel> -->
       <account v-if="user.uid"></account>
-      <div class="login" v-show="!user.uid">
-        <div id="firebaseui-auth-container"></div>
-      </div>
+      <usage v-if="user.uid"></usage>
       <section class="footer">
         <p>
           <a href="https://github.com/zhangxin840/tomato5" target="_blank">Star me on github</a>
@@ -26,6 +21,9 @@
           <div>Icons made by <a href="http://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
         </p> -->
       </section>
+      <div class="login" v-show="!user.uid">
+        <div id="firebaseui-auth-container"></div>
+      </div>
     </article>
 
   </div>
@@ -39,6 +37,7 @@ import FastClick from 'fastclick';
 
 import Panel from './components/Panel';
 import Account from './components/Account';
+import Usage from './components/Usage';
 import database from './database';
 import auth from './auth';
 import { firebaseConfig } from './configs';
@@ -75,6 +74,10 @@ const makeMonoTab = function makeMonoTab() {
   checkTab();
 };
 
+const onTaskDone = function onTaskDone() {
+  this.$broadcast('addStreak');
+};
+
 const initApp = function initApp() {
   firebase.initializeApp(firebaseConfig);
   database.init();
@@ -94,8 +97,11 @@ export default {
     return { user };
   },
   created: initApp,
+  events: {
+    taskDone: onTaskDone,
+  },
   components: {
-    Panel, Account,
+    Panel, Account, Usage,
   },
 };
 </script>

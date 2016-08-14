@@ -73,7 +73,6 @@
               v-bind:tasks="tasks">
     <team-panel>
   </section>
-
 </template>
 
 <script>
@@ -234,6 +233,8 @@ const onTaskDone = function onTaskDone(task) {
   }, 1);
 
   this.saveTasks();
+
+  return true; // Do not stop stop propagation
 };
 
 const onTaskDropped = function onTaskDropped() {
@@ -314,10 +315,19 @@ const getTasks = function getTasks() {
 
 export default {
   data() {
-    return { user, tasks, panelStatus, userStatus, taskStatus, availabilities, replay };
+    return {
+      user, tasks, panelStatus,
+      userStatus,
+      taskStatus, availabilities,
+      replay,
+    };
   },
-  methods: { addTask, toggleEmotions, changeEmotion, getTasks,
-    saveTasks, onTimerClicked, startRest, onRestTimeDue, stopResting, replayAnimation },
+  methods: {
+    getTasks, addTask, saveTasks,
+    startRest, onRestTimeDue, stopResting,
+    toggleEmotions, changeEmotion,
+    onTimerClicked, replayAnimation,
+  },
   components: {
     ActiveTask, Task, Emotion, TeamPanel,
   },
