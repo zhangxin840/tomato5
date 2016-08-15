@@ -109,7 +109,7 @@ const replay = false;
 const sendNotification = function sendNotification(title, message) {
   if (Notification) {
     const noti = new Notification(title, { /* eslint no-unused-vars: 0 */
-      icon: 'http://tomato5.github.io/static/icons/tomato.png',
+      icon: 'http:///static/icons/tomato.png',
       body: message,
     });
   }
