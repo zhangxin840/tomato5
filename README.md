@@ -1,7 +1,7 @@
 # Tomato5
 
 Online tool for Promodoro(tomato) Technique.
-Live: [https://tomato5.github.io/](https://tomato5.github.io/)
+Live: [http://tomato5.io](http://tomato5.io)
 
 
 ## Features
