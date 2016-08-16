@@ -63,7 +63,9 @@
         <span class="icon add"
               transition="fade"
               v-show="(doneCount >= 5 || tasks.length < 5) && (userStatus.availability === availabilities.idle || userStatus.availability === availabilities.resting)"
-              v-on:click="addTask">Add task</span>
+              v-on:click="addTask">
+              Add task
+        </span>
       </div>
     </div>
     <team-panel
@@ -71,13 +73,18 @@
               v-bind:user-info="user"
               v-bind:user-status="userStatus"
               v-bind:tasks="tasks">
-    <team-panel>
+    </team-panel>
+    <article class="">
+      <h2>Usage data</h2>
+      <canvas id="line-chart" height="300"></canvas>
+    </article>
   </section>
 </template>
 
 <script>
 import moment from 'moment';
 import vue from 'vue';
+import Chart from 'chart.js';
 import ActiveTask from './ActiveTask';
 import Task from './Task';
 import Emotion from './Emotion';
@@ -288,6 +295,54 @@ const init = function init() {
   }, 100000);
 };
 
+const onReady = function onReady() {
+  const data = {
+    labels: ['31', '01', 'March', 'April', 'May', 'June', 'July'],
+    datasets: [{
+      label: 'My First dataset',
+      fill: false,
+      lineTension: 0.1,
+      backgroundColor: 'rgba(75,192,192,0.4)',
+      borderColor: 'rgba(75,192,192,1)',
+      borderCapStyle: 'butt',
+      borderDash: [],
+      borderDashOffset: 0.0,
+      borderJoinStyle: 'miter',
+      pointBorderColor: 'rgba(75,192,192,1)',
+      pointBackgroundColor: '#fff',
+      pointBorderWidth: 1,
+      pointHoverRadius: 5,
+      pointHoverBackgroundColor: 'rgba(75,192,192,1)',
+      pointHoverBorderColor: 'rgba(220,220,220,1)',
+      pointHoverBorderWidth: 2,
+      pointRadius: 1,
+      pointHitRadius: 10,
+      data: [65, 59, 80, 81, 56, 55, 40],
+      spanGaps: false,
+    }],
+  };
+
+  const options = {
+    legend: {
+      display: false,
+    },
+    scales: {
+      yAxes: [{
+        ticks: {
+          beginAtZero: true,
+        },
+      }],
+    },
+  };
+
+  const ctx = document.getElementById('line-chart');
+  const myChart = new Chart(ctx, {
+    type: 'line',
+    data,
+    options,
+  });
+};
+
 const prepareTasks = function prepareTasks(theTasks) {
   theTasks.forEach((task) => { /* eslint no-param-reassign: 0 */
     task.createTime = task.createTime && moment(task.createTime);
@@ -340,6 +395,7 @@ export default {
     taskEdited: onTaskEdited,
   },
   created: init,
+  ready: onReady,
   computed: {
     doneCount: function doneCount() {
       return this.tasks.reduce(

@@ -22,6 +22,7 @@
     "babel-preset-stage-2": "^6.0.0",
     "babel-runtime": "^6.0.0",
     "chai": "^3.5.0",
+    "chart.js": "^2.2.1",
     "chromedriver": "^2.21.2",
     "connect-history-api-fallback": "^1.1.0",
     "cross-spawn": "^2.1.5",
