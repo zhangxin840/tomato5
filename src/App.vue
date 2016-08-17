@@ -7,8 +7,8 @@
       </div>
       <p class="instruction"><span>Concentrate for work</span> <span>five times a day</span></p>
       <panel transition="fade" v-if="user.uid"></panel>
-      <account v-if="user.uid"></account>
       <usage v-if="user.uid"></usage>
+      <account v-if="user.uid"></account>
       <section class="footer">
         <p>
           <a href="https://github.com/zhangxin840/tomato5" target="_blank">Star me on github</a>
@@ -128,6 +128,11 @@ body {
     &:active{
         transform: scale3d(1.1, 1.1, 1);
     }
+  }
+
+  h2 {
+    font-size: 18px;
+    font-weight: normal;
   }
 
   input[type=text], input[type=text]:focus {

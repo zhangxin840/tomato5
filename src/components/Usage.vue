@@ -1,15 +1,23 @@
 <template>
-  <div class="usage">
-    <p transition="fade" v-if="usageData">
+  <article class="usage">
+    <h2>Tomato habit</h2>
+    <p class="chartTitle">
+      Tomatoes completed
+    </p>
+    <canvas id="line-chart" height="300"></canvas>
+    <p class="streak" transition="fade" v-if="usageData">
       Usage streak: {{ usageData.currentStreak }} day{{usageData.currentStreak > 1 ? 's' : ''}}
     </p>
-  </div>
+  </article>
 </template>
 
 <script>
+
+import Chart from 'chart.js';
 import moment from 'moment';
 import database from '../database';
 import auth from '../auth';
+import { taskStatus } from '../model';
 
 const usageData = null;
 
@@ -33,7 +41,7 @@ const checkStreak = function checkStreak() {
   return result;
 };
 
-const getUsageData = function getUsageData() {
+const getStreakData = function getStreakData() {
   return database.get(`userData/${auth.getUser().uid}/usageData`, {
     currentStreak: 0,
     lastStreakTime: null,
@@ -48,8 +56,34 @@ const getUsageData = function getUsageData() {
   });
 };
 
+const processLineChartData = function processLineChartData(allTasks) {
+  const xData = [];
+  const yData = [];
+  let day;
+  let count;
+
+  Object.keys(allTasks).forEach((key) => {
+    day = moment(key);
+    xData.push(day.date());
+
+    count = allTasks[key].reduce((previousValue, item) =>
+      previousValue + (item.status === taskStatus.done ? 1 : 0)
+    , 0);
+    yData.push(count);
+  });
+
+  console.log({ xData, yData });
+
+  return { xData, yData };
+};
+
+const getLineChartData = function getLineChartData() {
+  return database.get(`tasks/${auth.getUser().uid}`, {})
+  .then((data) => processLineChartData(data));
+};
+
 // TODO: Should be moved to AWS lambda
-const saveUsageData = function saveUsageData() {
+const saveStreakData = function saveStreakData() {
   return database.save(`userData/${auth.getUser().uid}/usageData`, this.usageData);
 };
 
@@ -64,12 +98,69 @@ const onAddStreak = function onAddStreak() {
     }
     this.usageData.lastStreakTime = moment();
 
-    this.saveUsageData();
+    this.saveStreakData();
   }
 };
 
+const LineOptions = {
+  fill: false,
+  lineTension: 0.1,
+  backgroundColor: 'rgba(95,210,219,0.4)',
+  borderColor: 'rgba(95,210,219,1)',
+  borderCapStyle: 'butt',
+  borderDash: [],
+  borderDashOffset: 0.0,
+  borderJoinStyle: 'miter',
+  pointBorderColor: 'rgba(95,210,219,1)',
+  pointBackgroundColor: '#fff',
+  pointBorderWidth: 1,
+  pointHoverRadius: 5,
+  pointHoverBackgroundColor: 'rgba(95,210,219,1)',
+  pointHoverBorderColor: 'rgba(220,220,220,1)',
+  pointHoverBorderWidth: 2,
+  pointRadius: 1,
+  pointHitRadius: 10,
+  spanGaps: false,
+};
+
+const lineChartOptions = {
+  legend: {
+    display: false,
+  },
+  scales: {
+    yAxes: [{
+      ticks: {
+        beginAtZero: true,
+      },
+    }],
+  },
+};
+
+const initLineChart = function initLineChart(id, xData, yData) {
+  const ctx = document.getElementById(id);
+
+  const data = {
+    labels: xData,
+    datasets: [Object.assign(LineOptions, {
+      label: 'Tomato completed',
+      data: yData,
+    })],
+  };
+
+  const myChart = new Chart(ctx, { /* eslint no-unused-vars: 0 */
+    type: 'line',
+    data,
+    options: lineChartOptions,
+  });
+};
+
 const init = function init() {
-  this.getUsageData();
+  this.getStreakData();
+  getLineChartData().then((data) => {
+    initLineChart('line-chart',
+    data.xData,
+    data.yData);
+  });
 };
 
 export default {
@@ -81,7 +172,7 @@ export default {
     addStreak: onAddStreak,
   },
   methods: {
-    getUsageData, saveUsageData, checkStreak,
+    getStreakData, saveStreakData, checkStreak,
   },
 };
 </script>
@@ -89,4 +180,12 @@ export default {
 <style lang="scss" scoped>
 @import "../base";
 
+.chartTitle {
+  text-align: center;
+  margin: 30px 0 10px 0;
+}
+
+.streak {
+  margin-top: 40px;
+}
 </style>

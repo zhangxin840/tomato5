@@ -1,11 +1,11 @@
 <template>
   <section class="teamPanel">
     <div class="teamPanel-wrapper">
-      <p class="title">
-        Your team working on tomatoes:
+      <h2 class="">
+        Tomato Team
         <!-- <span>{{ teamData.info.name }}</span>     -->
         <span class="expander" v-on:click="showForm()">+</span>
-      </p>
+      </h2>
       <div class="teamManager" transition="expand" v-show="teamForm.isShow">
         <p class="switch" v-show="false">
           <span class="selector" v-on:click="teamForm.isJoin = true" v-bind:class="{ 'selected': teamForm.isJoin }">Join Team</span>
@@ -38,7 +38,7 @@
               <a v-on:click="createTeam(teamForm.inviteCode, teamForm.name)">Save</a>
             </p>
           </div>
-          <p class="info"></p>
+          <!-- <p class="info"></p> -->
         </div>
       </div>
       <div class="members" transition="fade" v-if="teamData">
@@ -195,11 +195,8 @@ export default {
 @import "../base";
 
 .teamPanel {
-  .title {
-    margin: 50px 0 30px 0;;
-    text-align: left;
-    line-height: 30px;
-  }
+  margin: 100px 0 0px 0;;
+
   .expander {
     color: $blue;
     line-height: 30px;
@@ -210,9 +207,8 @@ export default {
   }
 
   .teamManager {
-    margin: 0px 0;
     .switch {
-      margin: 30px 0 0px 0;
+      margin: 0px 0 0px 0;
       user-select: none;
       .selector {
         padding: 5px 10px;

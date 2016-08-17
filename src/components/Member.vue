@@ -109,6 +109,10 @@ export default {
   padding-bottom: 50px;
   margin: 0 0 0 0;
 
+  &:first-of-type {
+    margin-top: 40px;
+  }
+
   p {
     margin: 10px 0;
   }
