@@ -89,10 +89,6 @@ const userData = {
   teamData: {
     currentTeam: '',
   },
-  usageData: {
-    currentStreak: 0,
-    lastStreakTime: '',
-  },
   systemData: {
     rule: 'normal',
   },

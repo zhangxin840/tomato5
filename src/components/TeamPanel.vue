@@ -88,7 +88,7 @@ const publishToTeam = function publishToTeam() {
       tasks: this.tasks,
       updateTime: moment(),
     }).then(() => {
-      console.log('published');
+      // console.log('published');
     });
   } else {
     promise = Promise.resolve();
@@ -119,16 +119,13 @@ const createTeam = function createTeam(inviteCode, name) {
     database.save(`teams/${inviteCode}`, {
       info: { inviteCode, name },
       members: [],
-    }).then(() => {
-      console.log('Team created');
-      return this.joinTeam(inviteCode);
-    });
+    }).then(() => this.joinTeam(inviteCode));
   }
 };
 
 const changeTeamName = function changeTeamName(inviteCode, name) {
   database.save(`teams/${inviteCode}/info`, { inviteCode, name }).then(() => {
-    console.log('Name changed');
+    // console.log('Name changed');
   });
 };
 
@@ -163,9 +160,9 @@ const init = function init() {
 
 const getUserTeamData = function getUserTeamData() {
   return database.get(`userData/${auth.getUser().uid}/teamData`, { currentTeam: '' })
-          .then((data) => {
-            this.userTeamData = data;
-          });
+    .then((data) => {
+      this.userTeamData = data;
+    });
 };
 
 const saveUserTeamData = function saveUserTeamData() {

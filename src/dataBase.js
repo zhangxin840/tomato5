@@ -18,12 +18,12 @@ const get = function get(path, defaultData, validator) {
     database.ref(path).once('value', (snapshot) => {
       const data = snapshot.val();
 
-      console.log('Reveived Data');
+      // console.log('Reveived Data');
       if ((validator && validator(data)) || (!validator && data)) {
-        console.log('Valid Data');
+        // console.log('Valid Data');
         resolve(data);
       } else {
-        console.log('No valid Data');
+        // console.log('No valid Data');
         // ref.set(defaultData).then(function(){
         //   console.log("Default setted");
         //   resolve(defaultData);
@@ -41,7 +41,7 @@ const get = function get(path, defaultData, validator) {
 const save = function save(path, data) {
   const parsedData = JSON.parse(JSON.stringify(data));
   return database.ref(path).set(parsedData).then(() => {
-    console.log('Saved');
+    // console.log('Saved');
   });
 };
 
