@@ -4,7 +4,11 @@
     <p class="chartTitle">
       Tomatoes completed
     </p>
-    <canvas id="line-chart" height="300"></canvas>
+    <canvas id="line-chart" height="200"></canvas>
+    <p class="chartTitle">
+      Tomatoes time distribution
+    </p>
+    <canvas id="bar-chart" height="200"></canvas>
     <p class="streak">
       Tomato streak: {{ usageData.streak }} day{{usageData.streak > 1 ? 's' : ''}}
     </p>
@@ -137,7 +141,7 @@ const getTasksData = function getTasksData() {
   return database.get(`tasks/${auth.getUser().uid}`, {});
 };
 
-const onAddStreak = function onAddStreak() {
+const onTaskDone = function onCompleteTask() {
   // if (this.usageData) {
   //   if (this.checkStreak() === 1) {
   //     this.usageData.currentStreak = this.usageData.currentStreak + 1;
@@ -152,7 +156,8 @@ const onAddStreak = function onAddStreak() {
   // }
 };
 
-const LineOptions = {
+const lineOptions = {
+  label: 'Tomato completed',
   fill: false,
   lineTension: 0.1,
   backgroundColor: 'rgba(95,210,219,0.4)',
@@ -186,10 +191,44 @@ const lineChartOptions = {
   },
 };
 
+const barOptions = {
+  label: 'Tomato time distribution',
+  backgroundColor: [
+    'rgba(255, 99, 132, 0.2)',
+    'rgba(54, 162, 235, 0.2)',
+    'rgba(255, 206, 86, 0.2)',
+    'rgba(75, 192, 192, 0.2)',
+    'rgba(153, 102, 255, 0.2)',
+    'rgba(255, 159, 64, 0.2)',
+  ],
+  borderColor: [
+    'rgba(255,99,132,1)',
+    'rgba(54, 162, 235, 1)',
+    'rgba(255, 206, 86, 1)',
+    'rgba(75, 192, 192, 1)',
+    'rgba(153, 102, 255, 1)',
+    'rgba(255, 159, 64, 1)',
+  ],
+  borderWidth: 1,
+};
+
+const barChartOptions = {
+  legend: {
+    display: false,
+  },
+  scales: {
+    yAxes: [{
+      ticks: {
+        beginAtZero: true,
+      },
+    }],
+  },
+};
+
 const getLineChartData = function getLineChartData(tasks) {
   const xData = [];
   const yData = [];
-  const keys = Object.keys(tasks);
+  // const keys = Object.keys(tasks);
   let day;
   let count;
   const trimLength = -21;
@@ -205,21 +244,29 @@ const getLineChartData = function getLineChartData(tasks) {
   return { xData: xData.slice(trimLength), yData: yData.slice(trimLength) };
 };
 
-const initLineChart = function initLineChart(id, xData, yData) {
+const getBarChartData = function getBarChartData() {
+  const xData = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
+    13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24,
+    0, 1, 2];
+  const yData = [65, 59, 80, 81, 56, 55, 40];
+
+  return { xData, yData };
+};
+
+const initChart = function initChart(id, xData, yData, type, dataOptions, options) {
   const ctx = document.getElementById(id);
 
   const data = {
     labels: xData,
-    datasets: [Object.assign(LineOptions, {
-      label: 'Tomato completed',
+    datasets: [Object.assign(dataOptions, {
       data: yData,
     })],
   };
 
   const myChart = new Chart(ctx, { /* eslint no-unused-vars: 0 */
-    type: 'line',
+    type,
     data,
-    options: lineChartOptions,
+    options,
   });
 };
 
@@ -233,9 +280,24 @@ const init = function init() {
   .then((data) => {
     const lineChartData = getLineChartData(data);
     window.setTimeout(() => {
-      initLineChart('line-chart',
+      initChart('line-chart',
         lineChartData.xData,
-        lineChartData.yData);
+        lineChartData.yData,
+        'line',
+        lineOptions,
+        lineChartOptions
+      );
+    }, 1);
+
+    const barChartData = getBarChartData(data);
+    window.setTimeout(() => {
+      initChart('bar-chart',
+        barChartData.xData,
+        barChartData.yData,
+        'bar',
+        barOptions,
+        barChartOptions
+      );
     }, 1);
 
     return data;
@@ -251,7 +313,7 @@ export default {
   },
   created: init,
   events: {
-    addStreak: onAddStreak,
+    taskDone: onTaskDone,
   },
   methods: {
   },
@@ -267,7 +329,7 @@ export default {
 
 .chartTitle {
   text-align: center;
-  margin: 30px 0 10px 0;
+  margin: 40px 0 15px 0;
 }
 
 .streak {

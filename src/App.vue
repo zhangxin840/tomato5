@@ -75,7 +75,7 @@ const makeMonoTab = function makeMonoTab() {
 };
 
 const onTaskDone = function onTaskDone() {
-  this.$broadcast('addStreak');
+  this.$broadcast('taskDone');
 };
 
 const initApp = function initApp() {
