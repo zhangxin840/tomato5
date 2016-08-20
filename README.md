@@ -9,6 +9,7 @@ Live: [http://tomato5.io](http://tomato5.io)
 - 5 tomatoes daily planning.
 - Track energy level for every task.
 - Take tomato timer together with your team.
+- Usage data analysis.
 
 ## Tech Stack
 
