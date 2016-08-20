@@ -75,7 +75,7 @@ const makeMonoTab = function makeMonoTab() {
 };
 
 const onTaskDone = function onTaskDone() {
-  this.$broadcast('taskDone');
+  this.$broadcast('recount');
 };
 
 const initApp = function initApp() {

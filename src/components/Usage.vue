@@ -141,21 +141,6 @@ const getTasksData = function getTasksData() {
   return database.get(`tasks/${auth.getUser().uid}`, {});
 };
 
-const onTaskDone = function onCompleteTask() {
-  // if (this.usageData) {
-  //   if (this.checkStreak() === 1) {
-  //     this.usageData.currentStreak = this.usageData.currentStreak + 1;
-  //   } else if (this.checkStreak() === -1) {
-  //     this.usageData.currentStreak = 1;
-  //   } else if (this.checkStreak() === 0 && this.usageData.currentStreak === 0) {
-  //     this.usageData.currentStreak = 1; // First after break
-  //   }
-  //   this.usageData.lastStreakTime = moment();
-  //
-  //   this.saveStreakData();
-  // }
-};
-
 const lineOptions = {
   label: 'Tomato completed',
   fill: false,
@@ -189,6 +174,9 @@ const lineChartOptions = {
       },
     }],
   },
+  animation: {
+    duration: 0,
+  },
 };
 
 const barOptions = {
@@ -208,6 +196,9 @@ const barChartOptions = {
         beginAtZero: true,
       },
     }],
+  },
+  animation: {
+    duration: 0,
   },
 };
 
@@ -270,10 +261,15 @@ const initChart = function initChart(id, xData, yData, type, dataOptions, option
     data,
     options,
   });
+
+  return myChart;
 };
 
-const init = function init() {
-  getTasksData()
+let lineChart;
+let barChart;
+
+const initUsage = function initUsage() {
+  return getTasksData()
   .then((data) => fillTasks(data))
   .then((data) => {
     getUsageData(data);
@@ -282,7 +278,10 @@ const init = function init() {
   .then((data) => {
     const lineChartData = getLineChartData(data);
     window.setTimeout(() => {
-      initChart('line-chart',
+      if (lineChart) {
+        lineChart.destroy();
+      }
+      lineChart = initChart('line-chart',
         lineChartData.xData,
         lineChartData.yData,
         'line',
@@ -293,7 +292,10 @@ const init = function init() {
 
     const barChartData = getBarChartData(data);
     window.setTimeout(() => {
-      initChart('bar-chart',
+      if (barChart) {
+        barChart.destroy();
+      }
+      barChart = initChart('bar-chart',
         barChartData.xData,
         barChartData.yData,
         'bar',
@@ -303,8 +305,15 @@ const init = function init() {
     }, 1);
 
     return data;
-  })
-  .then(() => {
+  });
+};
+
+const onRecount = function onRecount() {
+  initUsage();
+};
+
+const init = function init() {
+  initUsage().then(() => {
     this.loaded = true;
   });
 };
@@ -315,7 +324,7 @@ export default {
   },
   created: init,
   events: {
-    taskDone: onTaskDone,
+    recount: onRecount,
   },
   methods: {
   },
