@@ -288,7 +288,7 @@ export default {
 /* always present */
 .expand-transition {
   transition: all .3s ease;
-  height: 120px;
+  height: 110px;
   overflow: hidden;
 }
 
