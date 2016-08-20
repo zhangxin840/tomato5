@@ -64,6 +64,7 @@ const makeMonoTab = function makeMonoTab() {
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'visible') {
       checkTab();
+      this.$broadcast('tabFocused');
     }
   });
 
@@ -89,13 +90,14 @@ const initApp = function initApp() {
     }, false);
   }
 
-  makeMonoTab();
+  this.makeMonoTab();
 };
 
 export default {
   data() {
     return { user };
   },
+  methods: { makeMonoTab },
   created: initApp,
   events: {
     taskDone: onTaskDone,

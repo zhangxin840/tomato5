@@ -176,6 +176,7 @@ export default {
   },
   events: {
     publish: publishToTeam,
+    tabFocused: publishToTeam,
   },
   created: init,
   methods: {
