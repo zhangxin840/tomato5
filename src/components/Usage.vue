@@ -161,16 +161,16 @@ const lineOptions = {
   fill: false,
   lineTension: 0.1,
   backgroundColor: 'rgba(95,210,219,0.4)',
-  borderColor: 'rgba(95,210,219,1)',
+  borderColor: 'rgba(95,210,219,0.8)',
   borderCapStyle: 'butt',
   borderDash: [],
   borderDashOffset: 0.0,
   borderJoinStyle: 'miter',
-  pointBorderColor: 'rgba(95,210,219,1)',
+  pointBorderColor: 'rgba(95,210,219,0.8)',
   pointBackgroundColor: '#fff',
   pointBorderWidth: 1,
   pointHoverRadius: 5,
-  pointHoverBackgroundColor: 'rgba(95,210,219,1)',
+  pointHoverBackgroundColor: 'rgba(95,210,219,0.8)',
   pointHoverBorderColor: 'rgba(220,220,220,1)',
   pointHoverBorderWidth: 2,
   pointRadius: 1,
@@ -192,23 +192,9 @@ const lineChartOptions = {
 };
 
 const barOptions = {
-  label: 'Tomato time distribution',
-  backgroundColor: [
-    'rgba(255, 99, 132, 0.2)',
-    'rgba(54, 162, 235, 0.2)',
-    'rgba(255, 206, 86, 0.2)',
-    'rgba(75, 192, 192, 0.2)',
-    'rgba(153, 102, 255, 0.2)',
-    'rgba(255, 159, 64, 0.2)',
-  ],
-  borderColor: [
-    'rgba(255,99,132,1)',
-    'rgba(54, 162, 235, 1)',
-    'rgba(255, 206, 86, 1)',
-    'rgba(75, 192, 192, 1)',
-    'rgba(153, 102, 255, 1)',
-    'rgba(255, 159, 64, 1)',
-  ],
+  label: 'Tomato completed',
+  backgroundColor: 'rgba(95,210,219,0.4)',
+  borderColor: 'rgba(95,210,219,0.8)',
   borderWidth: 1,
 };
 
@@ -244,13 +230,29 @@ const getLineChartData = function getLineChartData(tasks) {
   return { xData: xData.slice(trimLength), yData: yData.slice(trimLength) };
 };
 
-const getBarChartData = function getBarChartData() {
-  const xData = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
-    13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24,
-    0, 1, 2];
-  const yData = [65, 59, 80, 81, 56, 55, 40];
+const getBarChartData = function getBarChartData(tasks) {
+  const distribution = {
+  };
 
-  return { xData, yData };
+  for (let i = 0; i < 24; i++) {
+    distribution[i] = 0;
+  }
+
+  Object.keys(tasks).forEach((key) => {
+    tasks[key].forEach((task) => {
+      if (task.status === taskStatus.done && task.startTime) {
+        const starthour = moment(task.startTime).hour();
+        distribution[starthour]++;
+      }
+    });
+  });
+
+  const yData = [];
+  Object.keys(distribution).forEach((key) => {
+    yData.push(distribution[key]);
+  });
+
+  return { xData: Object.keys(distribution), yData };
 };
 
 const initChart = function initChart(id, xData, yData, type, dataOptions, options) {
