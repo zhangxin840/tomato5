@@ -17,7 +17,7 @@ const getContdown = function getContdown(startTime, type, level) {
   let result = '';
 
   if (level === 'minute') {
-    result = `${minutes + 1}m`;
+    result = `${minutes + (seconds > 0 ? 1 : 0)}m`;
   } else {
     minutes = minutes > 9 ? `${minutes}` : `0${minutes}`;
     seconds = seconds > 9 ? `${seconds}` : `0${seconds}`;
