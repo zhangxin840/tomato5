@@ -12,13 +12,21 @@
           <span class="spacer">or</span>
           <span class="selector" v-on:click="teamForm.isJoin = false" v-bind:class="{ 'selected': !teamForm.isJoin }">My Team</span>
         </p>
-        <div class="theForm">
+        <validator name="validation">
+        <form class="theForm" novalidate>
           <div class="join" transition="slide_left" v-show="teamForm.isJoin">
             <p class="field">
-              <span>Invite Code: </span>
-              <input type="text" autocomplete="off" value="" v-model="teamForm.inviteCode">
+              <span>TeamID: </span>
+              <input type="text" autocomplete="off" value=""
+                    placeholder="6-12 characters"
+                    maxlength="12"
+                    v-model="teamForm.inviteCode"
+                    v-validate:invite-code="{ minlength: 6 }">
             </p>
-            <p>
+            <p class="tips">
+              You can use TeamID to create or join a team
+            </p>
+            <p transition="fade" v-if="!$validation.invalid">
               <a v-on:click="joinTeam(teamForm.inviteCode)">Join Team</a>
             </p>
           </div>
@@ -39,7 +47,8 @@
             </p>
           </div>
           <!-- <p class="info"></p> -->
-        </div>
+        </form>
+        </validator>
       </div>
       <div class="members" transition="fade" v-if="teamData">
         <member v-for="(uid, member) in teamData.members"
@@ -203,7 +212,7 @@ export default {
     cursor: pointer;
     user-select: none;
   }
-  
+
   .members {
     &:before, &:after {
       content: "";
@@ -243,7 +252,7 @@ export default {
     }
 
     .tips {
-      color: #ccc;
+      opacity: 0.5;
     }
   }
 }
@@ -279,7 +288,7 @@ export default {
 /* always present */
 .expand-transition {
   transition: all .3s ease;
-  height: 100px;
+  height: 120px;
   overflow: hidden;
 }
 
