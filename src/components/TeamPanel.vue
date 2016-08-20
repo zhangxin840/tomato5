@@ -203,7 +203,14 @@ export default {
     cursor: pointer;
     user-select: none;
   }
-
+  
+  .members {
+    &:before, &:after {
+      content: "";
+      display: table;
+      clear: both;
+    }
+  }
   .teamManager {
     .switch {
       margin: 0px 0 0px 0;

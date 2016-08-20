@@ -110,7 +110,7 @@ export default {
   margin: 0 0 0 0;
 
   &:first-of-type {
-    margin-top: 40px;
+    margin-top: 25px;
   }
 
   p {
