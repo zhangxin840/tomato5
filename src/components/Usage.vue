@@ -171,6 +171,8 @@ const lineChartOptions = {
     yAxes: [{
       ticks: {
         beginAtZero: true,
+        suggestedMax: 5,
+        stepSize: 1,
       },
     }],
   },
@@ -194,6 +196,8 @@ const barChartOptions = {
     yAxes: [{
       ticks: {
         beginAtZero: true,
+        stepSize: 1,
+        suggestedMax: 5,
       },
     }],
   },
