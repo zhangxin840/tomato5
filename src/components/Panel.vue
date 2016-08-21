@@ -44,7 +44,7 @@
         </div>
       </div>
     </div>
-    <p class="taskTips" transition="fade" v-if="doneCount >= 5">
+    <p class="taskTips animated tada" transition="fade" v-if="doneCount >= 5">
       Congratulations! You have done all 5 tomatoes planned today
     </p>
     <div class="tasks-wrapper" v-bind:class="{'loading': !tasks}">
@@ -65,7 +65,7 @@
         </div>
         <span class="icon add"
               transition="fade"
-              v-show="(doneCount >= 5 || tasks.length < 5) && (userStatus.availability === availabilities.idle || userStatus.availability === availabilities.resting)"
+              v-show="(usedCount >= 5 || tasks.length < 5) && (userStatus.availability === availabilities.idle || userStatus.availability === availabilities.resting)"
               v-on:click="addTask">
               Add task
         </span>
@@ -349,6 +349,11 @@ export default {
     doneCount: function doneCount() {
       return this.tasks && this.tasks.reduce(
         (last, item) => last + (item.status === this.taskStatus.done ? 1 : 0)
+      , 0);
+    },
+    usedCount: function doneCount() {
+      return this.tasks && this.tasks.reduce(
+        (last, item) => last + ((item.status === this.taskStatus.done || item.note) ? 1 : 0)
       , 0);
     },
     emotionClass: function emotionUrl() {
