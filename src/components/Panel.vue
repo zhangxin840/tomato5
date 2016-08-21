@@ -347,7 +347,7 @@ export default {
   created: init,
   computed: {
     doneCount: function doneCount() {
-      return this.tasks.reduce(
+      return this.tasks && this.tasks.reduce(
         (last, item) => last + (item.status === this.taskStatus.done ? 1 : 0)
       , 0);
     },
