@@ -204,6 +204,12 @@ export default {
 .teamPanel {
   margin: 100px 0 0px 0;;
 
+  &:before, &:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+
   .expander {
     color: $blue;
     line-height: 30px;

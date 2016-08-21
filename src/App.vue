@@ -3,7 +3,7 @@
     <article class="main" v-bind:class="{'start': !user.uid}">
       <div class="title">
         <img class="logo" src="./assets/tomato.svg">
-        <h1 class="">Tomato 5</h1>
+        <h1 class="">Tomato5</h1>
       </div>
       <p class="instruction"><span>Concentrate for work</span> <span>five times a day</span></p>
       <panel transition="fade" v-if="user.uid"></panel>
