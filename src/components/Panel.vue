@@ -44,6 +44,9 @@
         </div>
       </div>
     </div>
+    <p class="taskTips" transition="fade" v-if="doneCount >= 5">
+      Congratulations! You have done all 5 tomatoes planned today
+    </p>
     <div class="tasks-wrapper" v-bind:class="{'loading': !tasks}">
       <div class="tasks" transition="fade" v-if="tasks">
         <div class="list">
@@ -381,10 +384,9 @@ h1 {
     }
   }
 
-  &.busy {
-    .timer {
-
-    }
+  .taskTips {
+    text-align: center;
+    margin: 0px 0 30px 0;
   }
 
   .tasks-wrapper {

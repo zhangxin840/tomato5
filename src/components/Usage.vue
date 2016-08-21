@@ -33,10 +33,10 @@ const usageData = {
   streak: 0,
 };
 
-const getDoneCount = function getDoneCount(data) {
+const getDoneCount = function getDoneCount(tasksArray) {
   let count = 0;
-  if (data) {
-    count = data.reduce((previousValue, item) => previousValue
+  if (tasksArray) {
+    count = tasksArray.reduce((previousValue, item) => previousValue
       + (item.status === taskStatus.done ? 1 : 0), 0);
   }
   return count;
