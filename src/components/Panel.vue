@@ -123,19 +123,29 @@ const sendNotification = function sendNotification(title, message) {
   }
 };
 
-const getTasksPath = function getTasksPath() {
-  return `tasks/${auth.getUser().uid}/${moment().format('YYYYMMDD')}`;
+const getTasksPath = function getTasksPath(time) {
+  return `tasks/${auth.getUser().uid}/${moment(time).format('YYYYMMDD')}`;
 };
 
 const saveTasks = function saveTasks() {
-  const tasksToSave = [];
+  const tasksToday = [];
+  const tasksYesterday = [];
+
   this.tasks.forEach((task) => {
-    if (task.createTime
-      && moment(task.createTime).format('YYYYMMDD') === moment().format('YYYYMMDD')) {
-      tasksToSave.push(task);
+    const createDate = task.createTime && moment(task.createTime).format('YYYYMMDD');
+    if (createDate === moment().format('YYYYMMDD')) {
+      tasksToday.push(task);
+    } else if (createDate === moment().subtract(1, 'd').format('YYYYMMDD')) {
+      tasksYesterday.push(task);
     }
   });
-  database.save(getTasksPath(), tasksToSave);
+
+  database.save(getTasksPath(), tasksToday);
+
+  if (tasksYesterday[0] && tasksYesterday[0].createTime) {
+    database.save(getTasksPath(tasksYesterday[0].createTime), tasksYesterday);
+  }
+
   this.$broadcast('publish');
 };
 
