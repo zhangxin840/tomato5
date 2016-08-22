@@ -41,6 +41,7 @@ import Usage from './components/Usage';
 import database from './database';
 import auth from './auth';
 import { firebaseConfig } from './configs';
+import utils from './utils';
 
 const user = auth.getUser();
 
@@ -56,6 +57,7 @@ const makeMonoTab = function makeMonoTab() {
       // } else {
       //   window.localStorage.setItem('tabId', tabId);
       // }
+      utils.report('usage', 'multiTabs');
     } else {
       window.localStorage.setItem('tabId', tabId);
     }
@@ -91,6 +93,7 @@ const initApp = function initApp() {
   }
 
   this.makeMonoTab();
+  utils.report('workflow', 'initApp');
 };
 
 export default {

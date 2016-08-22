@@ -91,6 +91,7 @@ import timer from '../timer';
 import { taskStatus, availabilities, tasks as defaultTasks } from '../model';
 import database from '../database';
 import auth from '../auth';
+import utils from '../utils';
 
 const user = auth.getUser();
 const tasks = null;
@@ -117,6 +118,8 @@ const sendNotification = function sendNotification(title, message) {
       icon: 'http://tomato5.io/static/icons/tomato.png',
       body: message,
     });
+
+    utils.report('task', 'notify');
   }
 };
 
@@ -171,6 +174,7 @@ const startRest = function startRest() {
   }, 1000);
 
   this.$broadcast('publish');
+  utils.report('rest', 'start');
 };
 
 const stopResting = function stopResting() {
@@ -182,6 +186,7 @@ const stopResting = function stopResting() {
   }
 
   this.$broadcast('publish');
+  utils.report('rest', 'stop');
 };
 
 const replayAnimation = function replayAnimation() {
@@ -202,6 +207,7 @@ const onTimerClicked = function onTimerClicked() {
     this.$broadcast('clearTask');
     this.replayAnimation();
   }
+  utils.report('timer', 'click');
 };
 
 const addTask = function addTask() {
@@ -215,6 +221,7 @@ const addTask = function addTask() {
   });
 
   this.saveTasks();
+  utils.report('task', 'add');
 };
 
 const onTaskStarted = function onTaskStarted(task) {
@@ -225,6 +232,7 @@ const onTaskStarted = function onTaskStarted(task) {
   task.emotion = this.userStatus.emotion;
 
   this.saveTasks();
+  utils.report('task', 'start');
 };
 
 const onTaskDone = function onTaskDone(task) {
@@ -238,6 +246,7 @@ const onTaskDone = function onTaskDone(task) {
   }, 1);
 
   this.saveTasks();
+  utils.report('task', 'done');
 
   return true; // Do not stop stop propagation
 };
@@ -248,6 +257,7 @@ const onTaskDropped = function onTaskDropped() {
   clearTimer();
 
   this.saveTasks();
+  utils.report('task', 'drop');
 };
 
 const onTaskTimeDue = function onTaskTimeDue() {
@@ -263,10 +273,12 @@ const onTaskTimerUpdated = function onTaskTimerUpdated(task) {
 
 const onTaskEdited = function onTaskEdited() {
   this.saveTasks();
+  utils.report('task', 'edit');
 };
 
 const toggleEmotions = function toggleEmotions() {
   this.panelStatus.isShowEmotions = !this.panelStatus.isShowEmotions;
+  utils.report('emotion', 'toggle');
 };
 
 const changeEmotion = function changeEmotion(level) {
@@ -278,6 +290,7 @@ const changeEmotion = function changeEmotion(level) {
   }
 
   this.$broadcast('publish');
+  utils.report('emotion', 'change');
 };
 
 const initTime = moment();
@@ -288,9 +301,12 @@ const init = function init() {
   window.setInterval(() => {
     if ((initTime.dayOfYear() !== moment().dayOfYear())
           && (this.userStatus.availability === this.availabilities.idle)) {
+      utils.report('usage', 'crossDay');
       window.location.reload(); // Reload if cross day
     }
   }, 100000);
+
+  utils.report('workflow', 'initPanel');
 };
 
 const prepareTasks = function prepareTasks(theTasks) {

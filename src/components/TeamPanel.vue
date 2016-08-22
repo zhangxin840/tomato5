@@ -68,6 +68,7 @@ import Member from './Member';
 import database from '../database';
 import auth from '../auth';
 import { tasks as defaultTasks } from '../model';
+import utils from '../utils';
 
 const teamData = null;
 const userTeamData = null;
@@ -81,6 +82,7 @@ const teamForm = {
 
 const showForm = function showForm() {
   this.teamForm.isShow = !this.teamForm.isShow;
+  utils.report('team', 'showForm');
 };
 
 let watchRef = null;
@@ -120,6 +122,8 @@ const joinTeam = function joinTeam(inviteCode) {
     this.saveUserTeamData().then(() => {
       this.teamForm.isShow = false;
     });
+
+    utils.report('team', 'join');
   }
 };
 
@@ -165,6 +169,8 @@ const init = function init() {
     this.teamForm.inviteCode = this.userTeamData.currentTeam;
     this.joinTeam(this.userTeamData.currentTeam);
   });
+
+  utils.report('workflow', 'initTeam');
 };
 
 const getUserTeamData = function getUserTeamData() {
