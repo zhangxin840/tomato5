@@ -220,12 +220,9 @@ export default {
   }
 
   .members {
-    &:before, &:after {
-      content: "";
-      display: table;
-      clear: both;
-    }
+    overflow: hidden; // Enable BFC to avoid merging margin, for smoother animation
   }
+
   .teamManager {
     .switch {
       margin: 0px 0 0px 0;

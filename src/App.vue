@@ -49,13 +49,13 @@ const tabId = Math.round(1000 * Math.random());
 const makeMonoTab = function makeMonoTab() {
   const checkTab = function checkTab() {
     const storedTabId = window.localStorage.getItem('tabId');
-    if (storedTabId && storedTabId !== `${tabId}`) {
-      if (window.confirm('You already have Tomato5 running in another tab,'
-        + ' we suggest to close this tab and use the previous one.')) {
-        window.close();
-      } else {
-        window.localStorage.setItem('tabId', tabId);
-      }
+    if (storedTabId && storedTabId.length > 0 && storedTabId !== `${tabId}`) {
+      // if (window.confirm('You already have Tomato5 running in another tab,'
+      //   + ' we suggest to close this tab and use the previous one.')) {
+      //   window.close();
+      // } else {
+      //   window.localStorage.setItem('tabId', tabId);
+      // }
     } else {
       window.localStorage.setItem('tabId', tabId);
     }

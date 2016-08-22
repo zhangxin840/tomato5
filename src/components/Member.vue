@@ -162,7 +162,7 @@ export default {
     width: 100%;
 
     .note {
-      margin: 0
+      margin: 3px 0 0 0;
     }
   }
 
