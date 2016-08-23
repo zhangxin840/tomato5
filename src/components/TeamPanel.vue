@@ -67,7 +67,7 @@ import moment from 'moment';
 import Member from './Member';
 import database from '../database';
 import auth from '../auth';
-import { tasks as defaultTasks } from '../model';
+import { getDefaultTasks } from '../model';
 import utils from '../utils';
 
 const teamData = null;
@@ -151,7 +151,7 @@ const processTeamData = function processTeamData(data) {
           && moment(task.createTime).format('YYYYMMDD') === moment().add(0, 'd').format('YYYYMMDD'))
       );
 
-      member.tasks = member.tasks.length > 0 ? member.tasks : defaultTasks;
+      member.tasks = member.tasks.length > 0 ? member.tasks : getDefaultTasks();
     });
   }
 

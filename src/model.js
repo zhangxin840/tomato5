@@ -25,49 +25,22 @@ const taskTips = [
   'Take 5 tomatoes to be more productive.',
 ];
 
-const task1 = {
-  note: '',
-  status: taskStatus.idle,
-  startTime: null,
-  createTime: moment(),
-  emotion: 2,
-};
+const getDefaultTasks = function getDefaultTasks() {
+  const tasks = [];
+  for (let i = 0; i < 5; i++) {
+    // Avoid same object ref
+    const defaultTask = {
+      note: '',
+      status: taskStatus.idle,
+      startTime: null,
+      createTime: moment(),
+      emotion: 2,
+    };
 
-const task2 = {
-  note: '',
-  status: taskStatus.idle,
-  startTime: null,
-  createTime: moment(),
-  emotion: 2,
+    tasks.push(defaultTask);
+  }
+  return tasks;
 };
-
-const task3 = {
-  note: '',
-  status: taskStatus.idle,
-  startTime: null,
-  createTime: moment(),
-  emotion: 2,
-};
-
-const task4 = {
-  note: '',
-  status: taskStatus.idle,
-  startTime: null,
-  createTime: moment(),
-  emotion: 2,
-};
-
-const task5 = {
-  note: '',
-  status: taskStatus.idle,
-  startTime: null,
-  createTime: moment(),
-  emotion: 2,
-};
-
-const tasks = [
-  task1, task2, task3, task4, task5,
-];
 
 const team = {
   info: {
@@ -94,4 +67,4 @@ const userData = {
   },
 };
 
-export { taskStatus, taskTips, availabilities, tasks, team, userData };
+export { taskStatus, taskTips, availabilities, getDefaultTasks, team, userData };

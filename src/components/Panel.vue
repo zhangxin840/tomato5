@@ -88,7 +88,7 @@ import Task from './Task';
 import Emotion from './Emotion';
 import TeamPanel from './TeamPanel';
 import timer from '../timer';
-import { taskStatus, availabilities, tasks as defaultTasks } from '../model';
+import { taskStatus, availabilities, getDefaultTasks } from '../model';
 import database from '../database';
 import auth from '../auth';
 import utils from '../utils';
@@ -338,7 +338,7 @@ const prepareTasks = function prepareTasks(theTasks) {
 };
 
 const getTasks = function getTasks() {
-  return database.get(getTasksPath(), defaultTasks).then((data) => {
+  return database.get(getTasksPath(), getDefaultTasks()).then((data) => {
     this.tasks = prepareTasks(data);
     return this.tasks;
   });
