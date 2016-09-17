@@ -49,7 +49,7 @@ const getStreak = function getStreak(tasks) {
   streak = getDoneCount(tasks[indexDay.format('YYYYMMDD')]) > 0 ? 1 : 0;
   indexDay = indexDay.subtract(1, 'd');
 
-  while (tasks[indexDay.format('YYYYMMDD')]) {
+  while (tasks[indexDay.format('YYYYMMDD')] || indexDay.day() === 0 || indexDay.day() === 6) {
     if (getDoneCount(tasks[indexDay.format('YYYYMMDD')]) > 0) {
       streak++;
       indexDay = indexDay.subtract(1, 'd');
