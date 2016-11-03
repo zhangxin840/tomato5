@@ -11,7 +11,7 @@
               'offline': isOffline,
             }">
       </span>
-      <span class="name">{{ userInfo.displayName || userInfo.email }}</span>
+      <span class="name">{{ userInfo.displayName || (userInfo.email && userInfo.email.match(/^([^@]*)@/)[1]) }}</span>
       <span class="time" transition="fade" v-if="taskTimeLable">{{ taskTimeLable }}</span>
     </p>
       <div class="">

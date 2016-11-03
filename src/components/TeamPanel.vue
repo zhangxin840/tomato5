@@ -18,8 +18,8 @@
             <p class="field">
               <span>TeamID: </span>
               <input type="text" autocomplete="off" value=""
-                    placeholder="6-12 characters"
-                    maxlength="12"
+                    placeholder="6-24 characters"
+                    maxlength="24"
                     v-model="teamForm.inviteCode"
                     v-validate:invite-code="{ minlength: 6 }">
             </p>
