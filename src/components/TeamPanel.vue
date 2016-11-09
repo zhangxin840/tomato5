@@ -55,7 +55,8 @@
                 v-bind:tasks="member.tasks"
                 v-bind:user-status="member.userStatus"
                 v-bind:user-info="member.userInfo"
-                v-bind:update-time="member.updateTime">
+                v-bind:update-time="member.updateTime"
+                v-if="!member.isHideMember">
         </member>
       </div>
     </div>
@@ -69,6 +70,8 @@ import database from '../database';
 import auth from '../auth';
 import { getDefaultTasks } from '../model';
 import utils from '../utils';
+
+const showMemberDays = 14;
 
 const teamData = null;
 const userTeamData = null;
@@ -152,6 +155,12 @@ const processTeamData = function processTeamData(data) {
       );
 
       member.tasks = member.tasks.length > 0 ? member.tasks : getDefaultTasks();
+
+      // Hide member if not updated
+      if (!member.updateTime ||
+        moment.duration(moment(member.updateTime) - moment()).days() > showMemberDays) {
+        member.isHideMember = true;
+      }
     });
   }
 
