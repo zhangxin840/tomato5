@@ -5,7 +5,7 @@
         <img class="logo" src="./assets/tomato.svg">
         <h1 class="">Tomato5</h1>
       </div>
-      <p class="instruction"><span>Concentrate for work</span> <span>five times a day</span></p>
+      <!-- <p class="instruction"><span>Concentrate for work</span> <span>five times a day</span></p> -->
       <panel transition="fade" v-if="user.uid"></panel>
       <usage v-if="user.uid"></usage>
       <account v-if="user.uid"></account>
@@ -215,12 +215,13 @@ body {
   h1 {
     color: $green;
     text-align: center;
-    font-size: 38px;
+    font-size: 55px;
     display: inline-block;
     margin: 0;
     line-height: 100px;
     position: relative;
-    top: 10px
+    top: 5px;
+    font-weight: bold;
   }
 
   .logo {
