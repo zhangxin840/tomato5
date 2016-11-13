@@ -2,7 +2,7 @@
   <section class="teamPanel">
     <div class="teamPanel-wrapper">
       <h2 class="">
-        Tomato Team
+        Team
         <!-- <span>{{ teamData.info.name }}</span>     -->
         <span class="expander" v-on:click="showForm()">+</span>
       </h2>

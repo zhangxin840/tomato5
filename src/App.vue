@@ -2,7 +2,9 @@
   <div id="app">
     <article class="main" v-bind:class="{'start': !user.uid}">
       <div class="title">
-        <img class="logo" src="./assets/tomato.svg">
+        <a href="/">
+          <img class="logo" src="./assets/tomato.svg">
+        </a>
         <h1 class="">Tomato5</h1>
       </div>
       <!-- <p class="instruction"><span>Concentrate for work</span> <span>five times a day</span></p> -->
@@ -35,6 +37,7 @@ import animateCss from 'animate.css'; /* eslint no-unused-vars: 0 */
 import firebase from 'firebase';
 import FastClick from 'fastclick';
 
+import commonCss from './common.scss'; /* eslint no-unused-vars: 0 */
 import Panel from './components/Panel';
 import Account from './components/Account';
 import Usage from './components/Usage';
@@ -114,121 +117,20 @@ export default {
 <style lang="scss">
 @import 'base';
 
-body {
-  // font-family: 'Architects Daughter', cursive;
-  // font-family: 'Patrick Hand', cursive;
-  font-family: 'Short Stack', sans-serif;
 
-  color: $ink;
-  font-size: 15px;
-  padding-bottom: 30px;
+.login {
+  margin: 50px 0 50px 0;
 
-  a {
-    color: $blue;
-    text-decoration: none;
-    -webkit-tap-highlight-color: rgba(0,0,0,0);
-    -webkit-tap-highlight-color: transparent; /* For some Androids */
-    cursor: pointer;
-
-    &:active{
-        transform: scale3d(1.1, 1.1, 1);
-    }
+  .firebaseui-busy-indicator {
+    top: 0;
+  }
+  .mdl-button {
+    font-family: 'Short Stack', sans-serif;;
   }
 
-  h2 {
-    font-size: 18px;
-    font-weight: normal;
-  }
-
-  input[type=text], input[type=text]:focus {
-    color: $ink;
-    border: none;
-    margin: 0;
-    padding: 0;
-    box-shadow: none;
-    outline: initial;
-
-    border-bottom: 1px solid #eee;
-  }
-}
-
-.main {
-  padding: 0 10px;
-  max-width: 400px;
-  margin: auto;
-
-  .login {
-    margin: 50px 0 50px 0;
-
-    .firebaseui-busy-indicator {
-      top: 0;
-    }
-    .mdl-button {
-      font-family: 'Short Stack', sans-serif;;
-    }
-
-    .firebaseui-idp-password,
-    .firebaseui-idp-password:hover {
-      background-color: $red;
-    }
-  }
-}
-
-.icon {
-  display: inline-block;
-  text-indent: -9999px;
-  background-repeat: no-repeat;
-
-  -webkit-tap-highlight-color: rgba(0,0,0,0);
-  -webkit-tap-highlight-color: transparent; /* For some Androids */
-}
-
-.tomato{
-  width: 30px;
-  height: 30px;
-  background: url('assets/tomato.svg');
-  background-repeat: no-repeat;
-
-  opacity: 1;
-
-  &:active{
-    transform: scale(1.1, 1.1);
-  }
-}
-
-.main.start {
-  .title {
-    max-width: 280px;
-    margin: 40px auto;
-  }
-  .footer {
-    text-align: center;
-    display: none;
-  }
-}
-
-.title{
-  text-align: left;
-  margin: 40px -10px 40px -10px;
-  text-align: center;
-
-  h1 {
-    color: $green;
-    text-align: center;
-    font-size: 55px;
-    display: inline-block;
-    margin: 0;
-    line-height: 100px;
-    position: relative;
-    top: 5px;
-    font-weight: bold;
-  }
-
-  .logo {
-    width: 100px;
-    height: 100px;
-    display: inline-block;
-    vertical-align: top;
+  .firebaseui-idp-password,
+  .firebaseui-idp-password:hover {
+    background-color: $red;
   }
 }
 

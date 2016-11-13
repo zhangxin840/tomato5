@@ -22,7 +22,7 @@ const taskTips = [
   'Click tomato to start working.',
   'After finishing, take a rest.',
   'Restart if you are disturbed.',
-  'Take 5 tomatoes to be more productive.',
+  'Concentrate with your team.',
 ];
 
 const getDefaultTasks = function getDefaultTasks() {

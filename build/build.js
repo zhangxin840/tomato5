@@ -18,7 +18,7 @@ var spinner = ora('building for production...')
 spinner.start()
 
 var assetsPath = path.join(config.build.assetsRoot, config.build.assetsSubDirectory)
-rm('-rf', assetsPath)
+rm('-rf', config.build.assetsRoot) // https://github.com/vuejs-templates/webpack/issues/362
 mkdir('-p', assetsPath)
 cp('-R', 'static/', assetsPath)
 

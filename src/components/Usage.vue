@@ -1,6 +1,6 @@
 <template>
   <article class="usage" transition="fade" v-if="loaded">
-    <h2>Tomato habit</h2>
+    <h2>Merrics </h2>
     <p class="chartTitle">
       Tomatoes completed
     </p>

@@ -400,7 +400,7 @@ h1 {
 
 .panel {
   // display: flex;
-  margin: 0px auto;
+  margin: 75px auto;
 
   &.resting {
     .timer {

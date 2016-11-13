@@ -1,0 +1,118 @@
+@import 'base';
+
+body {
+  // font-family: 'Architects Daughter', cursive;
+  // font-family: 'Patrick Hand', cursive;
+  font-family: 'Short Stack', sans-serif;
+
+  color: $ink;
+  font-size: 15px;
+  padding-bottom: 30px;
+
+  a {
+    color: $blue;
+    text-decoration: none;
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
+    -webkit-tap-highlight-color: transparent; /* For some Androids */
+    cursor: pointer;
+
+    &:active{
+        transform: scale3d(1.1, 1.1, 1);
+    }
+  }
+
+  h2 {
+    font-size: 18px;
+    font-weight: normal;
+  }
+
+  input[type=text], input[type=text]:focus {
+    color: $ink;
+    border: none;
+    margin: 0;
+    padding: 0;
+    box-shadow: none;
+    outline: initial;
+
+    border-bottom: 1px solid #eee;
+  }
+}
+
+.main {
+  padding: 0 10px;
+  max-width: 400px;
+  margin: auto;
+}
+
+.title{
+  text-align: left;
+  margin: 40px -10px 40px -10px;
+  text-align: center;
+
+  h1 {
+    color: $green;
+    font-size: 44px;
+    line-height: 80px;
+    text-align: center;
+    display: inline-block;
+    margin: 0;
+    position: relative;
+    top: 5px;
+    font-weight: bold;
+  }
+
+  .logo {
+    width: 80px;
+    height: 80px;
+    display: inline-block;
+    vertical-align: top;
+  }
+
+  @media (min-width: 400px) {
+    h1 {
+      font-size: 55px;
+      line-height: 100px;
+    }
+
+    .logo {
+      width: 100px;
+      height: 100px;
+    }
+  }
+}
+
+.icon {
+  display: inline-block;
+  text-indent: -9999px;
+  background-repeat: no-repeat;
+
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+  -webkit-tap-highlight-color: transparent; /* For some Androids */
+}
+
+.tomato{
+  width: 30px;
+  height: 30px;
+  background: url('assets/tomato.svg');
+  background-repeat: no-repeat;
+
+  opacity: 1;
+
+  &:active{
+    transform: scale(1.1, 1.1);
+  }
+}
+
+.main.start {
+  .title {
+    max-width: 280px;
+    margin: 40px auto;
+  }
+  .login {
+    // margin-top: 30%;
+  }
+  .footer {
+    text-align: center;
+    display: none;
+  }
+}

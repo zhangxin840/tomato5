@@ -37,8 +37,6 @@ var webpackConfig = merge(baseWebpackConfig, {
       }
     }),
     new webpack.optimize.OccurenceOrderPlugin(),
-    // extract css into its own file
-    new ExtractTextPlugin(utils.assetsPath('css/[name].[contenthash].css')),
     // generate dist index.html with correct asset hash for caching.
     // you can customize output by editing /index.html
     // see https://github.com/ampedandwired/html-webpack-plugin
@@ -48,24 +46,42 @@ var webpackConfig = merge(baseWebpackConfig, {
         : config.build.index,
       template: 'index.html',
       inject: true,
-      minify: {
-        removeComments: true,
-        collapseWhitespace: true,
-        removeAttributeQuotes: true
-        // more options:
-        // https://github.com/kangax/html-minifier#options-quick-reference
-      },
+      // The index chunk is self contained to speed up the first visit
+      chunks: ['index'],
+      // This will cause error if using img in teamplate
+      // Html will still be minified by html loader
+      // https://github.com/vuejs-templates/webpack/issues/361
+      // minify: {
+      //   removeComments: true,
+      //   collapseWhitespace: true,
+      //   removeAttributeQuotes: true
+      //   // more options:
+      //   // https://github.com/kangax/html-minifier#options-quick-reference
+      // },
       // necessary to consistently work with multiple chunks via CommonsChunkPlugin
+      chunksSortMode: 'dependency'
+    }),
+    new HtmlWebpackPlugin({
+      filename: process.env.NODE_ENV === 'testing' ? 'dashboard.html' : config.build.dashboard,
+      template: 'dashboard.html',
+      inject: true,
+      chunks: ['manifest', 'vendor', 'dashboard'],
       chunksSortMode: 'dependency'
     }),
     // split vendor js into its own file
     new webpack.optimize.CommonsChunkPlugin({
       name: 'vendor',
+      // Only extract vendors for the main app
+      // The index chunk will keep its own vendors,
+      // otherwise you will have to load a large vendor chunk for first visit
+      chunks: ['dashboard'],
       minChunks: function (module, count) {
         // any required modules inside node_modules are extracted to vendor
         return (
           module.resource &&
-          /\.js$/.test(module.resource) &&
+          // Should not only extract common js files
+          // https://github.com/vuejs-templates/webpack/issues/363
+          // /\.js$/.test(module.resource) &&
           module.resource.indexOf(
             path.join(__dirname, '../node_modules')
           ) === 0
@@ -77,7 +93,9 @@ var webpackConfig = merge(baseWebpackConfig, {
     new webpack.optimize.CommonsChunkPlugin({
       name: 'manifest',
       chunks: ['vendor']
-    })
+    }),
+    // extract css into its own file
+    new ExtractTextPlugin(utils.assetsPath('css/[name].[contenthash].css')),
   ]
 })
 
