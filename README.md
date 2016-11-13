@@ -1,6 +1,6 @@
 # Tomato5
 
-Online tool for Promodoro(tomato) Technique.
+Tomato5 is a real-time collaboration tool
 
 Live: [http://tomato5.io](http://tomato5.io)
 
@@ -9,7 +9,24 @@ Live: [http://tomato5.io](http://tomato5.io)
 - 5 tomatoes daily planning.
 - Track energy level for every task.
 - Take tomato timer together with your team.
-- Usage data analysis.
+- Track the key metrics.
+
+## The name
+
+- 5 minutes break after 25 minutes concentration
+- 5 tomatoes a day
+- 5 members
+
+## Real-time collaboration
+
+Traditional collaboration tools told the team about what to do today.
+
+Real-time collaboration tools show the team about what is really going on right now.
+
+Key points:
+- Real-time
+- Expresstional
+- Reality
 
 ## Tech Stack
 
@@ -42,5 +59,3 @@ npm run e2e
 # run all tests
 npm test
 ```
-
-For detailed explanation on how things work, checkout the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
