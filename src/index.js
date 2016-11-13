@@ -13,6 +13,13 @@ const init = function initApp() {
     }, false);
   }
 
+  window.onload = function onload() {
+    setTimeout(() => {
+      const btn = document.getElementById('startNow');
+      btn.className += 'animated tada ready';
+    }, 500);
+  };
+
   utils.report('workflow', 'initIndex');
 };
 

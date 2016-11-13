@@ -7,7 +7,6 @@ body {
 
   color: $ink;
   font-size: 15px;
-  padding-bottom: 30px;
 
   a {
     color: $blue;
@@ -38,11 +37,7 @@ body {
   }
 }
 
-.main {
-  padding: 0 10px;
-  max-width: 400px;
-  margin: auto;
-}
+
 
 .title{
   text-align: left;
@@ -100,19 +95,5 @@ body {
 
   &:active{
     transform: scale(1.1, 1.1);
-  }
-}
-
-.main.start {
-  .title {
-    max-width: 280px;
-    margin: 40px auto;
-  }
-  .login {
-    // margin-top: 30%;
-  }
-  .footer {
-    text-align: center;
-    display: none;
   }
 }

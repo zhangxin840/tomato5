@@ -13,11 +13,7 @@
       <account v-if="user.uid"></account>
       <section class="footer">
         <p>
-          <a href="https://github.com/zhangxin840/tomato5" target="_blank">Star me on github</a>
-        </p>
-        <p>
-          <a href="https://www.focusboosterapp.com/the-pomodoro-technique
-" target="_blank">The theory behind: Pomodoro Technique</a>
+          <a href="https://github.com/zhangxin840/tomato5" target="_blank">Project on Github</a>
         </p>
         <!-- <p>
           <div>Icons made by <a href="http://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
@@ -117,6 +113,25 @@ export default {
 <style lang="scss">
 @import 'base';
 
+.main {
+  padding: 0 10px;
+  max-width: 400px;
+  margin: auto;
+}
+
+.main.start {
+  .title {
+    max-width: 280px;
+    margin: 40px auto;
+  }
+  .login {
+    // margin-top: 30%;
+  }
+  .footer {
+    text-align: center;
+    display: none;
+  }
+}
 
 .login {
   margin: 50px 0 50px 0;
@@ -153,6 +168,8 @@ export default {
   p {
     margin: 10px 0;
   }
+
+  padding-bottom: 30px;
 }
 
 /* always present */

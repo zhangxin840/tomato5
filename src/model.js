@@ -18,8 +18,8 @@ const availabilities = {
 };
 
 const taskTips = [
-  '✎ Plan your work in this list.',
-  'Click tomato to start working.',
+  '✎ Write about what you are doing.',
+  'Click tomato to start.',
   'After finishing, take a rest.',
   'Restart if you are disturbed.',
   'Concentrate with your team.',

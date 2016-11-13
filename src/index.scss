@@ -1,1 +1,158 @@
 @import 'base';
+
+.brand {
+  margin-top: 100px;
+  text-align: center;
+
+  .title {
+    margin: auto;
+    // max-width: 250px;
+  }
+
+  .slogan {
+    margin-top: 50px;
+    text-align: center;
+  }
+}
+
+.startBtn {
+  text-align: center;
+
+  a {
+    display: block;
+    background-color: $red;
+    width: 150px;
+
+    margin: 100px auto 150px auto;
+    color: white;
+    line-height: 55px;
+    font-size: 20px;
+    border-radius: 15px;
+  }
+
+  a.ready {
+    transition: all .5s;
+  }
+
+  a:hover {
+    opacity: 0.8;
+  }
+  a:active {
+    position: relative;
+    top: 2px;
+  }
+}
+
+.clearfix {
+  &:after,
+  &:before {
+    content: "";
+    display: table;
+    clear: both;
+  }
+}
+
+.introduction {
+  // font-family: proxima-nova,Helvetica Neue,Helvetica,sans-serif;
+  section {
+    padding: 50px 10%;
+    clear: both;
+  }
+
+  .what {
+    color: white;
+    text-align: center;
+    background-color: $red;
+
+    font-size: 20px;
+  }
+
+  .features {
+    background-color: white;
+
+    h2 {
+      font-size: 32px;
+      color: $green;
+    }
+
+    max-width: 800px;
+    margin: auto;
+
+    .feature {
+      margin-bottom: 50px;
+      .detail {
+        font-size: 20px;
+        color: $green;
+        margin: 40px 0;
+      }
+
+      img {
+        display: block;
+        width: 100%;
+      }
+    }
+
+
+    @media (min-width: 600px) {
+      .feature {
+        .detail {
+          float: left;
+          width: 50%;
+          line-height: 250px;
+          text-align: center;
+        }
+
+        img {
+          float: right;
+          width: 50%;
+        }
+
+        &.team {
+          img {
+            float: left;
+          }
+          .detail {
+            float: right;
+            text-align: left;
+          }
+        }
+      }
+    }
+
+
+  }
+
+  .why {
+    background-color: $green;
+    color: white;
+    font-size: 15px;
+
+    h2 {
+      font-size: 32px;
+    }
+  }
+
+  .tools {
+    img {
+      display: block;
+      width: 100%;
+      max-width: 400px;
+      margin: 70px auto;
+    }
+    h2 {
+      font-size: 20px;
+    }
+  }
+}
+
+.indexFooter {
+  margin: 50px 0 0 0;;
+  font-size: 20px;
+  text-align: center;
+  line-height: 120px;
+
+  // background-color: $blue;
+  a {
+    // color: white;
+  }
+}
