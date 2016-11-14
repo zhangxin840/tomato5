@@ -1,5 +1,9 @@
 @import 'base';
 
+html {
+  height: 100%;
+}
+
 body {
   // font-family: 'Architects Daughter', cursive;
   // font-family: 'Patrick Hand', cursive;
@@ -7,6 +11,8 @@ body {
 
   color: $ink;
   font-size: 15px;
+
+  height: 100%;
 
   a {
     color: $blue;

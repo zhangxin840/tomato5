@@ -1,47 +1,7 @@
 @import 'base';
 
-.brand {
-  margin-top: 100px;
-  text-align: center;
-
-  .title {
-    margin: auto;
-    // max-width: 250px;
-  }
-
-  .slogan {
-    margin-top: 50px;
-    text-align: center;
-  }
-}
-
-.startBtn {
-  text-align: center;
-
-  a {
-    display: block;
-    background-color: $red;
-    width: 150px;
-
-    margin: 100px auto 150px auto;
-    color: white;
-    line-height: 55px;
-    font-size: 20px;
-    border-radius: 15px;
-  }
-
-  a.ready {
-    transition: all .5s;
-  }
-
-  a:hover {
-    opacity: 0.8;
-  }
-  a:active {
-    position: relative;
-    top: 2px;
-  }
-}
+$longScreenHeight: 600px;
+$wideScreenWidth: 600px;
 
 .clearfix {
   &:after,
@@ -52,6 +12,63 @@
   }
 }
 
+.welcome {
+  height: 800px;
+  min-height: 450px;
+  box-sizing: border-box;
+
+  padding-top: 50px;
+  @media (min-height: $longScreenHeight) {
+      padding-top: 100px;
+  }
+
+  &.ready {
+    height: 100%;
+  }
+
+  .brand {
+    text-align: center;
+
+    .title {
+      margin: auto;
+    }
+
+    .slogan {
+      margin-top: 50px;
+      text-align: center;
+    }
+  }
+
+  .indexStart {
+    text-align: center;
+    margin: 100px 0 100px 0;
+
+    a {
+      display: block;
+      background-color: $red;
+      width: 150px;
+      margin: auto;
+
+      color: white;
+      line-height: 55px;
+      font-size: 20px;
+      border-radius: 15px;
+    }
+
+    a.ready {
+      transition: all .5s;
+    }
+
+    a:hover {
+      opacity: 0.8;
+    }
+    a:active {
+      position: relative;
+      top: 2px;
+    }
+  }
+}
+
 .introduction {
   // font-family: proxima-nova,Helvetica Neue,Helvetica,sans-serif;
   section {
@@ -59,24 +76,63 @@
     clear: both;
   }
 
+  &.noScroll.pop .what {
+    transition: all 0.5s ease-out;
+  }
+
+  &.pop {
+    .what {
+      top: -20px;
+    }
+
+    .features h2 {
+      margin-top: 10px;
+    }
+  }
+
+  @media (min-height: $longScreenHeight) {
+    &.pop {
+      .what {
+        top: -120px;
+      }
+
+      .features h2 {
+        margin-top: -90px;
+      }
+    }
+  }
+
   .what {
+    position: relative;
+    top: 0px;
     color: white;
     text-align: center;
     background-color: $red;
-
+    padding-left: 0;
+    padding-right: 0;
     font-size: 20px;
+
+    h3 {
+      margin: 20px 0 25px 10px;
+    }
   }
 
   .features {
     background-color: white;
+    max-width: 800px;
+    margin: auto;
 
     h2 {
       font-size: 32px;
       color: $green;
+      margin: 30px 0 20px 0;
     }
 
-    max-width: 800px;
-    margin: auto;
+    @media (min-width: $wideScreenWidth) {
+      h2 {
+        margin-bottom: 60px;
+      }
+    }
 
     .feature {
       margin-bottom: 50px;
@@ -93,7 +149,7 @@
     }
 
 
-    @media (min-width: 600px) {
+    @media (min-width: $wideScreenWidth) {
       .feature {
         .detail {
           float: left;

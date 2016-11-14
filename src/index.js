@@ -16,11 +16,23 @@ const init = function initApp() {
   window.onload = function onload() {
     setTimeout(() => {
       const btn = document.getElementById('startNow');
-      btn.className += 'animated tada ready';
-    }, 500);
-  };
+      btn.className += ' animated tada ready';
+    }, 1000);
 
-  utils.report('workflow', 'initIndex');
+    setTimeout(() => {
+      const welcome = document.getElementById('welcome');
+      const instruction = document.getElementById('instruction');
+
+      if (window.scrollY === 0) {
+        instruction.className += ' noScroll';
+      }
+
+      welcome.className += ' ready';
+      instruction.className += ' pop';
+    }, 500);
+
+    utils.report('workflow', 'initIndex');
+  };
 };
 
 init();
