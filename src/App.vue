@@ -13,7 +13,7 @@
       <account v-if="user.uid"></account>
       <section class="footer">
         <p>
-          <a href="https://github.com/zhangxin840/tomato5" target="_blank">Project on Github</a>
+          <a href="https://github.com/zhangxin840/tomato5" target="_blank">Star or open issues on Github</a>
         </p>
         <!-- <p>
           <div>Icons made by <a href="http://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>

@@ -13,9 +13,10 @@ $wideScreenWidth: 600px;
 }
 
 .welcome {
-  height: 800px;
+  height: 900px;
   min-height: 450px;
   box-sizing: border-box;
+  transition: padding 0.5s;
 
   padding-top: 50px;
   @media (min-height: $longScreenHeight) {
@@ -56,7 +57,7 @@ $wideScreenWidth: 600px;
     }
 
     a.ready {
-      transition: all .5s;
+      transition: all 0.5s;
     }
 
     a:hover {
@@ -148,7 +149,6 @@ $wideScreenWidth: 600px;
       }
     }
 
-
     @media (min-width: $wideScreenWidth) {
       .feature {
         .detail {
@@ -163,13 +163,13 @@ $wideScreenWidth: 600px;
           width: 50%;
         }
 
-        &.team {
+        &.right {
           img {
             float: left;
           }
           .detail {
             float: right;
-            text-align: left;
+            // text-align: left;
           }
         }
       }

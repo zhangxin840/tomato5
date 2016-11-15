@@ -2,11 +2,11 @@
   <article class="usage" transition="fade" v-if="loaded">
     <h2>Metrics</h2>
     <p class="chartTitle">
-      Tomatoes completed
+      Tasks completed
     </p>
     <canvas id="line-chart" height="200"></canvas>
     <p class="chartTitle">
-      Tomatoes time distribution
+      Peak hour
     </p>
     <canvas id="bar-chart" height="200"></canvas>
     <p class="streak">

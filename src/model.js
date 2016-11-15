@@ -18,11 +18,11 @@ const availabilities = {
 };
 
 const taskTips = [
-  '✎ Write about what you are doing.',
-  'Click tomato to start.',
-  'After finishing, take a rest.',
-  'Restart if you are disturbed.',
-  'Concentrate with your team.',
+  '✎ Write about what you are doing',
+  'Click tomato to start',
+  'After finishing, take a rest',
+  'Restart if you are disturbed',
+  'Concentrate with your team',
 ];
 
 const getDefaultTasks = function getDefaultTasks() {

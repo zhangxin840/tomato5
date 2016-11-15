@@ -71,7 +71,7 @@ import auth from '../auth';
 import { getDefaultTasks } from '../model';
 import utils from '../utils';
 
-const showMemberDays = 14;
+const showMemberDays = 7;
 
 const teamData = null;
 const userTeamData = null;
