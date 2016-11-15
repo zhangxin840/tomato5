@@ -15,7 +15,7 @@ Homepage: [http://tomato5.io](http://tomato5.io)
 
 - 5 minutes break after 25 minutes concentration
 - 5 tomatoes a day
-- 5 members
+- 5 team members
 
 ## Real-time collaboration
 
