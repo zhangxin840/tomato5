@@ -13,11 +13,11 @@ const init = function initApp() {
     }, false);
   }
 
-  window.onload = function onload() {
+  const initAnimation = function initAnimation() {
     setTimeout(() => {
       const btn = document.getElementById('startNow');
       btn.className += ' animated tada ready';
-    }, 1000);
+    }, 2000);
 
     setTimeout(() => {
       const welcome = document.getElementById('welcome');
@@ -29,10 +29,12 @@ const init = function initApp() {
 
       welcome.className += ' ready';
       instruction.className += ' pop';
-    }, 500);
-
-    utils.report('workflow', 'initIndex');
+    }, 1500);
   };
+
+  initAnimation();
+
+  utils.report('workflow', 'initIndex');
 };
 
 init();
