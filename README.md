@@ -1,14 +1,16 @@
 # Tomato5
 
+![logo](http://tomato5.io/static/icons/logo.png =250x)
+
 Tomato5 is a real-time collaboration tool
 
-Live: [http://tomato5.io](http://tomato5.io)
+Homepage: [http://tomato5.io](http://tomato5.io)
 
 ## Features
 
 - 5 tomatoes daily planning.
 - Track energy level for every task.
-- Take tomato timer together with your team.
+- Share status with your team.
 - Track the key metrics.
 
 ## The name
@@ -25,37 +27,41 @@ Real-time collaboration tools show the team about what is really going on right 
 
 Key points:
 - Real-time
-- Expresstional
+- Expressional
 - Reality
+
+## Serverless
+
+Tomato5 is structured as the 'Serverless' architecture.
+All services are based on cloud, without any server of its own.
+
+Front-end part of this system is just static files hosted on Google's CDN.
+The web app will talk directly to the Realtime Database of Firebase.
+
+The whole account system, including login UI, is also provided by Firebase.
+
+With the full support of cloud services, we can build real-world products at lowest development efforts, and get free from most of the operating and maintaining things.
 
 ## Tech Stack
 
-This app is totally structured as the 'serverless' architecture.
-
+- Responsive web design
 - ES6
-- CSS3 animation
-- VUE
+- Vue
 - Webpack
 - Firebase
 
-## Build Setup
+## Develop
 
 ``` bash
-# install dependencies
+# Install dependencies
 npm install
 
-# serve with hot reload at localhost:8080
+# Serve with hot reload at localhost:8080
 npm run dev
 
-# build for production with minification
+# Build for production
 npm run build
 
-# run unit tests
-npm run unit
-
-# run e2e tests
-npm run e2e
-
-# run all tests
-npm test
+# Deploy to Firebase
+bash deploy.sh
 ```

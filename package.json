@@ -1,7 +1,7 @@
 {
   "name": "tomato5",
-  "version": "1.1.0",
-  "description": "Best online tool for Promodoro Technique.",
+  "version": "1.1.1",
+  "description": "A real-time collaboration tool.",
   "author": "XinZhang <zhangxin840@gmail.com>",
   "private": true,
   "scripts": {
