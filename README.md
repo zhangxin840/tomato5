@@ -1,5 +1,3 @@
-# Tomato5
-
 ![logo](http://tomato5.io/static/icons/logo.png)
 
 Tomato5 is a real-time collaboration tool
