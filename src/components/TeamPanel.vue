@@ -50,8 +50,14 @@
         </form>
         </validator>
       </div>
+      <div class="message">
+        <input type="text" class="" placeholder="About Today">
+      </div>
       <div class="members" transition="fade" v-if="teamData">
         <member v-for="(uid, member) in teamData.members"
+                v-bind:flowers="teamData.common.flowers[this.dateLabel][uid]"
+                v-bind:uid="uid"
+                v-bind:is-saving="isSaving"
                 v-bind:tasks="member.tasks"
                 v-bind:user-status="member.userStatus"
                 v-bind:user-info="member.userInfo"
@@ -83,6 +89,8 @@ const teamForm = {
   isJoin: true,
 };
 
+const isSaving = false;
+
 const showForm = function showForm() {
   this.teamForm.isShow = !this.teamForm.isShow;
   utils.report('team', 'showForm');
@@ -109,6 +117,17 @@ const publishToTeam = function publishToTeam() {
   }
 
   return promise;
+};
+
+const addFlower = function addFlower(uid) {
+  const path = `teams/${this.userTeamData.currentTeam}/common/flowers/${this.dateLabel}/${uid}`;
+  console.log(path);
+  this.isSaving = true;
+  database.save(path, this.teamData.common.flowers[this.dateLabel][uid]).then(() => {
+    this.isSaving = false;
+  }, () => {
+    this.isSaving = false;
+  });
 };
 
 const joinTeam = function joinTeam(inviteCode) {
@@ -146,30 +165,44 @@ const changeTeamName = function changeTeamName(inviteCode, name) {
 };
 
 const processTeamData = function processTeamData(data) {
-  if (data && data.members) {
-    Object.keys(data.members).forEach((uid) => {
-      const member = data.members[uid];
-
-      member.tasks = member.tasks.filter((task) => (task.createTime
-          && moment(task.createTime).format('YYYYMMDD') === moment().add(0, 'd').format('YYYYMMDD'))
-      );
-
-      member.tasks = member.tasks.length > 0 ? member.tasks : getDefaultTasks();
-
-      // Hide member if not updated
-      if (!member.updateTime ||
-        moment.duration(moment(member.updateTime) - moment()).days() > showMemberDays) {
-        member.isHideMember = true;
-      }
-    });
+  if (!data) {
+    return null;
   }
+
+  /* eslint-disable no-param-reassign */
+  data.common = data.common || {};
+  data.common.flowers = data.common.flowers || {};
+  data.common.flowers[this.dateLabel] = data.common.flowers[this.dateLabel] || {};
+
+  Object.keys(data.members).forEach((uid) => {
+    data.common.flowers[this.dateLabel][uid] = data.common.flowers[this.dateLabel][uid] || {
+      count: 0,
+    };
+  });
+  /* eslint-enable no-param-reassign */
+
+  Object.keys(data.members).forEach((uid) => {
+    const member = data.members[uid];
+
+    member.tasks = member.tasks.filter((task) => (task.createTime
+        && moment(task.createTime).format('YYYYMMDD') === moment().add(0, 'd').format('YYYYMMDD'))
+    );
+
+    member.tasks = member.tasks.length > 0 ? member.tasks : getDefaultTasks();
+
+    // Hide member if not updated
+    if (!member.updateTime ||
+      moment.duration(moment(member.updateTime) - moment()).days() > showMemberDays) {
+      member.isHideMember = true;
+    }
+  });
 
   return data;
 };
 
 const watchTeam = function watchTeam() {
   watchRef = database.watch(`teams/${this.userTeamData.currentTeam}`, (snapshot) => {
-    this.teamData = processTeamData(snapshot.val());
+    this.teamData = this.processTeamData(snapshot.val());
   });
 };
 
@@ -193,14 +226,18 @@ const saveUserTeamData = function saveUserTeamData() {
   return database.save(`userData/${auth.getUser().uid}/teamData`, this.userTeamData);
 };
 
+// Only get dateLabel when init, to avoid cross day issues.
+const dateLabel = moment().format('YYYYMMDD');
+
 export default {
   props: ['userInfo', 'userStatus', 'tasks'],
   data() {
-    return { teamData, teamForm, userTeamData };
+    return { teamData, teamForm, userTeamData, dateLabel, isSaving };
   },
   events: {
     publish: publishToTeam,
     tabFocused: publishToTeam,
+    addFlower,
   },
   created: init,
   methods: {
@@ -208,6 +245,7 @@ export default {
     getUserTeamData, saveUserTeamData,
     joinTeam, createTeam, changeTeamName,
     showForm,
+    processTeamData,
   },
   components: { Member },
 };
@@ -232,6 +270,16 @@ export default {
     padding: 0px 10px;
     cursor: pointer;
     user-select: none;
+  }
+
+  .message {
+    input {
+      display: block;
+      width: 100%;
+      text-align: center;
+      line-height: 30px;
+      margin: 50px 0 30px 0;
+    }
   }
 
   .members {

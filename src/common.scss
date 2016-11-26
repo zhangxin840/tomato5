@@ -39,7 +39,7 @@ body {
     box-shadow: none;
     outline: initial;
 
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid #f0f0f0;
   }
 }
 
@@ -89,17 +89,15 @@ body {
 
   -webkit-tap-highlight-color: rgba(0,0,0,0);
   -webkit-tap-highlight-color: transparent; /* For some Androids */
+
+  &:active{
+    transform: scale(1.1, 1.1);
+  }
+  opacity: 1;
 }
 
 .tomato{
   width: 30px;
   height: 30px;
-  background: url('assets/tomato.svg');
-  background-repeat: no-repeat;
-
-  opacity: 1;
-
-  &:active{
-    transform: scale(1.1, 1.1);
-  }
+  background-image: url('assets/tomato.svg');
 }

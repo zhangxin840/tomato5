@@ -1,6 +1,6 @@
 <template>
   <div class="member">
-    <p>
+    <div class="memberStatus">
       <emotion class="small" v-bind:level="userStatus.emotion"></emotion>
       <span class="beacon"
             v-bind:class="{
@@ -13,24 +13,33 @@
       </span>
       <span class="name">{{ userInfo.displayName || (userInfo.email && userInfo.email.match(/^([^@]*)@/)[1]) }}</span>
       <span class="time" transition="fade" v-if="taskTimeLable">{{ taskTimeLable }}</span>
-    </p>
-      <div class="">
-        <div class="tasks">
-          <span class="icon tomato animated"
-              v-for="task in tasks"
-              v-bind:title="task.note"
+      <div class="flowers"
+           v-bind:class="{
+             'disabled': isFlowersCooling || isSaving,
+           }"
+           v-on:click="onClickFlowers()">
+        <span class="icon flower animated"></span>
+        <span class="count animated"
               v-bind:class="{
-                'done': task.status === taskStatus.done,
-                'active': task.status === taskStatus.active,
-                'ongoing pulse infinite': task.status === taskStatus.ongoing,
-                'planned': task.status === taskStatus.idle && task.note,
-              }">
-          </span>
-        </div>
+                'jello': isFlowersCooling,
+              }">{{ flowers.count }}</span>
       </div>
-      <div class="note-container">
-        <p class="note" transition="fade" v-if="activeTask">{{ activeTask.note }}</p>
-      </div>
+    </div>
+    <div class="tasks">
+      <span class="icon tomato animated"
+          v-for="task in tasks"
+          v-bind:title="task.note"
+          v-bind:class="{
+            'done': task.status === taskStatus.done,
+            'active': task.status === taskStatus.active,
+            'ongoing pulse infinite': task.status === taskStatus.ongoing,
+            'planned': task.status === taskStatus.idle && task.note,
+          }">
+      </span>
+    </div>
+    <div class="note-container">
+      <p class="note" transition="fade" v-if="activeTask">{{ activeTask.note }}</p>
+    </div>
   </div>
 </template>
 
@@ -45,6 +54,22 @@ const taskTimeLable = '';
 let statusChecker = null;
 
 const isOffline = true;
+const isFlowersCooling = false;
+
+const onClickFlowers = function onClickFlowers() {
+  if (this.isFlowersCooling || this.isSaving) {
+    return;
+  }
+
+  this.flowers.count++;
+  this.isFlowersCooling = true;
+
+  this.$dispatch('addFlower', this.uid);
+
+  setTimeout(() => {
+    this.isFlowersCooling = false;
+  }, 1000);
+};
 
 const init = function init() {
   statusChecker = window.setInterval(() => {
@@ -74,11 +99,15 @@ const destroy = function destroy() {
 };
 
 export default {
-  props: ['tasks', 'userStatus', 'userInfo', 'updateTime'],
+  props: ['tasks', 'userStatus', 'userInfo', 'updateTime', 'uid', 'flowers', 'isSaving'],
   data() {
-    return { taskStatus, availabilities, taskTimeLable, statusChecker, isOffline };
+    return {
+      taskStatus, availabilities,
+      taskTimeLable, statusChecker,
+      isOffline, isFlowersCooling,
+    };
   },
-  methods: { },
+  methods: { onClickFlowers },
   components: { Emotion },
   created: init,
   beforeDestroy: destroy,
@@ -113,8 +142,9 @@ export default {
     margin-top: 25px;
   }
 
-  p {
-    margin: 10px 0;
+  .memberStatus {
+    // margin: 10px 0;
+    line-height: 50px;
   }
 
   .emotion {
@@ -174,6 +204,39 @@ export default {
 
   .name {
     margin-right: 15px;
+    // min-width: 80px;
+    display: inline-block;
+  }
+
+  .flowers {
+    float: right;
+    display: inline-block;
+    cursor: pointer;
+    user-select: none;
+    // margin-right: 15px;
+    min-width: 50px;
+
+    &.disabled {
+      cursor: default;
+    }
+
+    .count {
+      transition: all .1s;
+      text-align: left;
+      display: inline-block;
+      margin-left: -5px;
+      padding: 0;
+    }
+
+    .flower{
+      vertical-align: middle;
+      margin-right: 0px;
+
+      width: 25px;
+      height: 25px;
+      background-image: url('../assets/flower.svg');
+      opacity: 1;
+    }
   }
 
   .tomato {

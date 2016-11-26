@@ -47,6 +47,15 @@ const team = {
     inviteCode: 'HFE-Train',
     name: 'HFE-Train',
   },
+  common: {
+    flowers: {
+      DATE: {
+        UID: {
+          count: 0,
+        },
+      },
+    },
+  },
   members: {
     UID: {
       rule: 'member',
