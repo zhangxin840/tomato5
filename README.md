@@ -12,16 +12,19 @@ Homepage: [http://tomato5.io](http://tomato5.io)
 
 ## Features
 
-- 5 tomatoes daily planning.
-- Track energy level for every task.
-- Share status with your team.
-- Track the key metrics.
+- Adapt to all kinds of screen sizes.
+- Real-time data sync.
+- Serverless architecture, powered by GCP and AWS.
 
 ## The name
 
 - 5 minutes break after 25 minutes concentration
 - 5 tomatoes a day
 - 5 team members
+
+## Responsive web design
+
+![responsive](http://tomato5.io/static/promotions/responsive.gif)
 
 ## Real-time collaboration
 
@@ -53,6 +56,7 @@ With the full support of cloud services, we can build real-world products at low
 - Vue
 - Webpack
 - Firebase
+- AWS Lambda
 
 ## Develop
 
