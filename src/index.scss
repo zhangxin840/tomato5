@@ -3,6 +3,8 @@
 $longScreenHeight: 600px;
 $wideScreenWidth: 600px;
 
+
+
 .clearfix {
   &:after,
   &:before {
@@ -77,6 +79,10 @@ $wideScreenWidth: 600px;
     clear: both;
   }
 
+  h2 {
+    font-size: 32px;
+  }
+
   &.noScroll.pop .what {
     transition: all 0.5s ease-out;
   }
@@ -111,9 +117,9 @@ $wideScreenWidth: 600px;
     background-color: $red;
     padding-left: 0;
     padding-right: 0;
-    font-size: 20px;
+    font-size: 18px;
 
-    h3 {
+    h2 {
       margin: 20px 0 25px 10px;
     }
   }
@@ -124,7 +130,6 @@ $wideScreenWidth: 600px;
     margin: auto;
 
     h2 {
-      font-size: 32px;
       color: $green;
       margin: 30px 0 20px 0;
     }
@@ -158,6 +163,10 @@ $wideScreenWidth: 600px;
           text-align: center;
         }
 
+        &.flowers .detail {
+          line-height: 150px;
+        }
+
         img {
           float: right;
           width: 50%;
@@ -186,11 +195,9 @@ $wideScreenWidth: 600px;
 
     strong {
       font-size: 20px;
-      // text-decoration: underline;
     }
 
     h2 {
-      font-size: 32px;
       margin-top: 10px;
     }
   }

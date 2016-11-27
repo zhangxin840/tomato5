@@ -48,6 +48,11 @@ const team = {
     name: 'HFE-Train',
   },
   common: {
+    messages: {
+      DATE: {
+        headline: '',
+      },
+    },
     flowers: {
       DATE: {
         UID: {

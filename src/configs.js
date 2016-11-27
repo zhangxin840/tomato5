@@ -9,7 +9,7 @@ let offLineThreshold = 60; // minutes
 let checkMemberInterval = 1000; // ms
 
 let firebaseConfig = {
-  apiKey: 'AIzaSyCbB0yB-qabmzQ_STyAngEd5-D0MypBbBE',
+  apiKey: 'AIzaSyCbB0yB-qabmzQ_STyAngEd5-D0MypBbBE', // This is not a private key
   authDomain: 'tomato5-pro.firebaseapp.com',
   databaseURL: 'https://tomato5-pro.firebaseio.com',
   storageBucket: 'tomato5-pro.appspot.com',

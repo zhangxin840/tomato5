@@ -340,14 +340,18 @@ export default {
 
 .usage {
   margin-top: 50px;
-}
 
-.chartTitle {
-  text-align: center;
-  margin: 40px 0 15px 0;
-}
+  h2 {
+    margin-bottom: 50px;
+  }
 
-.streak {
-  margin-top: 30px;
+  .chartTitle {
+    text-align: center;
+    margin: 40px 0 15px 0;
+  }
+
+  .streak {
+    margin-top: 50px;
+  }
 }
 </style>

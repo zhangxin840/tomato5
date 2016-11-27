@@ -143,8 +143,8 @@ export default {
   }
 
   .memberStatus {
-    // margin: 10px 0;
     line-height: 50px;
+    user-select: none;
   }
 
   .emotion {
@@ -184,28 +184,16 @@ export default {
     }
   }
 
-  .note-container {
-    height: 50px;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-
-    .note {
-      margin: 3px 0 0 0;
-    }
+  .name {
+    margin-right: 15px;
+    // min-width: 80px;
+    display: inline-block;
   }
 
   .time {
     // position: absolute;
     // right: 0;
     // color: $red;
-  }
-
-  .name {
-    margin-right: 15px;
-    // min-width: 80px;
-    display: inline-block;
   }
 
   .flowers {
@@ -249,6 +237,18 @@ export default {
 
     &.ongoing, &.active, &.planned {
       opacity: 0.5;
+    }
+  }
+
+  .note-container {
+    height: 50px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+
+    .note {
+      margin: 3px 0 0 0;
     }
   }
 }

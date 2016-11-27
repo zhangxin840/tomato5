@@ -50,8 +50,10 @@
         </form>
         </validator>
       </div>
-      <div class="message">
-        <input type="text" class="" placeholder="About Today">
+      <div class="message" transition="fade" v-if="teamData">
+        <input type="text" class="" placeholder="Headline" maxlength="200"
+               v-model="teamData.common.messages[dateLabel].headline"
+               v-on:blur="changeHeadline">
       </div>
       <div class="members" transition="fade" v-if="teamData">
         <member v-for="(uid, member) in teamData.members"
@@ -121,13 +123,24 @@ const publishToTeam = function publishToTeam() {
 
 const addFlower = function addFlower(uid) {
   const path = `teams/${this.userTeamData.currentTeam}/common/flowers/${this.dateLabel}/${uid}`;
-  console.log(path);
+  // console.log(path);
   this.isSaving = true;
   database.save(path, this.teamData.common.flowers[this.dateLabel][uid]).then(() => {
     this.isSaving = false;
   }, () => {
     this.isSaving = false;
   });
+
+  utils.report('team', 'addFlower');
+};
+
+const changeHeadline = function changeHeadline() {
+  const path = `teams/${this.userTeamData.currentTeam}/common/messages/${this.dateLabel}/headline`;
+  database.save(path, this.teamData.common.messages[this.dateLabel].headline).then(() => {
+  }, () => {
+  });
+
+  utils.report('team', 'changeHeadline');
 };
 
 const joinTeam = function joinTeam(inviteCode) {
@@ -170,7 +183,9 @@ const processTeamData = function processTeamData(data) {
   }
 
   /* eslint-disable no-param-reassign */
+  // Init the common data structure
   data.common = data.common || {};
+
   data.common.flowers = data.common.flowers || {};
   data.common.flowers[this.dateLabel] = data.common.flowers[this.dateLabel] || {};
 
@@ -179,8 +194,14 @@ const processTeamData = function processTeamData(data) {
       count: 0,
     };
   });
+
+  data.common.messages = data.common.messages || {};
+  data.common.messages[this.dateLabel] = data.common.messages[this.dateLabel] || {};
+  data.common.messages[this.dateLabel].headline =
+    data.common.messages[this.dateLabel].headline || ''; // moment().format('dddd, MMM Do');
   /* eslint-enable no-param-reassign */
 
+  // Filter tasks and members
   Object.keys(data.members).forEach((uid) => {
     const member = data.members[uid];
 
@@ -245,6 +266,7 @@ export default {
     getUserTeamData, saveUserTeamData,
     joinTeam, createTeam, changeTeamName,
     showForm,
+    changeHeadline,
     processTeamData,
   },
   components: { Member },

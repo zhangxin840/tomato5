@@ -4,6 +4,12 @@ Tomato5 is a real-time collaboration tool
 
 Homepage: [http://tomato5.io](http://tomato5.io)
 
+## Updates
+
+### 1.2.0
+- New feature: Give thumbs up to team members.
+- New feature: Headline for team status.
+
 ## Features
 
 - 5 tomatoes daily planning.
