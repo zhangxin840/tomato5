@@ -8,7 +8,7 @@ body {
   // font-family: 'Architects Daughter', cursive;
   // font-family: 'Patrick Hand', cursive;
   font-family: 'Short Stack', sans-serif;
-  font-size: 15px;
+  font-size: $font-size-s;
   color: $ink;
 
   height: 100%;
@@ -26,7 +26,7 @@ body {
   }
 
   h2 {
-    font-size: 18px;
+    font-size: $font-size-m;
     font-weight: normal;
   }
 

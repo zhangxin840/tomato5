@@ -16,7 +16,7 @@ Homepage: [http://tomato5.io](http://tomato5.io)
 - Real-time data sync.
 - Serverless architecture, powered by GCP and AWS.
 
-## The name
+## The name Tomato5
 
 - 5 minutes break after 25 minutes concentration
 - 5 tomatoes a day
@@ -30,7 +30,7 @@ Homepage: [http://tomato5.io](http://tomato5.io)
 
 Traditional collaboration tools told the team about what to do today.
 
-Real-time collaboration tools show the team about what is really going on right now.
+Real-time collaboration tools show the team about what is going on right now.
 
 Key points:
 - Real-time
@@ -39,15 +39,15 @@ Key points:
 
 ## Serverless
 
-Tomato5 is structured as the 'Serverless' architecture.
-All services are based on cloud, without any server of its own.
-
+We build Tomato5 as the 'Serverless' architecture.
+All services run on the cloud, without any server of its own.
+ 
 Front-end part of this system is just static files hosted on Google's CDN.
 The web app will talk directly to the Realtime Database of Firebase.
 
 The whole account system, including login UI, is also provided by Firebase.
 
-With the full support of cloud services, we can build real-world products at lowest development efforts, and get free from most of the operating and maintaining things.
+With the full support of cloud services, we can build real-world products at lowest development costs, and get free from most of the maintaining works.
 
 ## Tech Stack
 

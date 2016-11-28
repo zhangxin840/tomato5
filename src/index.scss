@@ -3,8 +3,6 @@
 $longScreenHeight: 600px;
 $wideScreenWidth: 600px;
 
-
-
 .clearfix {
   &:after,
   &:before {
@@ -54,7 +52,7 @@ $wideScreenWidth: 600px;
 
       color: white;
       line-height: 55px;
-      font-size: 20px;
+      font-size: $font-size-l;
       border-radius: 15px;
     }
 
@@ -80,7 +78,7 @@ $wideScreenWidth: 600px;
   }
 
   h2 {
-    font-size: 32px;
+    font-size: $font-size-xl;
   }
 
   &.noScroll.pop .what {
@@ -117,7 +115,7 @@ $wideScreenWidth: 600px;
     background-color: $red;
     padding-left: 0;
     padding-right: 0;
-    font-size: 18px;
+    font-size: $font-size-m;
 
     h2 {
       margin: 20px 0 25px 10px;
@@ -143,7 +141,7 @@ $wideScreenWidth: 600px;
     .feature {
       margin-bottom: 50px;
       .detail {
-        font-size: 20px;
+        font-size: $font-size-l;
         color: $green;
         margin: 40px 0;
       }
@@ -190,11 +188,11 @@ $wideScreenWidth: 600px;
   .why {
     background-color: $green;
     color: white;
-    font-size: 15px;
+    font-size: $font-size-s;
     line-height: 1.5;
 
     strong {
-      font-size: 20px;
+      font-size: $font-size-l;
     }
 
     h2 {
@@ -210,14 +208,14 @@ $wideScreenWidth: 600px;
       margin: 70px auto;
     }
     h2 {
-      font-size: 20px;
+      font-size: $font-size-l;
     }
   }
 }
 
 .indexFooter {
   margin: 50px 0 0 0;;
-  font-size: 20px;
+  font-size: $font-size-l;
   text-align: center;
   line-height: 120px;
 
