@@ -30,10 +30,10 @@
           v-for="task in tasks"
           v-bind:title="task.note"
           v-bind:class="{
+            'planned': (task.status === taskStatus.idle && task.note) || (isOffline && (task.status === (taskStatus.ongoing || taskStatus.active))),
+            'ongoing pulse infinite': (task.status === taskStatus.ongoing) && !isOffline,
+            'active': (task.status === taskStatus.active) && !isOffline,
             'done': task.status === taskStatus.done,
-            'active': task.status === taskStatus.active,
-            'ongoing pulse infinite': task.status === taskStatus.ongoing,
-            'planned': task.status === taskStatus.idle && task.note,
           }">
       </span>
     </div>
@@ -73,13 +73,6 @@ const onClickFlowers = function onClickFlowers() {
 
 const init = function init() {
   statusChecker = window.setInterval(() => {
-    if (this.activeTask && this.activeTask.status === taskStatus.ongoing) {
-      this.taskTimeLable = timer.getContdown(this.activeTask.startTime,
-        'standard', 'minute');
-    } else {
-      this.taskTimeLable = '';
-    }
-
     if (!this.updateTime) {
       this.isOffline = true;
     } else {
@@ -90,6 +83,13 @@ const init = function init() {
       } else {
         this.isOffline = false;
       }
+    }
+
+    if (this.activeTask && this.activeTask.status === taskStatus.ongoing) {
+      this.taskTimeLable = timer.getContdown(this.activeTask.startTime,
+        'standard', 'minute');
+    } else {
+      this.taskTimeLable = '';
     }
   }, checkMemberInterval);
 };
@@ -122,6 +122,10 @@ export default {
             break;
           }
         }
+      }
+
+      if (this.isOffline) {
+        result = null;
       }
 
       return result;
