@@ -1,12 +1,13 @@
 ![logo](http://tomato5.io/static/icons/logo.png)
 
-Tomato5 is a real-time collaboration tool
+Tomato5 is a real-time collaboration tool.
 
 Homepage: [http://tomato5.io](http://tomato5.io)
 
 ## Updates
 
 ### 1.2.0
+
 - New feature: Give thumbs up to team members.
 - New feature: Headline for team status.
 
@@ -16,26 +17,9 @@ Homepage: [http://tomato5.io](http://tomato5.io)
 - Real-time data sync.
 - Serverless architecture, powered by GCP and AWS.
 
-## The name Tomato5
-
-- 5 minutes break after 25 minutes concentration
-- 5 tomatoes a day
-- 5 team members
-
 ## Responsive web design
 
 ![responsive](http://tomato5.io/static/promotions/responsive.gif)
-
-## Real-time collaboration
-
-Traditional collaboration tools told the team about what to do today.
-
-Real-time collaboration tools show the team about what is going on right now.
-
-Key points:
-- Real-time
-- Expressional
-- Reality
 
 ## Serverless
 
@@ -57,6 +41,23 @@ With the full support of cloud services, we can build real-world products at low
 - Webpack
 - Firebase
 - AWS Lambda
+
+## The name Tomato5
+
+- 5 minutes break after 25 minutes concentration
+- 5 tomatoes a day
+- 5 team members
+
+## Real-time collaboration
+
+Traditional collaboration tools told the team about what to do today.
+
+Real-time collaboration tools show the team about what is going on right now.
+
+Key points:
+- Real-time
+- Expressional
+- Feedbacks
 
 ## Develop
 
