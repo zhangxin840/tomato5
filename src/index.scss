@@ -3,15 +3,6 @@
 $longScreenHeight: 600px;
 $wideScreenWidth: 600px;
 
-.clearfix {
-  &:after,
-  &:before {
-    content: "";
-    display: table;
-    clear: both;
-  }
-}
-
 .welcome {
   height: 900px;
   min-height: 450px;
@@ -161,8 +152,18 @@ $wideScreenWidth: 600px;
           text-align: center;
         }
 
-        &.flowers .detail {
-          line-height: 150px;
+        &.flowers {
+          margin: 100px 0;
+          .detail {
+            line-height: 150px;
+          }
+        }
+
+        &.bubble {
+          margin: 70px 0;
+          .detail {
+            line-height: 150px;
+          }
         }
 
         img {

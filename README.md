@@ -1,6 +1,7 @@
 ![logo](http://tomato5.io/static/icons/logo.png)
 
 Tomato5 is a real-time collaboration tool.
+It combines Pomodoro Technique with a team status share board.
 
 Homepage: [http://tomato5.io](http://tomato5.io)
 
@@ -31,7 +32,7 @@ We build Tomato5 as the 'Serverless' architecture.
 All services run on the cloud, without any server of its own.
  
 Front-end part of this system is just static files hosted on Google's CDN.
-The web app will talk directly to the Realtime Database of Firebase.
+The web app talks directly to the Realtime Database of Firebase.
 
 The whole account system, including login UI, is also provided by Firebase.
 
@@ -54,14 +55,18 @@ With the full support of cloud services, we can build real-world products at low
 
 ## Real-time collaboration
 
-Traditional collaboration tools told the team about what to do today.
+We believe that it is important for the team to share everyone's status.
 
-Real-time collaboration tools show the team about what is going on right now.
+Traditional collaboration tools only told the team what to achieve, without concern about individual's actual status.
+
+By showing what we are doing and thinking in real-time, we can express ourselves more adequately, be more connected to the team, and get more feedbacks on time.
+
+Real-time collaboration means to share the team status in real-time.
 
 Key points:
-- Individuals
+- Concern about individuals
 - Expressional
-- Feedbacks
+- Instant Feedbacks
 
 ## Develop
 
