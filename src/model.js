@@ -22,7 +22,7 @@ const taskTips = [
   'Click tomato to start',
   'After finishing, take a rest',
   'Restart if you are disturbed',
-  'Concentrate with your team',
+  'Share status with your team',
 ];
 
 const getDefaultTasks = function getDefaultTasks() {
@@ -40,6 +40,13 @@ const getDefaultTasks = function getDefaultTasks() {
     tasks.push(defaultTask);
   }
   return tasks;
+};
+
+const userStatus = {
+  availability: availabilities.idle,
+  emotion: '2',
+  speech: '',
+  isShowSpeech: false,
 };
 
 const team = {
@@ -81,4 +88,4 @@ const userData = {
   },
 };
 
-export { taskStatus, taskTips, availabilities, getDefaultTasks, team, userData };
+export { taskStatus, taskTips, availabilities, getDefaultTasks, team, userData, userStatus };

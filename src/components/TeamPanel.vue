@@ -6,7 +6,7 @@
         <!-- <span>{{ teamData.info.name }}</span>     -->
         <span class="expander" v-on:click="showForm()">+</span>
       </h2>
-      <div class="teamManager" transition="expand" v-show="teamForm.isShow">
+      <div class="teamManager " transition="expand" v-show="teamForm.isShow">
         <p class="switch" v-show="false">
           <span class="selector" v-on:click="teamForm.isJoin = true" v-bind:class="{ 'selected': teamForm.isJoin }">Join Team</span>
           <span class="spacer">or</span>
@@ -50,7 +50,7 @@
         </form>
         </validator>
       </div>
-      <div class="message" transition="fade" v-if="teamData">
+      <div class="message clearfix" transition="fade" v-if="teamData">
         <input type="text" class="" placeholder="Headline" maxlength="200"
                v-model="teamData.common.messages[dateLabel].headline"
                v-on:blur="changeHeadline">
@@ -58,7 +58,7 @@
       <div class="members" transition="fade" v-if="teamData">
         <member v-for="(uid, member) in teamData.members"
                 v-bind:flowers="teamData.common.flowers[this.dateLabel][uid]"
-                v-bind:uid="uid"
+                v-bind:auth-user="authUser"
                 v-bind:is-saving="isSaving"
                 v-bind:tasks="member.tasks"
                 v-bind:user-status="member.userStatus"
@@ -227,6 +227,8 @@ const watchTeam = function watchTeam() {
   });
 };
 
+const authUser = auth.getUser();
+
 const init = function init() {
   this.getUserTeamData().then(() => {
     this.teamForm.inviteCode = this.userTeamData.currentTeam;
@@ -237,27 +239,42 @@ const init = function init() {
 };
 
 const getUserTeamData = function getUserTeamData() {
-  return database.get(`userData/${auth.getUser().uid}/teamData`, { currentTeam: '' })
-    .then((data) => {
-      this.userTeamData = data;
-    });
+  return database.get(`userData/${auth.getUser().uid}/teamData`, {
+    currentTeam: null,
+  }).then((data) => {
+    const defaultTeam = `TEAM-${authUser.uid.slice(0, 3)}-${Math.random().toString().slice(2, 7)}`;
+
+    this.userTeamData = data;
+    this.userTeamData.currentTeam = this.userTeamData.currentTeam || defaultTeam;
+  });
 };
 
 const saveUserTeamData = function saveUserTeamData() {
   return database.save(`userData/${auth.getUser().uid}/teamData`, this.userTeamData);
 };
 
+// The param 'userStatus' came from the teamboard
+// Should first sync this 'userStatus'
+const updateSpeech = function updateSpeech(speech, isShowSpeech) {
+  this.userStatus.speech = speech;
+  this.userStatus.isShowSpeech = isShowSpeech;
+
+  this.publishToTeam();
+};
+
 // Only get dateLabel when init, to avoid cross day issues.
 const dateLabel = moment().format('YYYYMMDD');
+
 
 export default {
   props: ['userInfo', 'userStatus', 'tasks'],
   data() {
-    return { teamData, teamForm, userTeamData, dateLabel, isSaving };
+    return { teamData, teamForm, userTeamData, dateLabel, isSaving, authUser };
   },
   events: {
     publish: publishToTeam,
     tabFocused: publishToTeam,
+    updateSpeech,
     addFlower,
   },
   created: init,
@@ -268,6 +285,7 @@ export default {
     showForm,
     changeHeadline,
     processTeamData,
+    updateSpeech,
   },
   components: { Member },
 };
@@ -300,7 +318,7 @@ export default {
       width: 100%;
       text-align: center;
       line-height: 30px;
-      margin: 50px 0 30px 0;
+      margin: 35px 0 0px 0;
     }
   }
 
@@ -376,7 +394,7 @@ export default {
 /* always present */
 .expand-transition {
   transition: all .3s ease;
-  height: 110px;
+  height: 120px;
   overflow: hidden;
 }
 

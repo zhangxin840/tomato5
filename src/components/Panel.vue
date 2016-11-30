@@ -88,7 +88,7 @@ import Task from './Task';
 import Emotion from './Emotion';
 import TeamPanel from './TeamPanel';
 import timer from '../timer';
-import { taskStatus, availabilities, getDefaultTasks } from '../model';
+import { taskStatus, availabilities, getDefaultTasks, userStatus } from '../model';
 import database from '../database';
 import auth from '../auth';
 import utils from '../utils';
@@ -100,12 +100,6 @@ const panelStatus = {
   label: '00:00',
   activeTask: null,
   isShowEmotions: false,
-};
-
-const userStatus = {
-  availability: availabilities.idle,
-  emotion: '2',
-  currentTeam: 'HFE-Train',
 };
 
 const Notification = window.Notification;

@@ -6,10 +6,14 @@ Homepage: [http://tomato5.io](http://tomato5.io)
 
 ## Updates
 
+### 1.3.0
+
+- New feature: Show speech bubble in team board.
+
 ### 1.2.0
 
 - New feature: Give thumbs up to team members.
-- New feature: Headline for team status.
+- New feature: Headline for team board.
 
 ## Features
 
@@ -55,7 +59,7 @@ Traditional collaboration tools told the team about what to do today.
 Real-time collaboration tools show the team about what is going on right now.
 
 Key points:
-- Real-time
+- Individuals
 - Expressional
 - Feedbacks
 

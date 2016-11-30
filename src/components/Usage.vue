@@ -10,7 +10,7 @@
     </p>
     <canvas id="bar-chart" height="200"></canvas>
     <p class="streak">
-      Tomato streak: {{ usageData.streak }} day{{usageData.streak > 1 ? 's' : ''}}
+      Usage streak: {{ usageData.streak }} day{{usageData.streak > 1 ? 's' : ''}}
     </p>
     <p class="total">
       Total completed: {{ usageData.totalCount }}

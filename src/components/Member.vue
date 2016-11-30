@@ -1,7 +1,18 @@
 <template>
   <div class="member">
+    <div class="speech" v-bind:class="{
+      'show': userStatus.isShowSpeech && (authUser.uid === userInfo.uid || (userStatus.speech && userStatus.speech.length > 0)),
+      'long': userStatus.speech && userStatus.speech.length > 15
+    }">
+      <div v-if="authUser.uid === userInfo.uid" class="content edit">
+        <input v-model="userStatus.speech" v-on:blur="onChangeSpeech" class="" type="text" name="" placeholder="How are you doing?" maxlength="100">
+      </div>
+      <div v-if="authUser.uid !== userInfo.uid" class="content show">
+        <p>{{userStatus.speech}}</p>
+      </div>
+    </div>
     <div class="memberStatus">
-      <emotion class="small" v-bind:level="userStatus.emotion"></emotion>
+      <emotion class="small" v-on:click="onClickEmotion" v-bind:level="userStatus.emotion"></emotion>
       <span class="beacon"
             v-bind:class="{
               'busy': userStatus.availability === availabilities.busy,
@@ -64,7 +75,7 @@ const onClickFlowers = function onClickFlowers() {
   this.flowers.count++;
   this.isFlowersCooling = true;
 
-  this.$dispatch('addFlower', this.uid);
+  this.$dispatch('addFlower', this.userInfo.uid);
 
   setTimeout(() => {
     this.isFlowersCooling = false;
@@ -94,12 +105,28 @@ const init = function init() {
   }, checkMemberInterval);
 };
 
+const onChangeSpeech = function onChangeSpeech() {
+  // 'userStatus' in this component is from team, not the authUser
+  // Sync data back to authUser if the change is made for himself
+  if (this.userInfo.uid === this.authUser.uid) {
+    this.$dispatch('updateSpeech', this.userStatus.speech, this.userStatus.isShowSpeech);
+  }
+};
+
+const onClickEmotion = function onClickEmotion() {
+  this.userStatus.isShowSpeech = !this.userStatus.isShowSpeech;
+
+  if (this.userInfo.uid === this.authUser.uid) {
+    this.$dispatch('updateSpeech', this.userStatus.speech, this.userStatus.isShowSpeech);
+  }
+};
+
 const destroy = function destroy() {
   window.clearInterval(this.statusChecker);
 };
 
 export default {
-  props: ['tasks', 'userStatus', 'userInfo', 'updateTime', 'uid', 'flowers', 'isSaving'],
+  props: ['tasks', 'userStatus', 'userInfo', 'updateTime', 'flowers', 'isSaving', 'authUser'],
   data() {
     return {
       taskStatus, availabilities,
@@ -107,7 +134,7 @@ export default {
       isOffline, isFlowersCooling,
     };
   },
-  methods: { onClickFlowers },
+  methods: { onClickFlowers, onClickEmotion, onChangeSpeech },
   components: { Emotion },
   created: init,
   beforeDestroy: destroy,
@@ -146,6 +173,100 @@ export default {
     margin-top: 25px;
   }
 
+  .speech {
+    position: relative;
+    opacity: 0;
+    transition: opacify, 0.2s;
+
+    &.show {
+      opacity: 1;
+    }
+
+    &.long .content.edit {
+      width: 100%;
+    }
+
+    .content {
+      display: inline-block;
+      border: 1px solid $light-gray;
+      border-radius: 10px;
+      padding: 0px 15px;
+      line-height: 30px;
+      min-height: 30px;
+      box-sizing: border-box;
+      max-width: 100%;
+      margin: 0;
+      min-width: 80px;
+      color: $gray;
+      transition: width 0.5s;
+
+      &.edit {
+        width: 200px;
+        input {
+          color: $gray;
+          line-height: 28px;
+          border: none;
+          display: inline-block;
+          box-sizing: border-box;
+          background: none;
+          width: 100%;
+        }
+      }
+
+      &.show {
+        p {
+          margin: 0;
+          display: inline-block;
+          line-height: 28px;
+          box-sizing: border-box;
+        }
+      }
+    }
+
+    .content:after {
+      content: "";
+      position: absolute;
+      left: 35px;
+      bottom: 0;
+      width: 10px;
+      height: 1px;
+      background: white;
+    }
+
+    &:after {
+      border-color: $light-gray;
+      content: "";
+      position: absolute;
+      z-index: 10;
+      bottom: -10px;
+      left: 25px;
+      width: 10px;
+      height: 10px;
+      border-style: solid;
+      border-width: 0 1px 1px 0;
+      background: transparent;
+      border-bottom-right-radius: 10px;
+      display: block;
+    }
+
+
+    &:before {
+      border-color: $light-gray;
+      content: "";
+      position: absolute;
+      z-index: 10;
+      bottom: -10px;
+      left: 25px;
+      width: 20px;
+      height: 10px;
+      border-style: solid;
+      border-width: 0 1px 1px 0;
+      background: transparent;
+      border-bottom-right-radius: 15px 10px;
+      display: block;
+    }
+  }
+
   .memberStatus {
     line-height: 50px;
     user-select: none;
@@ -154,6 +275,7 @@ export default {
   .emotion {
     margin-right: 10px;
     margin-left: 3px;
+    cursor: pointer;
   }
 
   .beacon {
