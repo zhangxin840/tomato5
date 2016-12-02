@@ -330,7 +330,7 @@ export default {
 @import "../base";
 
 .teamPanel {
-  margin: 100px 0 0px 0;;
+  margin: 85px 0 0px 0;;
 
   &:before, &:after {
     content: "";
