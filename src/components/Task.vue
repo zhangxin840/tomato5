@@ -127,22 +127,28 @@ export default {
   width: 100%;
 
   .icon-wrapper {
-    width: 30px;
+    width: 35px;
+    height: 35px;
     margin-right: 10px;
     text-align: center;
-    height: 30px;
+
+    .tomato {
+      width: 35px;
+      height: 35px;
+    }
   }
 
   .note-wrapper {
     width: 100%;
-    height: 30px;
+    line-height: 35px
   }
 
   .note {
-    line-height: 20px;
+    line-height: 25px;
     position: relative;
     width: 100%;
-    text-align: middle;
+    vertical-align: middle;
+    top: -0px;
   }
 
   &.hide {

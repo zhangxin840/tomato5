@@ -1,14 +1,14 @@
 <template>
   <div class="member">
     <div class="speech" v-bind:class="{
-      'show': userStatus.isShowSpeech && (authUser.uid === userInfo.uid || (userStatus.speech && userStatus.speech.length > 0)),
-      'long': userStatus.speech && userStatus.speech.length > 15
+      'show': speech.isShowSpeech && (authUser.uid === userInfo.uid || (speech.content && speech.content.length > 0)),
+      'long': speech.content && speech.content.length > 15
     }">
       <div v-if="authUser.uid === userInfo.uid" class="content edit">
-        <input v-model="userStatus.speech" v-on:blur="onChangeSpeech" class="" type="text" name="" placeholder="How are you doing?" maxlength="100">
+        <input v-model="speech.content" v-on:blur="onChangeSpeech" class="" type="text" name="" placeholder="How are you doing?" maxlength="100">
       </div>
       <div v-if="authUser.uid !== userInfo.uid" class="content show">
-        <p>{{userStatus.speech}}</p>
+        <p>{{speech.content}}</p>
       </div>
     </div>
     <div class="memberStatus">
@@ -82,6 +82,19 @@ const onClickFlowers = function onClickFlowers() {
   }, 1000);
 };
 
+const onChangeSpeech = function onChangeSpeech() {
+  if (this.userInfo.uid === this.authUser.uid) {
+    this.$dispatch('updateSpeech', this.userInfo.uid);
+  }
+};
+
+const onClickEmotion = function onClickEmotion() {
+  this.speech.isShowSpeech = !this.speech.isShowSpeech;
+  if (this.userInfo.uid === this.authUser.uid) {
+    this.$dispatch('updateSpeech', this.userInfo.uid);
+  }
+};
+
 const init = function init() {
   statusChecker = window.setInterval(() => {
     if (!this.updateTime) {
@@ -105,28 +118,16 @@ const init = function init() {
   }, checkMemberInterval);
 };
 
-const onChangeSpeech = function onChangeSpeech() {
-  // 'userStatus' in this component is from team, not the authUser
-  // Sync data back to authUser if the change is made for himself
-  if (this.userInfo.uid === this.authUser.uid) {
-    this.$dispatch('updateSpeech', this.userStatus.speech, this.userStatus.isShowSpeech);
-  }
-};
-
-const onClickEmotion = function onClickEmotion() {
-  this.userStatus.isShowSpeech = !this.userStatus.isShowSpeech;
-
-  if (this.userInfo.uid === this.authUser.uid) {
-    this.$dispatch('updateSpeech', this.userStatus.speech, this.userStatus.isShowSpeech);
-  }
-};
-
 const destroy = function destroy() {
   window.clearInterval(this.statusChecker);
 };
 
 export default {
-  props: ['tasks', 'userStatus', 'userInfo', 'updateTime', 'flowers', 'isSaving', 'authUser'],
+  props: [
+    'tasks', 'userStatus', 'userInfo', 'updateTime',
+    'flowers', 'speech', 'isSaving',
+    'authUser',
+  ],
   data() {
     return {
       taskStatus, availabilities,

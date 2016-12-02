@@ -45,8 +45,6 @@ const getDefaultTasks = function getDefaultTasks() {
 const userStatus = {
   availability: availabilities.idle,
   emotion: '2',
-  speech: '',
-  isShowSpeech: false,
 };
 
 const team = {
@@ -58,6 +56,12 @@ const team = {
     messages: {
       DATE: {
         headline: '',
+        speeches: {
+          UID: {
+            content: '',
+            isShowSpeech: false,
+          },
+        },
       },
     },
     flowers: {

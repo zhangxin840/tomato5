@@ -58,6 +58,7 @@
       <div class="members" transition="fade" v-if="teamData">
         <member v-for="(uid, member) in teamData.members"
                 v-bind:flowers="teamData.common.flowers[this.dateLabel][uid]"
+                v-bind:speech="teamData.common.messages[this.dateLabel].speeches[uid]"
                 v-bind:auth-user="authUser"
                 v-bind:is-saving="isSaving"
                 v-bind:tasks="member.tasks"
@@ -134,6 +135,16 @@ const addFlower = function addFlower(uid) {
   utils.report('team', 'addFlower');
 };
 
+const updateSpeech = function updateSpeech(uid) {
+  const teamId = this.userTeamData.currentTeam;
+  const path = `teams/${teamId}/common/messages/${this.dateLabel}/speeches/${uid}`;
+  database.save(path, this.teamData.common.messages[this.dateLabel].speeches[uid]).then(() => {
+  }, () => {
+  });
+
+  utils.report('team', 'updateSpeech');
+};
+
 const changeHeadline = function changeHeadline() {
   const path = `teams/${this.userTeamData.currentTeam}/common/messages/${this.dateLabel}/headline`;
   database.save(path, this.teamData.common.messages[this.dateLabel].headline).then(() => {
@@ -185,20 +196,28 @@ const processTeamData = function processTeamData(data) {
   /* eslint-disable no-param-reassign */
   // Init the common data structure
   data.common = data.common || {};
-
   data.common.flowers = data.common.flowers || {};
-  data.common.flowers[this.dateLabel] = data.common.flowers[this.dateLabel] || {};
+  data.common.messages = data.common.messages || {};
 
+  const flowers = data.common.flowers;
+  const messages = data.common.messages;
+
+  flowers[this.dateLabel] = flowers[this.dateLabel] || {};
   Object.keys(data.members).forEach((uid) => {
-    data.common.flowers[this.dateLabel][uid] = data.common.flowers[this.dateLabel][uid] || {
+    flowers[this.dateLabel][uid] = flowers[this.dateLabel][uid] || {
       count: 0,
     };
   });
 
-  data.common.messages = data.common.messages || {};
-  data.common.messages[this.dateLabel] = data.common.messages[this.dateLabel] || {};
-  data.common.messages[this.dateLabel].headline =
-    data.common.messages[this.dateLabel].headline || ''; // moment().format('dddd, MMM Do');
+  messages[this.dateLabel] = messages[this.dateLabel] || {};
+  messages[this.dateLabel].headline = messages[this.dateLabel].headline || '';
+  messages[this.dateLabel].speeches = messages[this.dateLabel].speeches || {};
+  Object.keys(data.members).forEach((uid) => {
+    messages[this.dateLabel].speeches[uid] = messages[this.dateLabel].speeches[uid] || {
+      content: '',
+      isShowSpeech: false,
+    };
+  });
   /* eslint-enable no-param-reassign */
 
   // Filter tasks and members
@@ -251,15 +270,6 @@ const getUserTeamData = function getUserTeamData() {
 
 const saveUserTeamData = function saveUserTeamData() {
   return database.save(`userData/${auth.getUser().uid}/teamData`, this.userTeamData);
-};
-
-// The param 'userStatus' came from the teamboard
-// Should first sync this 'userStatus'
-const updateSpeech = function updateSpeech(speech, isShowSpeech) {
-  this.userStatus.speech = speech;
-  this.userStatus.isShowSpeech = isShowSpeech;
-
-  this.publishToTeam();
 };
 
 // Only get dateLabel when init, to avoid cross day issues.
