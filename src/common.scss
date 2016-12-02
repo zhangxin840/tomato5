@@ -66,6 +66,10 @@ body {
     height: 80px;
     display: inline-block;
     vertical-align: top;
+
+    &:active{
+        transform: scale3d(1.05, 1.05, 1);
+    }
   }
 
   @media (min-width: 400px) {
@@ -90,7 +94,7 @@ body {
   -webkit-tap-highlight-color: transparent; /* For some Androids */
 
   &:active{
-    transform: scale(1.1, 1.1);
+    transform: scale(1.15, 1.15);
   }
   opacity: 1;
 }

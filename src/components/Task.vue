@@ -127,14 +127,21 @@ export default {
   width: 100%;
 
   .icon-wrapper {
-    width: 35px;
+    min-width: 35px;
+    max-width: 35px;
     height: 35px;
+    display: inline-block;
     margin-right: 10px;
     text-align: center;
 
     .tomato {
       width: 35px;
       height: 35px;
+    }
+
+    .emotion {
+      margin: 0 auto;
+      vertical-align: text-top;
     }
   }
 

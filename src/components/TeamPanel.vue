@@ -24,11 +24,19 @@
                     v-validate:invite-code="{ minlength: 6 }">
             </p>
             <p class="tips">
-              You can use TeamID to create or join a team
+              Share this TeamID to invite others to join your team
             </p>
-            <p transition="fade" v-if="!$validation.invalid">
-              <a v-on:click="joinTeam(teamForm.inviteCode)">Join Team</a>
+            <p class="tips">
+              Edit TeamID to join or create another team
             </p>
+            <p transition="fade" v-if="teamForm.status === 'ready' && !$validation.invalid && teamForm.inviteCode !== userTeamData.currentTeam">
+              <a v-on:click="joinTeam(teamForm.inviteCode)" class="ready">
+                 Join Team
+              </a>
+            </p>
+            <p transition="fade" v-if="teamForm.status === 'doing'" class="doing">Joining...</p>
+            <p transition="fade" v-if="teamForm.status === 'success'" class="success">Succeeded</p>
+            <p transition="fade" v-if="teamForm.status === 'fail'" class="fail">Failed</p>
           </div>
           <div class="create" transition="slide_right" v-show="!teamForm.isJoin">
             <p class="field">
@@ -90,6 +98,7 @@ const teamForm = {
   name: '',
   isShow: false,
   isJoin: true,
+  status: 'ready',
 };
 
 const isSaving = false;
@@ -155,18 +164,34 @@ const changeHeadline = function changeHeadline() {
 };
 
 const joinTeam = function joinTeam(inviteCode) {
+  const recoverTime = 2000;
+
   if (inviteCode && this.userTeamData) {
     this.userTeamData.currentTeam = inviteCode;
     if (watchRef) {
       watchRef.off();
     }
 
+    this.teamForm.status = 'doing';
+
     this.publishToTeam().then(() => {
       this.watchTeam();
+
+      this.teamForm.status = 'success';
+      window.setTimeout(() => {
+        this.teamForm.isShow = false;
+        window.setTimeout(() => {
+          this.teamForm.status = 'ready';
+        }, recoverTime / 2);
+      }, recoverTime);
+    }, () => {
+      this.teamForm.status = 'fail';
+      window.setTimeout(() => {
+        this.teamForm.status = 'ready';
+      }, recoverTime);
     });
 
     this.saveUserTeamData().then(() => {
-      this.teamForm.isShow = false;
     });
 
     utils.report('team', 'join');
@@ -367,8 +392,16 @@ export default {
       }
     }
 
+    .success {
+      color: $green;
+    }
+
+    .fail {
+      color: $red;
+    }
+
     .tips {
-      opacity: 0.5;
+      color: $gray;
     }
   }
 }
@@ -404,7 +437,7 @@ export default {
 /* always present */
 .expand-transition {
   transition: all .3s ease;
-  height: 120px;
+  height: 170px;
   overflow: hidden;
 }
 
