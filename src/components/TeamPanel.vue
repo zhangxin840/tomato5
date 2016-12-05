@@ -29,14 +29,23 @@
             <p class="tips">
               Edit TeamID to join or create another team
             </p>
-            <p transition="fade" v-if="teamForm.status === 'ready' && !$validation.invalid && teamForm.inviteCode !== userTeamData.currentTeam">
-              <a v-on:click="joinTeam(teamForm.inviteCode)" class="ready">
-                 Join Team
-              </a>
-            </p>
-            <p transition="fade" v-if="teamForm.status === 'doing'" class="doing">Joining...</p>
-            <p transition="fade" v-if="teamForm.status === 'success'" class="success">Succeeded</p>
-            <p transition="fade" v-if="teamForm.status === 'fail'" class="fail">Failed</p>
+            <div class="status" >
+              <div class="wrapper" v-bind:class="{
+                'ready': teamForm.status === 'ready' && !$validation.invalid && teamForm.inviteCode !== userTeamData.currentTeam,
+                'doing': teamForm.status === 'doing',
+                'success': teamForm.status === 'success',
+                'fail': teamForm.status === 'fail'
+              }">
+                <p class="ready">
+                  <a v-on:click="joinTeam(teamForm.inviteCode)">
+                     Join Team
+                  </a>
+                </p>
+                <p class="doing">Joining...</p>
+                <p class="success">Succeeded</p>
+                <p class="fail">Failed</p>
+              </div>
+            </div>
           </div>
           <div class="create" transition="slide_right" v-show="!teamForm.isJoin">
             <p class="field">
@@ -164,7 +173,8 @@ const changeHeadline = function changeHeadline() {
 };
 
 const joinTeam = function joinTeam(inviteCode) {
-  const recoverTime = 2000;
+  const recoverTime = 2500;
+  const animationTime = 1500;
 
   if (inviteCode && this.userTeamData) {
     this.userTeamData.currentTeam = inviteCode;
@@ -182,7 +192,7 @@ const joinTeam = function joinTeam(inviteCode) {
         this.teamForm.isShow = false;
         window.setTimeout(() => {
           this.teamForm.status = 'ready';
-        }, recoverTime / 2);
+        }, animationTime / 2);
       }, recoverTime);
     }, () => {
       this.teamForm.status = 'fail';
@@ -384,24 +394,69 @@ export default {
 
     .theForm {
       position: relative;
-    }
 
-    .field {
-      span {
-        margin-right: 10px;
+      .field {
+        span {
+          margin-right: 10px;
+        }
       }
-    }
 
-    .success {
-      color: $green;
-    }
+      .tips {
+        color: $gray;
+      }
 
-    .fail {
-      color: $red;
-    }
+      .status {
+        position: relative;
+        height: 30px;
+        overflow: hidden;
+        margin-top: 0px;
 
-    .tips {
-      color: $gray;
+        .wrapper {
+          transition: top 0.5s;
+          position: relative;
+          top: 30px;
+
+          &.ready {
+            top: -0px;
+            p.ready {
+              opacity: 1;
+            }
+          }
+          &.doing {
+            top: -30px;
+            p.doing {
+              opacity: 1;
+            }
+          }
+          &.success {
+            top: -60px;
+            p.success {
+              opacity: 1;
+            }
+          }
+          &.fail {
+            top: -90px;
+            p.fail {
+              opacity: 1;
+            }
+          }
+
+          p {
+            transition: opacity 1s;
+            margin: 0px;
+            line-height: 30px;
+            opacity: 0;
+
+            &.success {
+              color: $green;
+            }
+
+            &.fail {
+              color: $red;
+            }
+          }
+        }
+      }
     }
   }
 }
