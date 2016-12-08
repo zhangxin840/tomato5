@@ -57,7 +57,7 @@ With the full support of cloud services, we can build real-world products at low
 
 We believe that it is important for the team to share everyone's status.
 
-Traditional collaboration tools only told the team what to achieve, without concern about individual's actual status.
+Traditional collaboration tools only tell the team what to achieve, without concern about individual's actual status.
 
 By showing what we are doing and thinking in real-time, we can express ourselves more adequately, be more connected to the team, and get more feedbacks on time.
 
