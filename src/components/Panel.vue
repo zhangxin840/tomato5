@@ -437,7 +437,7 @@ h1 {
       width: 20px;
       height: 20px;
       background: url('../assets/add.svg');
-      margin: 0px 4px;
+      margin: 0px 7px;
       cursor: pointer;
       position: absolute;
       left: 0;
